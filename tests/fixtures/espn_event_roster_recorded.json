@@ -1,0 +1,65 @@
+{
+ "_meta": {
+  "retrieved_at": "2026-07-01T20:30:16Z",
+  "source_url": "https://sports.core.api.espn.com/v2/sports/football/leagues/nfl/events/401772944/competitions/401772944/competitors/7/roster",
+  "note": "REAL recorded payload, trimmed for fixture size. DEN competitor roster, LV@DEN 2025 wk10 (completed game)."
+ },
+ "payload": {
+  "entries": [
+   {
+    "playerId": 9614,
+    "displayName": "Lewis",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "89",
+    "period": 0
+   },
+   {
+    "playerId": 2612151,
+    "displayName": "Singleton",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "49",
+    "period": 0
+   },
+   {
+    "playerId": 3052885,
+    "displayName": "McGlinchey",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "69",
+    "period": 0
+   },
+   {
+    "playerId": 3120464,
+    "displayName": "Franklin-Myers",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "98",
+    "period": 0
+   },
+   {
+    "playerId": 3122168,
+    "displayName": "Sherfield Sr.",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "05",
+    "period": 0
+   },
+   {
+    "playerId": 3128429,
+    "displayName": "Sutton",
+    "active": false,
+    "didNotPlay": false,
+    "starter": true,
+    "jersey": "14",
+    "period": 0
+   }
+  ]
+ }
+}

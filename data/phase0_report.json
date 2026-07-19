@@ -1,0 +1,120 @@
+{
+  "mode": "selftest",
+  "conference": "MWC(fixture)",
+  "year": 2023,
+  "calls_used": 0,
+  "call_budget": 1000,
+  "call_trail": [],
+  "findings": [
+    [
+      "--- /games ---",
+      null,
+      ""
+    ],
+    [
+      "games returned",
+      true,
+      "3 games"
+    ],
+    [
+      "weeks populated",
+      true,
+      "weeks [1]..[3] (3 distinct)"
+    ],
+    [
+      "final scores present",
+      true,
+      "100% of games have home points"
+    ],
+    [
+      "--- /plays ---",
+      null,
+      ""
+    ],
+    [
+      "plays returned",
+      true,
+      "6 plays"
+    ],
+    [
+      "PPA present",
+      true,
+      "67% of plays have non-null PPA (CFB EPA equivalent)"
+    ],
+    [
+      "down/distance/yardline populated",
+      true,
+      "83% rows have down+distance+yardline"
+    ],
+    [
+      "play type groupable",
+      true,
+      "6 distinct play types (need this for std/passing-downs splits)"
+    ],
+    [
+      "--- /lines ---",
+      null,
+      ""
+    ],
+    [
+      "line rows returned",
+      true,
+      "2 game-line rows"
+    ],
+    [
+      "multi-book coverage",
+      true,
+      "1/2 games have >=2 books (needed for de-vig/consensus)"
+    ],
+    [
+      "spread present",
+      true,
+      "3 book-rows carry a spread"
+    ],
+    [
+      "total present",
+      true,
+      "3 book-rows carry an over/under"
+    ],
+    [
+      "moneyline present",
+      true,
+      "3 book-rows carry a moneyline (may be sparse for G5 \u2014 verify)"
+    ],
+    [
+      "--- /talent ---",
+      null,
+      ""
+    ],
+    [
+      "talent rows returned",
+      true,
+      "8 teams league-wide"
+    ],
+    [
+      "talent scale sane (measured values only)",
+      true,
+      "range 4.33..1015.43 over 5 measured teams; 3 sentinel-0 teams excluded as missing"
+    ],
+    [
+      "talent sentinel set is exactly the known academies",
+      true,
+      "talent==0 for ['Air Force', 'Army', 'Navy'] (expected ['Air Force', 'Army', 'Navy']) \u2014 these must ingest as NULL + unranked_recruiting=True, never as 0.0"
+    ],
+    [
+      "conference teams covered",
+      true,
+      "3/6 of the conference's teams have a talent row"
+    ]
+  ],
+  "spot_check": {
+    "date": "2023-09-02T18:00:00.000Z",
+    "home": "Boise State",
+    "away": "UCF",
+    "home_points": 24,
+    "away_points": 31,
+    "note": "Compare this against ESPN / Sports-Reference by hand (brief step 4)."
+  },
+  "verdict": "PASS",
+  "generated_utc": "2026-07-19T00:04:53.221347+00:00"
+}

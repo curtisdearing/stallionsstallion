@@ -1,0 +1,5 @@
+{
+  "_note": "Copy this to config.local.json (which is gitignored) and paste your real keys. NEVER commit config.local.json. Env vars CFBD_API_KEY / ODDS_API_KEY override these.",
+  "cfbd_api_key": "paste-your-free-collegefootballdata-key-here",
+  "odds_api_key": "paste-your-free-the-odds-api-key-here"
+}

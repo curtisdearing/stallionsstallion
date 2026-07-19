@@ -1,0 +1,205 @@
+{
+  "_note": "MIXED PROVENANCE \u2014 read before trusting. `games`, `plays` and `lines` are still HAND-AUTHORED and shaped like CFBD's camelCase responses; they are NOT real data, just enough rows to exercise the validators offline. `talent` IS REAL: eight rows pinned verbatim from the live /talent?year=2023 pull on 2026-07-18, chosen to cover the full scale \u2014 the three sentinel-0 service academies (Army/Navy/Air Force), the top of the scale (Alabama 1015.43, Georgia 977.87), two in-slice Mountain West teams (Boise State, San Diego State), and the lowest nonzero team league-wide (Villanova 4.33). The sentinel rows are the reason this fixture exists in real form: talent==0 means UNMEASURED, not untalented, and must ingest as NULL + unranked_recruiting=True. Replace games/plays/lines with real pinned pulls when Workstream A confirms their field names.",
+  "games": [
+    {
+      "id": 401001,
+      "season": 2023,
+      "week": 1,
+      "seasonType": "regular",
+      "startDate": "2023-09-02T18:00:00.000Z",
+      "homeTeam": "Boise State",
+      "awayTeam": "UCF",
+      "homePoints": 24,
+      "awayPoints": 31,
+      "homeConference": "Mountain West",
+      "awayConference": "American",
+      "neutralSite": false
+    },
+    {
+      "id": 401002,
+      "season": 2023,
+      "week": 2,
+      "seasonType": "regular",
+      "startDate": "2023-09-09T22:30:00.000Z",
+      "homeTeam": "San Diego State",
+      "awayTeam": "UCLA",
+      "homePoints": 13,
+      "awayPoints": 21,
+      "homeConference": "Mountain West",
+      "awayConference": "Pac-12",
+      "neutralSite": false
+    },
+    {
+      "id": 401003,
+      "season": 2023,
+      "week": 3,
+      "seasonType": "regular",
+      "startDate": "2023-09-16T20:00:00.000Z",
+      "homeTeam": "Air Force",
+      "awayTeam": "Utah State",
+      "homePoints": 39,
+      "awayPoints": 24,
+      "homeConference": "Mountain West",
+      "awayConference": "Mountain West",
+      "neutralSite": false
+    }
+  ],
+  "plays": [
+    {
+      "id": "1-1",
+      "offense": "UCF",
+      "defense": "Boise State",
+      "down": 1,
+      "distance": 10,
+      "yardsToGoal": 75,
+      "playType": "Rush",
+      "ppa": 0.12,
+      "period": 1,
+      "clock": {
+        "minutes": 14,
+        "seconds": 55
+      }
+    },
+    {
+      "id": "1-2",
+      "offense": "UCF",
+      "defense": "Boise State",
+      "down": 2,
+      "distance": 7,
+      "yardsToGoal": 72,
+      "playType": "Pass Reception",
+      "ppa": 0.45,
+      "period": 1
+    },
+    {
+      "id": "1-3",
+      "offense": "UCF",
+      "defense": "Boise State",
+      "down": 3,
+      "distance": 2,
+      "yardsToGoal": 67,
+      "playType": "Pass Incompletion",
+      "ppa": -0.38,
+      "period": 1
+    },
+    {
+      "id": "1-4",
+      "offense": "UCF",
+      "defense": "Boise State",
+      "down": 4,
+      "distance": 2,
+      "yardsToGoal": 67,
+      "playType": "Punt",
+      "ppa": null,
+      "period": 1
+    },
+    {
+      "id": "1-5",
+      "offense": "Boise State",
+      "defense": "UCF",
+      "down": 1,
+      "distance": 10,
+      "yardsToGoal": 80,
+      "playType": "Rushing Touchdown",
+      "ppa": 3.1,
+      "period": 1
+    },
+    {
+      "id": "1-6",
+      "offense": "Boise State",
+      "defense": "UCF",
+      "down": null,
+      "distance": null,
+      "yardsToGoal": 3,
+      "playType": "Penalty",
+      "ppa": null,
+      "period": 2
+    }
+  ],
+  "lines": [
+    {
+      "id": 401001,
+      "season": 2023,
+      "week": 1,
+      "homeTeam": "Boise State",
+      "awayTeam": "UCF",
+      "lines": [
+        {
+          "provider": "DraftKings",
+          "spread": -3.5,
+          "overUnder": 55.5,
+          "homeMoneyline": -155,
+          "awayMoneyline": 135,
+          "formattedSpread": "Boise State -3.5"
+        },
+        {
+          "provider": "Bovada",
+          "spread": -3.0,
+          "overUnder": 56.0,
+          "homeMoneyline": -150,
+          "awayMoneyline": 130,
+          "formattedSpread": "Boise State -3.0"
+        }
+      ]
+    },
+    {
+      "id": 401003,
+      "season": 2023,
+      "week": 3,
+      "homeTeam": "Air Force",
+      "awayTeam": "Utah State",
+      "lines": [
+        {
+          "provider": "DraftKings",
+          "spread": -7.0,
+          "overUnder": 48.5,
+          "homeMoneyline": -280,
+          "awayMoneyline": 230,
+          "formattedSpread": "Air Force -7.0"
+        }
+      ]
+    }
+  ],
+  "talent": [
+    {
+      "year": 2023,
+      "team": "Army",
+      "talent": 0
+    },
+    {
+      "year": 2023,
+      "team": "Navy",
+      "talent": 0
+    },
+    {
+      "year": 2023,
+      "team": "Air Force",
+      "talent": 0
+    },
+    {
+      "year": 2023,
+      "team": "Alabama",
+      "talent": 1015.43
+    },
+    {
+      "year": 2023,
+      "team": "Georgia",
+      "talent": 977.87
+    },
+    {
+      "year": 2023,
+      "team": "Boise State",
+      "talent": 579.88
+    },
+    {
+      "year": 2023,
+      "team": "San Diego State",
+      "talent": 440.15
+    },
+    {
+      "year": 2023,
+      "team": "Villanova",
+      "talent": 4.33
+    }
+  ]
+}

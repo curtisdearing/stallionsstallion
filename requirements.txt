@@ -1,0 +1,37 @@
+# The base app (run.py, update_results.py, demo + live odds, learning, dashboard)
+# AND the Phase 0 CFBD smoke test (phase0_smoke_test.py + nflvalue/sources/cfbd.py)
+# use ONLY the Python standard library — nothing to install. The official `cfbd`
+# PyPI client is deliberately NOT required: the smoke test speaks raw HTTP so it
+# has zero third-party surface, matching the existing odds/Discord clients.
+#
+# These are needed ONLY for the Monte Carlo + backtest add-ons
+# (build_ratings.py, backtest.py, nflvalue/montecarlo.py):
+pandas>=1.5
+pyarrow>=10.0
+numpy>=1.23
+
+# Needed for the Phase 1 player-prop projection layer (nflvalue/features.py,
+# nflvalue/projection.py, prop_backtest.py) -- distribution math (gamma,
+# negative binomial, Poisson survival functions) for p_over/p_under:
+scipy>=1.9
+
+# Needed for real player positions (nflvalue/sources/rosters.py, Phase 1B).
+# Only required to (re)build historical/rosters_weekly.parquet for NEW
+# seasons; the 2019-2023 cache already on disk works without it.
+nflreadpy>=0.1
+
+# Phases 2-5 (composite ranker, weekly pipeline, odds client, CLV, Discord
+# notifier, RAG layer) deliberately add NO new dependencies: the odds/Discord
+# HTTP calls use the standard library, and the RAG vectorstore is a built-in
+# TF-IDF index (Chroma/FAISS intentionally not required; see docs/phases_3-5.md).
+
+# ML ranking layer (nflvalue/ml_ranker.py, ml_test.py) -- flag-gated via
+# config.json "ml_ranker"; the rest of the app runs without these:
+scikit-learn>=1.3
+joblib>=1.3
+
+# Optional, for running the test suite (tests/):
+# pytest>=7.0
+
+# To (re)download the historical data in historical/download_history.py:
+# nfl_data_py>=0.3
