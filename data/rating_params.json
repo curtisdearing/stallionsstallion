@@ -1,0 +1,18 @@
+{
+  "conn_floor": 0.05,
+  "conn_half_games": 4.0,
+  "conn_hop_decay": 0.6,
+  "conn_ref_min_games": 5,
+  "conn_veto_below": 0.25,
+  "decay": 0.2,
+  "explosiveness_shrinkage": 128.0,
+  "fcs_weight": 0.5,
+  "lambda_conf": 4,
+  "lambda_hfa": 400,
+  "lambda_team": 0.25,
+  "max_condition": 10000000000.0,
+  "prior_strength": 12,
+  "prior_w_prev_rating": 1.0,
+  "prior_w_returning": 1.0,
+  "prior_w_talent": 1.0
+}
