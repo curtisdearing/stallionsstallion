@@ -1,0 +1,100 @@
+slate,date,home,away,neutral,pred_margin,p_home_win,band_pm,veto,note
+wk0,2026-08-29,TCU,North Carolina,True,6.7,0.657,3.0,False,
+wk0,2026-08-29,USC,San José State,False,26.2,0.942,3.0,False,
+wk0,2026-08-29,Virginia,NC State,False,0.6,0.514,3.0,False,
+wk0,2026-08-29,North Dakota State,Jacksonville State,False,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
+wk0,2026-08-29,Eastern Michigan,Sacramento State,False,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
+wk0,2026-08-29,Stanford,Hawai'i,False,7.1,0.665,3.0,False,
+wk0,2026-08-29,Florida State,New Mexico State,False,24.4,0.928,3.0,False,
+wk0,2026-08-30,UNLV,Memphis,False,1.1,0.527,3.0,False,
+wk1,2026-09-03,Rutgers,Massachusetts,False,31.4,0.97,3.0,False,
+wk1,2026-09-03,Wake Forest,Akron,False,20.6,0.892,3.0,False,
+wk1,2026-09-03,Delaware,Merrimack,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-03,Kennesaw State,West Georgia,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-03,UCF,Bethune-Cookman,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-03,Buffalo,UAlbany,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-04,Missouri,Arkansas-Pine Bluff,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-04,Minnesota,Eastern Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-04,Georgia Tech,Colorado,False,5.8,0.636,3.0,False,
+wk1,2026-09-04,Utah,Idaho,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-04,Illinois,UAB,False,18.2,0.863,3.0,False,
+wk1,2026-09-04,Eastern Michigan,San José State,False,-2.7,0.436,3.0,False,
+wk1,2026-09-04,Georgia State,North Carolina A&T,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-04,Purdue,Indiana State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Oklahoma,UTEP,False,32.1,0.973,3.0,False,
+wk1,2026-09-05,Kansas,Long Island University,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Michigan State,Toledo,False,7.9,0.682,3.0,False,
+wk1,2026-09-05,Stanford,Miami,False,-12.5,0.226,3.0,False,
+wk1,2026-09-05,USC,Fresno State,False,21.3,0.899,3.0,False,
+wk1,2026-09-05,UConn,Lafayette,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Army,Bryant,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Air Force,Duquesne,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Syracuse,New Hampshire,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Bowling Green,Tarleton State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,James Madison,Liberty,False,15.4,0.823,3.1,False,
+wk1,2026-09-05,Indiana,North Texas,False,19.5,0.879,3.0,False,
+wk1,2026-09-05,Alabama,East Carolina,False,26.8,0.946,3.0,False,
+wk1,2026-09-05,Nebraska,Ohio,False,15.3,0.821,3.0,False,
+wk1,2026-09-05,West Virginia,Coastal Carolina,False,11.2,0.75,3.0,False,
+wk1,2026-09-05,Pittsburgh,Miami (OH),False,15.7,0.828,3.0,False,
+wk1,2026-09-05,Houston,Oregon State,False,10.3,0.733,3.0,False,
+wk1,2026-09-05,Ohio State,Ball State,False,45.1,0.997,3.0,False,
+wk1,2026-09-05,South Carolina,Kent State,False,32.7,0.975,3.0,False,
+wk1,2026-09-05,Kentucky,Youngstown State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Iowa State,Southeast Missouri State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Temple,Rhode Island,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Georgia,Tennessee State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Charlotte,The Citadel,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,North Dakota State,Fordham,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Auburn,Baylor,True,3.2,0.576,3.0,False,
+wk1,2026-09-05,App State,Maine,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Tennessee,Furman,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Texas,Texas State,False,28.3,0.955,3.0,False,
+wk1,2026-09-05,Cincinnati,Boston College,False,10.6,0.738,3.0,False,
+wk1,2026-09-05,UTSA,UT Rio Grande Valley,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Navy,Towson,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Duke,Tulane,False,3.2,0.575,2.9,False,
+wk1,2026-09-05,Oregon,Boise State,False,22.4,0.91,3.0,False,
+wk1,2026-09-05,Penn State,Marshall,False,22.0,0.906,3.0,False,
+wk1,2026-09-05,Tulsa,Oklahoma State,False,-7.0,0.337,3.0,False,
+wk1,2026-09-05,Iowa,Northern Illinois,False,24.7,0.931,3.0,False,
+wk1,2026-09-05,Arkansas,North Alabama,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Southern Miss,Alcorn State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Colorado State,Wyoming,False,-1.2,0.472,3.0,False,
+wk1,2026-09-05,Old Dominion,Norfolk State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Troy,Sam Houston,False,10.0,0.726,3.1,False,
+wk1,2026-09-05,Middle Tennessee,Murray State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Vanderbilt,Austin Peay,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,South Alabama,SE Louisiana,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,South Florida,Florida International,False,16.5,0.839,3.0,False,
+wk1,2026-09-05,Rice,Houston Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Memphis,Arkansas State,False,15.6,0.826,3.0,False,
+wk1,2026-09-05,Texas Tech,Abilene Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Kansas State,Nicholls,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Utah State,Idaho State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Jacksonville State,Eastern Kentucky,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Georgia Southern,Charleston Southern,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Texas A&M,Missouri State,False,27.9,0.953,3.8,False,
+wk1,2026-09-05,LSU,Clemson,False,4.3,0.601,3.0,False,
+wk1,2026-09-05,Louisiana Tech,Northwestern State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Mississippi State,UL Monroe,False,23.3,0.919,3.0,False,
+wk1,2026-09-05,Michigan,Western Michigan,False,27.9,0.953,3.0,False,
+wk1,2026-09-05,Virginia Tech,VMI,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-05,Florida,Florida Atlantic,False,21.0,0.896,3.0,False,
+wk1,2026-09-06,Louisiana,Lamar,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,BYU,Utah Tech,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,Northwestern,South Dakota State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,Maryland,Hampton,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,New Mexico State,Mercyhurst,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,San Diego State,Portland State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,Arizona,Northern Arizona,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,New Mexico,Central Michigan,False,6.8,0.659,3.0,False,
+wk1,2026-09-06,Sacramento State,Mississippi Valley State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,Hawai'i,UNLV,False,-2.5,0.441,3.0,False,
+wk1,2026-09-06,Arizona State,Morgan State,False,,,,True,"FBS-vs-FCS: not priced, by design"
+wk1,2026-09-06,California,UCLA,False,0.5,0.513,3.0,False,
+wk1,2026-09-06,Nevada,Western Kentucky,False,-2.2,0.447,3.0,False,
+wk1,2026-09-06,Washington,Washington State,False,15.5,0.824,3.1,False,
+wk1,2026-09-06,Notre Dame,Wisconsin,True,9.2,0.709,3.1,False,
+wk1,2026-09-06,Ole Miss,Louisville,True,7.6,0.675,3.0,False,
+wk1,2026-09-07,Florida State,SMU,False,-0.5,0.487,3.0,False,
