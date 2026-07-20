@@ -76,8 +76,13 @@ def main(argv=None) -> int:
 
     failures = []
     for season in seasons:
+        # checkpoint=True: resumable per-endpoint/per-week. The execution
+        # sandbox hard-kills processes at ~45s and reaps backgrounded children
+        # (two silent backfill deaths on 2026-07-19), so callers should just
+        # re-invoke this script until it exits 0 — a kill costs at most 1 call.
         res = ingest.refresh_season(season, conference=args.conference,
-                                    weeks=range(1, args.weeks + 1))
+                                    weeks=range(1, args.weeks + 1),
+                                    checkpoint=True)
         print(res)
         if res.stale:
             # Fail loud, keep going: one bad season must not silently truncate

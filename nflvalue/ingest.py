@@ -398,13 +398,25 @@ def _season_path(kind: str, season: int) -> str:
 
 def refresh_season(season: int, conference: Optional[str] = None,
                    weeks: Iterable[int] = range(1, 16),
-                   client: Optional[CFBDClient] = None) -> RefreshResult:
+                   client: Optional[CFBDClient] = None,
+                   checkpoint: bool = False) -> RefreshResult:
     """Pull one season into the parquet cache. Idempotent.
 
     On any CFBD failure the existing cache is left untouched and the result is
     marked `stale=True` — the caller (freshness gate) decides what to do. This
     function never serves stale data as though it were fresh, and never
     partially overwrites a season.
+
+    checkpoint=True (2026-07-19, added for the backfill): every fetched
+    endpoint is written to data/cfbd/_ckpt/ immediately, and re-runs load the
+    checkpoint instead of re-spending the call. Exists because the execution
+    environment hard-kills any process at ~45s and reaps backgrounded children
+    — the 2021-2023 backfill died twice that way, losing a whole season of
+    calls each time. With checkpoints, a kill costs at most ONE call; the
+    caller just re-invokes until completion. Checkpoints are deleted after the
+    final tables are promoted atomically, so the never-partially-overwrite
+    guarantee on the REAL season files is unchanged. Default False: tests and
+    the weekly loop get the exact original semantics.
     """
     res = RefreshResult(season=season)
     try:
@@ -413,29 +425,86 @@ def refresh_season(season: int, conference: Optional[str] = None,
         res.stale, res.error = True, str(exc)
         return res
 
+    # Tally durability (2026-07-19): the tally used to be written ONCE, after
+    # all ~20 calls for the season. A hard kill mid-season (e.g. the sandbox
+    # reaping a backgrounded bootstrap run — this happened twice on 2026-07-19)
+    # therefore spent real CFBD calls that were never recorded anywhere.
+    # Record incrementally instead: after the bulk endpoints and after every
+    # weekly /plays call, as a delta, so a death costs at most ~1 call of
+    # tally accuracy. Total recorded for a completed season is unchanged.
+    recorded = 0
+
+    def _sync_tally() -> None:
+        nonlocal recorded
+        if c.calls > recorded:
+            _record_calls(c.calls - recorded)
+            recorded = c.calls
+
+    ckpt_dir = os.path.join(DATA_DIR, "_ckpt")
+
+    def _ckpt_path(name: str) -> str:
+        return os.path.join(ckpt_dir, f"{name}_{season}.parquet")
+
+    def _cached_or_fetch(name: str, fetch, normalize):
+        """checkpoint=True: load the checkpoint if present, else fetch,
+        normalize, and checkpoint immediately (atomic). Costs 0 calls on a
+        resume. checkpoint=False: plain fetch+normalize, no disk touch."""
+        if checkpoint and os.path.exists(_ckpt_path(name)):
+            return pd.read_parquet(_ckpt_path(name))
+        df = normalize(fetch())
+        _sync_tally()
+        if checkpoint:
+            os.makedirs(ckpt_dir, exist_ok=True)
+            _atomic_write_parquet(df, _ckpt_path(name))
+        return df
+
     try:
-        teams_raw = c.teams(season)
-        teams = normalize_teams(teams_raw, season)
+        teams = _cached_or_fetch(
+            "teams", lambda: c.teams(season),
+            lambda raw: normalize_teams(raw, season))
         fbs = set(teams.loc[teams["is_fbs"], "team"].astype(str))
 
-        games = normalize_games(c.games(season, conference=conference), season, fbs)
-        lines = normalize_lines(c.lines(season, conference=conference), season)
-        talent = normalize_talent(c.talent(season), season)
+        games = _cached_or_fetch(
+            "games", lambda: c.games(season, conference=conference),
+            lambda raw: normalize_games(raw, season, fbs))
+        lines = _cached_or_fetch(
+            "lines", lambda: c.lines(season, conference=conference),
+            lambda raw: normalize_lines(raw, season))
+        talent = _cached_or_fetch(
+            "talent", lambda: c.talent(season),
+            lambda raw: normalize_talent(raw, season))
         # NOTE: no conference filter — the endpoint silently returns zero rows
         # for one. See CFBDClient.returning_production.
-        returning = normalize_returning(c.returning_production(season), season)
+        returning = _cached_or_fetch(
+            "returning", lambda: c.returning_production(season),
+            lambda raw: normalize_returning(raw, season))
 
         play_frames = []
         for wk in weeks:
-            wk_rows = c.plays(season, wk, conference=conference)
-            if not wk_rows:
+            empty_marker = _ckpt_path(f"plays_w{wk}") + ".empty"
+            if checkpoint and os.path.exists(empty_marker):
+                continue  # week known-empty from a prior pass; costs 0 calls
+            if checkpoint and os.path.exists(_ckpt_path(f"plays_w{wk}")):
+                play_frames.append(pd.read_parquet(_ckpt_path(f"plays_w{wk}")))
                 continue
-            play_frames.append(normalize_plays(wk_rows, season, wk))
+            wk_rows = c.plays(season, wk, conference=conference)
+            _sync_tally()
+            if not wk_rows:
+                if checkpoint:
+                    os.makedirs(ckpt_dir, exist_ok=True)
+                    with open(empty_marker, "w") as fh:
+                        fh.write("no plays returned for this week\n")
+                continue
+            wk_df = normalize_plays(wk_rows, season, wk)
+            if checkpoint:
+                os.makedirs(ckpt_dir, exist_ok=True)
+                _atomic_write_parquet(wk_df, _ckpt_path(f"plays_w{wk}"))
+            play_frames.append(wk_df)
         plays = (pd.concat(play_frames, ignore_index=True)
                  if play_frames else pd.DataFrame())
     except CFBDError as exc:
         res.stale, res.error, res.calls = True, str(exc), c.calls
-        _record_calls(c.calls)
+        _sync_tally()
         return res
 
     writes = {
@@ -454,7 +523,21 @@ def refresh_season(season: int, conference: Optional[str] = None,
         res.rows[kind] = len(df)
 
     res.calls = c.calls
-    _record_calls(c.calls)
+    _sync_tally()
+    if checkpoint and os.path.isdir(ckpt_dir):
+        # Final tables are promoted; the season's checkpoints are now spent.
+        # Best-effort only: some environments (the cowork sandbox mount)
+        # forbid unlink. Leftover checkpoints are harmless for the backfill
+        # (bootstrap is one-shot) but MUST NOT be trusted by the weekly loop —
+        # which is why checkpoint defaults to False there.
+        try:
+            for fn in os.listdir(ckpt_dir):
+                if f"_{season}.parquet" in fn:
+                    os.unlink(os.path.join(ckpt_dir, fn))
+            if not os.listdir(ckpt_dir):
+                os.rmdir(ckpt_dir)
+        except OSError:
+            pass
     return res
 
 
