@@ -1,0 +1,12 @@
+refit_b: coordinate-wise walk-forward search, error pooled over [2021, 2022, 2023] (history from 2019)
+
+  lambda_team      = 16.0
+  lambda_conf      = 16.0  << BOUNDARY (HIGH) — treat as unfit
+  fcs_weight       = 0.5  << BOUNDARY (HIGH) — treat as unfit
+  prior_strength   = 12
+  decay            = 0.02
+  lambda_hfa       = 10
+
+  season 2021: walk-forward MAE 13.970 on n=585
+  season 2022: walk-forward MAE 12.775 on n=583
+  season 2023: walk-forward MAE 12.747 on n=597

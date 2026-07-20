@@ -225,6 +225,17 @@ def game_frame(seasons: Iterable[int]) -> pd.DataFrame:
     g["away_conf"] = [conf.get((int(s), t), "Independent")
                       for s, t in zip(g["season"], g["away_team"])]
     g["neutral_site"] = g["neutral_site"].astype(bool)
+
+    # Drop games where NEITHER side is FBS (2026-07-19). CFBD's /games returns
+    # progressively more lower-division games in recent seasons (2022: 3,657
+    # rows of which only ~1,600 involve an FBS team), and both sides of an
+    # FCS-vs-FCS game pool to the same FCS_TEAM pseudo-team — making each one
+    # a self-game whose margin is pure noise injected into the solve. The
+    # MWC-only slice B was built on never contained such a row, so this is a
+    # latent bug surfaced by the FBS-wide backfill, not a behaviour change on
+    # any previously-fit sample. FBS-vs-FCS games are KEPT (down-weighted by
+    # fcs_weight) — only FCS-vs-FCS is dropped.
+    g = g[g["home_fbs"] | g["away_fbs"]].copy()
     return g.sort_values(["season", "week", "id"], kind="mergesort").reset_index(drop=True)
 
 
@@ -1109,11 +1120,18 @@ def fit_explosiveness_shrinkage(games: pd.DataFrame, units: pd.DataFrame,
 #: `fit_explosiveness_shrinkage`, against next-week explosiveness.
 DEFAULT_GRID: Dict[str, Sequence[float]] = {
     "lambda_team": (0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32),
-    "lambda_conf": (0.25, 0.5, 1, 2, 4),
+    # extended 8/16 (2026-07-19): the 2019-2023 re-fit chose 4 = old HIGH edge.
+    # NOT a guardrail edge (unlike fcs_weight) — extending is legitimate fitting.
+    "lambda_conf": (0.25, 0.5, 1, 2, 4, 8, 16),
+    # fcs_weight's top edge IS a guardrail. tests/test_ratings.py pins it < 1.0;
+    # the 2019-2023 re-fit still wanted the cap (0.5), recorded, cap unchanged.
     "fcs_weight": (0.0, 0.1, 0.25, 0.5),
     "prior_strength": (0, 3, 6, 9, 12, 16, 20),
     "decay": (0.0, 0.02, 0.05, 0.1, 0.2),
-    "lambda_hfa": (10, 40, 100, 400),
+    # extended 1/3 (2026-07-19): the re-fit chose 10 = old LOW edge — with real
+    # sample the search wants per-team HFA freer, the REVERSE of the n=42 run
+    # which pushed lambda_hfa to 400 (one league HFA). Same non-guardrail logic.
+    "lambda_hfa": (1, 3, 10, 40, 100, 400),
 }
 
 
