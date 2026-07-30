@@ -13,15 +13,22 @@ from pathlib import Path, PurePosixPath
 
 
 ROOT = Path(__file__).resolve().parents[1]
+# Corrected 2026-07-30 (WEEKLY_LOOP_SPEC §2): the inherited list named
+# NFL/prop artifacts (ml_frame.parquet, weekly_props.json, weights.json)
+# that do not exist in this repo — pack() would have "succeeded" while
+# archiving nothing that matters. These are the files this repo actually
+# produces.
 STATE_GLOBS = (
     "data/*.db",
-    "data/*.joblib",
-    "data/ml_frame.parquet",
-    "data/history.json",
-    "data/latest.json",
-    "data/weekly.json",
-    "data/weekly_props.json",
-    "data/weights.json",
+    "data/rating_params.json",
+    "data/ratings_*.parquet",
+    "data/ratings_units_*.parquet",
+    "data/factor_registry.json",
+    "data/honesty_*.csv",
+    "data/backtest_*.csv",
+    "data/clv_log_*.csv",
+    "data/cfbd/_call_tally.json",
+    "data/manifests/*.json",
 )
 
 

@@ -1,0 +1,31 @@
+{
+  "job": "week-open",
+  "season": 2026,
+  "week": 1,
+  "stamp": "20260730T041250Z",
+  "in_season": false,
+  "config_hash": "683b0d900691b589",
+  "git_sha": "unknown",
+  "seed": 20260730,
+  "calls_before": 241,
+  "data_as_of": {
+    "coaches": "2026-07-30T04:00:58.964534+00:00",
+    "drives": "2026-07-30T03:23:33.531852+00:00",
+    "games": "2026-07-30T03:17:00.581909+00:00",
+    "lines": "2026-07-30T03:17:00.584762+00:00",
+    "plays": "2026-07-30T03:17:00.743834+00:00",
+    "plays_clean": "2026-07-30T03:17:00.867834+00:00",
+    "qb_starts": "2026-07-30T04:00:58.518467+00:00",
+    "returning": "2026-07-30T03:17:00.587140+00:00",
+    "talent": "2026-07-30T03:17:00.587743+00:00",
+    "teams": "2026-07-30T03:17:00.589838+00:00"
+  },
+  "degraded": false,
+  "stages": {
+    "offseason_check": {
+      "ok": true,
+      "note": "no games within 7 days \u2014 clean offseason exit"
+    }
+  },
+  "calls_after": 241
+}

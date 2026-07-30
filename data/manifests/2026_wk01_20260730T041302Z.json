@@ -1,0 +1,67 @@
+{
+  "job": "week-open",
+  "season": 2026,
+  "week": 1,
+  "stamp": "20260730T041302Z",
+  "in_season": true,
+  "config_hash": "683b0d900691b589",
+  "git_sha": "unknown",
+  "seed": 20260730,
+  "calls_before": 241,
+  "data_as_of": {
+    "coaches": "2026-07-30T04:00:58.964534+00:00",
+    "drives": "2026-07-30T03:23:33.531852+00:00",
+    "games": "2026-07-30T03:17:00.581909+00:00",
+    "lines": "2026-07-30T03:17:00.584762+00:00",
+    "plays": "2026-07-30T03:17:00.743834+00:00",
+    "plays_clean": "2026-07-30T03:17:00.867834+00:00",
+    "qb_starts": "2026-07-30T04:00:58.518467+00:00",
+    "returning": "2026-07-30T03:17:00.587140+00:00",
+    "talent": "2026-07-30T03:17:00.587743+00:00",
+    "teams": "2026-07-30T03:17:00.589838+00:00"
+  },
+  "degraded": false,
+  "stages": {
+    "refresh": {
+      "ok": true,
+      "season_refresh": "[ingest] season=2026 calls=20 rows={'teams': 684, 'games': 1638, 'lines': 103}",
+      "stale": false,
+      "drives_refresh": "[ingest] season=2026 calls=1 STALE (/drives returned nothing usable for 2026) \u2014 kept existing cache",
+      "calls": 21
+    },
+    "freshness": {
+      "ok": true,
+      "publish": true,
+      "confidence_cap": "high",
+      "stale_feeds": [],
+      "missing_feeds": [],
+      "future_dated_feeds": [],
+      "leakage_suspected": false,
+      "reasons": [],
+      "as_of": "2026-07-30T04:13:10Z"
+    },
+    "refit": {
+      "ok": true,
+      "fingerprint": "0671886c3219f48a2210aeb26f2e345bab21e030fd3d8333f23aa8e04003d8e2",
+      "n_teams": 137,
+      "n_games_fit": 5722,
+      "week": 1
+    },
+    "honesty": {
+      "ok": true,
+      "n": 0,
+      "note": "no completed gradable games yet"
+    },
+    "simulate": {
+      "ok": true,
+      "n": 49,
+      "skipped": 162
+    },
+    "notify": {
+      "ok": true,
+      "status": "skipped",
+      "reason": "no webhook configured"
+    }
+  },
+  "calls_after": 262
+}

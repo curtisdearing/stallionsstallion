@@ -7,10 +7,13 @@ from scripts import state_store
 
 
 def test_state_round_trip_is_checksummed_and_declared(tmp_path):
+    # Updated 2026-07-30 with the CFB STATE_GLOBS (WEEKLY_LOOP_SPEC §2):
+    # latest.json was an NFL artifact and is no longer archived; this repo's
+    # real state is rating_params.json + ratings parquets + registry etc.
     root = tmp_path / "repo"
     (root / "data").mkdir(parents=True)
     (root / "data" / "model.db").write_bytes(b"database-v1")
-    (root / "data" / "latest.json").write_text('{"week": 3}')
+    (root / "data" / "rating_params.json").write_text('{"decay": 0.02}')
     (root / "data" / "untracked.txt").write_text("do not archive")
     archive = tmp_path / "state.tar.gz"
     manifest = state_store.pack(archive, root)
@@ -18,7 +21,7 @@ def test_state_round_trip_is_checksummed_and_declared(tmp_path):
     (root / "data" / "model.db").write_bytes(b"corrupt-local")
     restored = state_store.restore(archive, manifest["sha256"], root)
     assert (root / "data" / "model.db").read_bytes() == b"database-v1"
-    assert set(restored) == {"data/latest.json", "data/model.db"}
+    assert set(restored) == {"data/rating_params.json", "data/model.db"}
     assert "data/untracked.txt" not in manifest["files"]
 
 
