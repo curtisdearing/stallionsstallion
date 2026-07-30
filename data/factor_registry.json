@@ -224,5 +224,27 @@
         "p": 0.0
       }
     ]
+  },
+  {
+    "factor_id": "backup_qb_pregame",
+    "description": "Pregame-knowable QB change: entered week W with the most recent game started by a non-primary QB (intent-to-treat; starter returns dilute to zero).",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": -1.5765,
+    "ci": null,
+    "n": 745,
+    "source_doc": "research/situational-factors.md",
+    "source_measurement": "backup_qb_pregame: REJECTED 2026-07-30 (p=0.07493, n=745 pairs, effect -1.58 pts). Pre-registration in _worklog.md 2026-07-30. Compare retro proxy backup_qb (-3.5242 pts): the gap between the two is the size of the in-game reverse-causation contamination.",
+    "test": "scripts/factor_qb_pregame.py",
+    "last_validated": "2026-07-30",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-07-30",
+        "hypothesis": "backup_qb_pregame",
+        "result": "reject",
+        "p": 0.07493
+      }
+    ]
   }
 ]
