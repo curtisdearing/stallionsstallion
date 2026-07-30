@@ -115,6 +115,16 @@ SCHEMAS: Dict[str, Dict[str, str]] = {
     # Workstream C prerequisite (2026-07-30): the plays cache carries NO drive
     # identifiers, so drive-level Monte Carlo needs this table. Shape verified
     # live before coding (see CFBDClient.drives docstring).
+    # Workstream E factor feeds (2026-07-30), shapes probed live before coding.
+    "coaches": {
+        "season": "integer", "team": "string", "coach": "string",
+        "first_season": "boolean",
+    },
+    "qb_starts": {
+        "season": "integer", "week": "integer", "team": "string",
+        "athlete_id": "string", "athlete": "string", "attempts": "numeric",
+        "is_week_starter": "boolean",
+    },
     "drives": {
         "game_id": "integer", "season": "integer", "week": "integer",
         "drive_number": "numeric", "offense": "string", "defense": "string",
@@ -620,6 +630,167 @@ def refresh_season(season: int, conference: Optional[str] = None,
         except OSError:
             pass
     return res
+
+
+def normalize_coaches(rows: List[Dict], season: int) -> pd.DataFrame:
+    """One row per (season, team) head coach, with a first-season flag.
+
+    First season at the school is inferred from hireDate: a coach hired
+    between November of Y-1 and October of Y has Y as his first season
+    (CFB hires cluster Nov-Jan). Null hireDate -> first_season=False
+    (unknown treated as not-new; the factor test only trusts True).
+    """
+    out = []
+    for r in rows:
+        hire = _get(r, "hireDate", "hire_date")
+        hire_year = hire_month = None
+        if hire:
+            try:
+                hire_year = int(str(hire)[0:4])
+                hire_month = int(str(hire)[5:7])
+            except (ValueError, IndexError):
+                pass
+        for s in (r.get("seasons") or []):
+            if int(_get(s, "year", default=-1)) != season:
+                continue
+            first = False
+            if hire_year is not None:
+                first = (hire_year == season and hire_month <= 10) or \
+                        (hire_year == season - 1 and hire_month >= 11)
+            out.append({
+                "season": season,
+                "team": _get(s, "school", "team"),
+                "coach": f"{_get(r, 'firstName', default='')} "
+                         f"{_get(r, 'lastName', default='')}".strip(),
+                "first_season": bool(first),
+            })
+    df = pd.DataFrame(out)
+    if df.empty:
+        return df
+    df["season"] = df["season"].astype("int64")
+    for c in ("team", "coach"):
+        df[c] = df[c].astype("category")
+    df["first_season"] = df["first_season"].astype(bool)
+    return assert_schema(df, "coaches")
+
+
+def _parse_attempts(stat: str) -> Optional[float]:
+    """'25/39' -> 39.0 (completions/ATTEMPTS)."""
+    try:
+        return float(str(stat).split("/")[1])
+    except (IndexError, ValueError):
+        return None
+
+
+def normalize_qb_starts(rows: List[Dict], season: int, week: int) -> pd.DataFrame:
+    """CFBD /games/players (category=passing) -> one row per QB stat line,
+    with `is_week_starter` = most pass attempts on his team that game."""
+    out = []
+    for game in rows:
+        for side in (game.get("teams") or []):
+            team = _get(side, "team")
+            for cat in (side.get("categories") or []):
+                if cat.get("name") != "passing":
+                    continue
+                for typ in (cat.get("types") or []):
+                    if typ.get("name") != "C/ATT":
+                        continue
+                    for ath in (typ.get("athletes") or []):
+                        att = _parse_attempts(_get(ath, "stat", default=""))
+                        if att is None:
+                            continue
+                        out.append({
+                            "season": season, "week": week, "team": team,
+                            "athlete_id": str(_get(ath, "id", default="")),
+                            "athlete": _get(ath, "name", default=""),
+                            "attempts": att,
+                        })
+    df = pd.DataFrame(out)
+    if df.empty:
+        return df
+    df["season"] = df["season"].astype("int64")
+    df["week"] = df["week"].astype("int64")
+    df["attempts"] = pd.to_numeric(df["attempts"], errors="coerce")
+    idx = df.groupby(["team"])["attempts"].transform("max")
+    df["is_week_starter"] = df["attempts"].eq(idx) & df["attempts"].gt(0)
+    for c in ("team", "athlete_id", "athlete"):
+        df[c] = df[c].astype("category" if c == "team" else "string")
+    df["athlete_id"] = df["athlete_id"].astype(str)
+    df["athlete"] = df["athlete"].astype(str)
+    return assert_schema(df, "qb_starts")
+
+
+def refresh_factor_feeds(season: int, weeks: Iterable[int] = range(1, 16),
+                         client: Optional[CFBDClient] = None,
+                         checkpoint: bool = True) -> RefreshResult:
+    """Pull the Workstream E factor feeds for one season: coaches (1 call)
+    + weekly passing lines (~15 calls). Checkpointed like the bootstrap."""
+    res = RefreshResult(season=season)
+    try:
+        c = client or CFBDClient()
+    except CFBDError as exc:
+        res.stale, res.error = True, str(exc)
+        return res
+    ckpt_dir = os.path.join(DATA_DIR, "_ckpt")
+    recorded = 0
+
+    def _sync():
+        nonlocal recorded
+        if c.calls > recorded:
+            _record_calls(c.calls - recorded)
+            recorded = c.calls
+
+    def _ckpt(name):
+        return os.path.join(ckpt_dir, f"{name}_{season}.parquet")
+
+    try:
+        if checkpoint and os.path.exists(_ckpt("coaches")):
+            coaches = pd.read_parquet(_ckpt("coaches"))
+        else:
+            coaches = normalize_coaches(c.coaches(season), season)
+            _sync()
+            if checkpoint and not coaches.empty:
+                os.makedirs(ckpt_dir, exist_ok=True)
+                _atomic_write_parquet(coaches, _ckpt("coaches"))
+        qb_frames = []
+        for wk in weeks:
+            marker = _ckpt(f"qb_w{wk}") + ".empty"
+            if checkpoint and os.path.exists(marker):
+                continue
+            if checkpoint and os.path.exists(_ckpt(f"qb_w{wk}")):
+                qb_frames.append(pd.read_parquet(_ckpt(f"qb_w{wk}")))
+                continue
+            wk_df = normalize_qb_starts(c.game_players(season, wk), season, wk)
+            _sync()
+            if wk_df.empty:
+                if checkpoint:
+                    os.makedirs(ckpt_dir, exist_ok=True)
+                    open(marker, "w").write("empty week\n")
+                continue
+            if checkpoint:
+                os.makedirs(ckpt_dir, exist_ok=True)
+                _atomic_write_parquet(wk_df, _ckpt(f"qb_w{wk}"))
+            qb_frames.append(wk_df)
+        qb = (pd.concat(qb_frames, ignore_index=True)
+              if qb_frames else pd.DataFrame())
+    except CFBDError as exc:
+        res.stale, res.error, res.calls = True, str(exc), c.calls
+        _sync()
+        return res
+
+    for kind, df in (("coaches", coaches), ("qb_starts", qb)):
+        if df is None or df.empty:
+            continue
+        _atomic_write_parquet(df, _season_path(kind, season))
+        res.written.append(f"{kind}_{season}.parquet")
+        res.rows[kind] = len(df)
+    res.calls = c.calls
+    _sync()
+    return res
+
+
+def load_coaches(seasons, **kw):   return load("coaches", seasons, **kw)
+def load_qb_starts(seasons, **kw): return load("qb_starts", seasons, **kw)
 
 
 def refresh_drives(season: int, client: Optional[CFBDClient] = None,

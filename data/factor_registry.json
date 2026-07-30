@@ -1,0 +1,228 @@
+[
+  {
+    "factor_id": "league_hfa",
+    "description": "League-average home-field advantage, points.",
+    "bucket": 3,
+    "status": "gated_active",
+    "effect_size": 2.83,
+    "ci": null,
+    "n": 1765,
+    "source_doc": "research/win-factors-literature-scan.md",
+    "source_measurement": "stallionsstallion/data/refit_b_report.txt (2026-07-19 refit)",
+    "test": "walk-forward refit (scripts/refit_b.py)",
+    "last_validated": "2026-07-19",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "per_team_time_varying_hfa",
+    "description": "Per-team deviation from league HFA, ridge-shrunk (lambda_hfa=10, interior).",
+    "bucket": 3,
+    "status": "gated_active",
+    "effect_size": null,
+    "ci": null,
+    "n": 1765,
+    "source_doc": "research/win-factors-literature-scan.md",
+    "source_measurement": "did NOT earn its place at n=42; DID at n=1,765 (2026-07-19 refit) - the canonical drift example",
+    "test": "walk-forward refit (scripts/refit_b.py)",
+    "last_validated": "2026-07-19",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "explosiveness_stickiness",
+    "description": "Week-to-week persistence of unit explosiveness ratings.",
+    "bucket": 2,
+    "status": "display_only",
+    "effect_size": -0.09,
+    "ci": null,
+    "n": 1190,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "REJECTED: shrinkage search chose max (128); lag-1 r ~ -0.1 on 133 teams (2026-07-19)",
+    "test": "ratings.fit_explosiveness_shrinkage + unit_stickiness",
+    "last_validated": "2026-07-19",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "conference_strength_term",
+    "description": "Shared conference off/def term in the ridge solve.",
+    "bucket": 3,
+    "status": "under_revalidation",
+    "effect_size": null,
+    "ci": null,
+    "n": 1765,
+    "source_doc": "research/conference-tier-and-scheduling.md",
+    "source_measurement": "FLAT: 0.009 MAE across the whole lambda_conf grid (2026-07-19) - not load-bearing for margin at this sample",
+    "test": "walk-forward refit (scripts/refit_b.py)",
+    "last_validated": "2026-07-19",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "raw_time_of_possession",
+    "description": "Tier-3 exclusion: correlated-not-causal (proven-win-indicators).",
+    "bucket": 2,
+    "status": "excluded",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "excluded by design; re-arguing requires a registry decision",
+    "test": null,
+    "last_validated": "2026-07-30",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "penalty_counts",
+    "description": "Tier-3 exclusion: correlated-not-causal (proven-win-indicators).",
+    "bucket": 2,
+    "status": "excluded",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "excluded by design",
+    "test": null,
+    "last_validated": "2026-07-30",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "raw_red_zone_td_pct",
+    "description": "Tier-3 exclusion: points-per-trip beats raw TD% (proven-win-indicators).",
+    "bucket": 2,
+    "status": "excluded",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "excluded by design",
+    "test": null,
+    "last_validated": "2026-07-30",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "raw_pressure_rate",
+    "description": "Tier-3 exclusion (proven-win-indicators).",
+    "bucket": 2,
+    "status": "excluded",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "excluded by design",
+    "test": null,
+    "last_validated": "2026-07-30",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "raw_turnover_margin",
+    "description": "Tier-3 exclusion: use turnover LUCK, never raw margin (proven-win-indicators).",
+    "bucket": 2,
+    "status": "excluded",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "research/proven-win-indicators.md",
+    "source_measurement": "excluded by design",
+    "test": null,
+    "last_validated": "2026-07-30",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "backup_qb",
+    "description": "Week starter differs from established season-primary QB (retro stat proxy; pregame availability feed is the live version).",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": -3.5242,
+    "ci": null,
+    "n": 922,
+    "source_doc": "research/situational-factors.md",
+    "source_measurement": "backup_qb: PASSED gate 2026-07-30 (effect -3.52 pts on treated side, p=6e-06, n=922 matched pairs). CAVEAT REQUIRED BEFORE ANY WIRING: the retro proxy identifies the week starter from in-game attempts, so mid-game injuries/benchings (which CAUSE bad residuals in the same game) contaminate the treated set - reverse causation inflates the effect. The pregame-knowable variant (change persisting FROM the previous week) must be tested and pass before this touches a probability; the live version is the availability feed, not this proxy.",
+    "test": "scripts/factor_battery.py",
+    "last_validated": "2026-07-30",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-07-30",
+        "result": "pass",
+        "p": 1e-05
+      }
+    ]
+  },
+  {
+    "factor_id": "coaching_change_y1",
+    "description": "First-season head coach (hireDate-inferred), pooled effect.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": -2.6579,
+    "ci": null,
+    "n": 1009,
+    "source_doc": "research/situational-factors.md",
+    "source_measurement": "coaching_change_y1: PASSED gate 2026-07-30 (pooled: effect -2.66 pts, p=0.0004, n=1009 matched pairs); wiring into a probability is a separate decision - status stays display_only until then || coaching_change_y1_weak_prior (conditional subset, below-median rated treated teams): REJECTED 2026-07-30 (p=0.102, n=507) - underpowered, not evidence of absence",
+    "test": "scripts/factor_battery.py",
+    "last_validated": "2026-07-30",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-07-30",
+        "hypothesis": "coaching_change_y1",
+        "result": "pass",
+        "p": 0.00036
+      },
+      {
+        "date": "2026-07-30",
+        "hypothesis": "coaching_change_y1_weak_prior",
+        "result": "reject",
+        "p": 0.10187
+      }
+    ]
+  },
+  {
+    "factor_id": "finishing_drives_diff",
+    "description": "Walk-forward points-per-trip-inside-40 differential (Five Factors: finishing drives).",
+    "bucket": 1,
+    "status": "display_only",
+    "effect_size": 1.9067,
+    "ci": null,
+    "n": 2324,
+    "source_doc": "research/win-factors-literature-scan.md",
+    "source_measurement": "finishing_drives_diff: PASSED gate 2026-07-30 (p=2.812541391234494e-07, n=2324);  wiring into a probability is a separate decision \u2014 status stays display_only until then",
+    "test": "scripts/factor_battery.py",
+    "last_validated": "2026-07-30",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-07-30",
+        "result": "pass",
+        "p": 0.0
+      }
+    ]
+  },
+  {
+    "factor_id": "field_position_diff",
+    "description": "Walk-forward average starting field position differential (Five Factors: field position).",
+    "bucket": 1,
+    "status": "display_only",
+    "effect_size": 0.6165,
+    "ci": null,
+    "n": 2324,
+    "source_doc": "research/win-factors-literature-scan.md",
+    "source_measurement": "field_position_diff: PASSED gate 2026-07-30 (p=2.392534071205757e-12, n=2324);  wiring into a probability is a separate decision \u2014 status stays display_only until then",
+    "test": "scripts/factor_battery.py",
+    "last_validated": "2026-07-30",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-07-30",
+        "result": "pass",
+        "p": 0.0
+      }
+    ]
+  }
+]

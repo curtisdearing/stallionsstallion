@@ -208,6 +208,35 @@ class CFBDClient:
         expensive pull in the project against the 1,000/month cap."""
         return self._get("/roster", {"year": year, "team": team})
 
+    # --- Workstream E additions (probed live 2026-07-30 before coding) ------
+
+    def coaches(self, year: int) -> list:
+        """Head-coach records for a season. Bulk: 1 call, ~143 rows.
+
+        Shape (probed live): id, firstName, lastName, hireDate (ISO or null),
+        seasons: [{school, year, games, wins, ...}]. Used for the
+        coaching-change factor: first season at a school is inferred from
+        hireDate (Nov Y-1 .. Oct Y -> first season Y), documented in
+        ingest.normalize_coaches.
+        """
+        return self._get("/coaches", {"year": year})
+
+    def game_players(self, year: int, week: int, category: str = "passing",
+                     season_type: str = "regular") -> list:
+        """Per-game player stat lines for ONE week. NOT bulk — 1 call/week.
+
+        Shape (probed live): [{id: game_id, teams: [{team, homeAway,
+        categories: [{name, types: [{name: 'C/ATT'|'YDS'|..., athletes:
+        [{id, name, stat}]}]}]}]}]. Used to identify each team-week's
+        starting QB (most pass attempts) for the backup-QB factor. A full
+        season is ~15 calls; budget deliberately (Workstream E pulled
+        2021-2024 = 60 calls on 2026-07-30).
+        """
+        return self._get("/games/players", {
+            "year": year, "week": week, "seasonType": season_type,
+            "category": category,
+        })
+
     def venues(self) -> list:
         """Stadiums incl. dome/grass/elevation/lat-lon. Bulk: 1 call, no year."""
         return self._get("/venues", {})

@@ -1,0 +1,6 @@
+=== FACTOR BATTERY (gate 6) — 2026-07-30, eval 2021-2024 walk-forward residuals, BH q<0.05 across 5 hypotheses ===
+backup_qb                        event  n= 922 effect -3.52 pts (treated -4.17 vs control -0.65)  p=0.0000  -> PASS 
+coaching_change_y1               event  n=1009 effect -2.66 pts (treated -1.77 vs control +0.89)  p=0.0004  -> PASS 
+coaching_change_y1_weak_prior    event  n= 507 effect -1.66 pts (treated -2.31 vs control -0.65)  p=0.1019  -> REJECTED 
+finishing_drives_diff            cont.  n=2324 slope +1.907 r +0.106  p=0.0000  -> PASS 
+field_position_diff              cont.  n=2324 slope +0.616 r +0.145  p=0.0000  -> PASS 

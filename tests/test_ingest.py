@@ -292,6 +292,51 @@ def test_refresh_drives_writes_and_loads(cache):
     assert len(d) == 2
 
 
+# --------------------------------------------------------------------------- #
+# Workstream E factor feeds (2026-07-30) — shapes from the live probes
+# --------------------------------------------------------------------------- #
+COACHES = [
+    {"firstName": "New", "lastName": "Guy", "hireDate": "2022-12-05T00:00:00.000Z",
+     "seasons": [{"school": "Boise State", "year": 2023, "games": 13}]},
+    {"firstName": "Old", "lastName": "Hand", "hireDate": "2015-01-10T00:00:00.000Z",
+     "seasons": [{"school": "Air Force", "year": 2023, "games": 12}]},
+    {"firstName": "No", "lastName": "Date", "hireDate": None,
+     "seasons": [{"school": "Idaho State", "year": 2023, "games": 11}]},
+]
+GAME_PLAYERS = [
+    {"id": 1, "teams": [
+        {"team": "Boise State", "homeAway": "home", "categories": [
+            {"name": "passing", "types": [
+                {"name": "C/ATT", "athletes": [
+                    {"id": "111", "name": "QB One", "stat": "22/30"},
+                    {"id": "222", "name": "QB Two", "stat": "3/5"}]},
+                {"name": "YDS", "athletes": [
+                    {"id": "111", "name": "QB One", "stat": "250"}]}]}]},
+    ]},
+]
+
+
+def test_normalize_coaches_contract_and_first_season_inference():
+    c = ingest.normalize_coaches(COACHES, 2023)
+    ingest.assert_schema(c, "coaches")
+    by = {str(r.team): r for r in c.itertuples()}
+    # Hired Dec 2022 -> first season is 2023 (Nov-Oct window rule).
+    assert bool(by["Boise State"].first_season) is True
+    assert bool(by["Air Force"].first_season) is False
+    # Null hireDate: unknown is treated as NOT new — the factor only trusts True.
+    assert bool(by["Idaho State"].first_season) is False
+
+
+def test_normalize_qb_starts_contract_and_starter_flag():
+    q = ingest.normalize_qb_starts(GAME_PLAYERS, 2023, 5)
+    ingest.assert_schema(q, "qb_starts")
+    assert len(q) == 2
+    starter = q.loc[q["is_week_starter"]]
+    assert list(starter["athlete_id"]) == ["111"], \
+        "the week starter is the QB with the most pass ATTEMPTS (30 > 5)"
+    assert float(starter["attempts"].iloc[0]) == 30.0
+
+
 def test_refresh_drives_outage_keeps_cache_and_reports_stale(cache):
     ingest.refresh_season(2023, weeks=[1], client=FakeClient())
     ok = ingest.refresh_drives(2023, client=FakeDrivesClient())
