@@ -11,6 +11,7 @@ nflverse column names, NFL season conventions, and NFL schedule density).
     data/cfbd/talent_{year}.parquet      247 composite, sentinel-aware
     data/cfbd/teams_{year}.parquet       per-season conference + classification
     data/cfbd/returning_{year}.parquet   returning production
+    data/cfbd/drives_{year}.parquet      drive summaries (Workstream C, 2026-07-30)
     data/cfbd/_call_tally.json           running monthly CFBD call count
 
 Design notes that are load-bearing — read before changing anything:
@@ -110,6 +111,20 @@ SCHEMAS: Dict[str, Dict[str, str]] = {
     },
     "returning": {
         "season": "integer", "team": "string", "percent_ppa": "numeric",
+    },
+    # Workstream C prerequisite (2026-07-30): the plays cache carries NO drive
+    # identifiers, so drive-level Monte Carlo needs this table. Shape verified
+    # live before coding (see CFBDClient.drives docstring).
+    "drives": {
+        "game_id": "integer", "season": "integer", "week": "integer",
+        "drive_number": "numeric", "offense": "string", "defense": "string",
+        "is_home_offense": "boolean", "scoring": "boolean",
+        "start_period": "integer", "start_yards_to_goal": "numeric",
+        "end_yards_to_goal": "numeric", "plays": "numeric", "yards": "numeric",
+        "drive_result": "string",
+        "start_offense_score": "numeric", "start_defense_score": "numeric",
+        "end_offense_score": "numeric", "end_defense_score": "numeric",
+        "garbage_time": "boolean",
     },
 }
 
@@ -373,6 +388,72 @@ def normalize_returning(rows: List[Dict], season: int) -> pd.DataFrame:
     return assert_schema(df, "returning")
 
 
+def normalize_drives(rows: List[Dict], season: int,
+                     week_by_game: Dict[int, int]) -> pd.DataFrame:
+    """CFBD /drives -> the drives contract. Verified live 2026-07-30.
+
+    /drives carries NO week field. Week is joined from the games cache via
+    game_id; a drive whose game is not in the cache (different seasonType,
+    or a game /games never returned) is DROPPED and counted in
+    `df.attrs['dropped_unmapped']` — never given a guessed week, because a
+    wrong week is walk-forward leakage at ingest.
+
+    Drive-level garbage time reuses the play-level per-period thresholds,
+    evaluated at the DRIVE START (start_period + start scores): a drive that
+    begins 45-0 in the 3rd quarter is not evidence about either team's true
+    drive-outcome rates, same argument as the play filter. Raw rows keep the
+    flag rather than being split into two files; the simulation layer filters
+    explicitly.
+    """
+    df = pd.DataFrame([{
+        "game_id": _get(r, "gameId", "game_id"),
+        "season": season,
+        "drive_number": _get(r, "driveNumber", "drive_number"),
+        "offense": _get(r, "offense"),
+        "defense": _get(r, "defense"),
+        "is_home_offense": bool(_get(r, "isHomeOffense", "is_home_offense",
+                                     default=False)),
+        "scoring": bool(_get(r, "scoring", default=False)),
+        "start_period": _get(r, "startPeriod", "start_period"),
+        "start_yards_to_goal": _get(r, "startYardsToGoal", "start_yards_to_goal"),
+        "end_yards_to_goal": _get(r, "endYardsToGoal", "end_yards_to_goal"),
+        "plays": _get(r, "plays"),
+        "yards": _get(r, "yards"),
+        "drive_result": _get(r, "driveResult", "drive_result", default="") or "",
+        "start_offense_score": _get(r, "startOffenseScore", "start_offense_score"),
+        "start_defense_score": _get(r, "startDefenseScore", "start_defense_score"),
+        "end_offense_score": _get(r, "endOffenseScore", "end_offense_score"),
+        "end_defense_score": _get(r, "endDefenseScore", "end_defense_score"),
+    } for r in rows])
+    if df.empty:
+        return df
+    df["game_id"] = pd.to_numeric(df["game_id"], errors="coerce")
+    df["week"] = df["game_id"].map(week_by_game)
+    dropped = int(df["week"].isna().sum() + df["game_id"].isna().sum())
+    df = df.loc[df["week"].notna() & df["game_id"].notna()].reset_index(drop=True)
+    df.attrs["dropped_unmapped"] = dropped
+    if df.empty:
+        return df
+    for c in ("game_id", "season", "week"):
+        df[c] = df[c].astype("int64")
+    df["start_period"] = (pd.to_numeric(df["start_period"], errors="coerce")
+                          .fillna(0).astype("int64"))
+    for c in ("drive_number", "start_yards_to_goal", "end_yards_to_goal",
+              "plays", "yards", "start_offense_score", "start_defense_score",
+              "end_offense_score", "end_defense_score"):
+        df[c] = pd.to_numeric(df[c], errors="coerce")
+    df["garbage_time"] = [
+        is_garbage_time(p, o, d)
+        for p, o, d in zip(df["start_period"], df["start_offense_score"],
+                           df["start_defense_score"])
+    ]
+    for c in ("offense", "defense", "drive_result"):
+        df[c] = df[c].astype("category")
+    df = df.sort_values(["week", "game_id", "drive_number"],
+                        kind="mergesort").reset_index(drop=True)
+    return assert_schema(df, "drives")
+
+
 # --------------------------------------------------------------------------- #
 # Refresh
 # --------------------------------------------------------------------------- #
@@ -541,6 +622,72 @@ def refresh_season(season: int, conference: Optional[str] = None,
     return res
 
 
+def refresh_drives(season: int, client: Optional[CFBDClient] = None,
+                   checkpoint: bool = False) -> RefreshResult:
+    """Pull one season of /drives into drives_{season}.parquet. 1 call.
+
+    Separate from refresh_season on purpose: drives were added for
+    Workstream C after seasons 2019-2026 were already cached, so bolting the
+    endpoint into refresh_season would force a full ~20-call season refresh
+    to backfill one table. The weekly loop can call both.
+
+    REQUIRES the season's games cache to exist first — week is joined from it
+    (see normalize_drives), and refusing loudly beats guessing. Same staleness
+    and atomicity guarantees as refresh_season.
+    """
+    res = RefreshResult(season=season)
+    games_path = _season_path("games", season)
+    if not os.path.exists(games_path):
+        res.stale = True
+        res.error = (f"games_{season}.parquet not cached — drives need the "
+                     "week join; run refresh_season/bootstrap first")
+        return res
+    games = pd.read_parquet(games_path, columns=["id", "week"])
+    week_by_game = dict(zip(games["id"].astype("int64"), games["week"].astype("int64")))
+
+    try:
+        c = client or CFBDClient()
+    except CFBDError as exc:
+        res.stale, res.error = True, str(exc)
+        return res
+
+    ckpt_dir = os.path.join(DATA_DIR, "_ckpt")
+    ckpt_path = os.path.join(ckpt_dir, f"drives_{season}.parquet")
+    try:
+        if checkpoint and os.path.exists(ckpt_path):
+            drives = pd.read_parquet(ckpt_path)
+        else:
+            drives = normalize_drives(c.drives(season), season, week_by_game)
+            if c.calls:
+                _record_calls(c.calls)
+            if checkpoint and not drives.empty:
+                os.makedirs(ckpt_dir, exist_ok=True)
+                _atomic_write_parquet(drives, ckpt_path)
+    except CFBDError as exc:
+        res.stale, res.error, res.calls = True, str(exc), c.calls
+        if c.calls:
+            _record_calls(c.calls)
+        return res
+
+    if drives.empty:
+        res.stale = True
+        res.error = f"/drives returned nothing usable for {season}"
+        res.calls = c.calls
+        return res
+
+    _atomic_write_parquet(drives, _season_path("drives", season))
+    res.written.append(f"drives_{season}.parquet")
+    res.rows["drives"] = len(drives)
+    res.rows["drives_dropped_unmapped"] = drives.attrs.get("dropped_unmapped", 0)
+    res.calls = c.calls
+    if checkpoint and os.path.exists(ckpt_path):
+        try:
+            os.unlink(ckpt_path)
+        except OSError:
+            pass
+    return res
+
+
 # --------------------------------------------------------------------------- #
 # Loaders — compose seasons, prune columns, assert the contract every time
 # --------------------------------------------------------------------------- #
@@ -577,6 +724,7 @@ def load_lines(seasons, **kw):     return load("lines", seasons, **kw)
 def load_talent(seasons, **kw):    return load("talent", seasons, **kw)
 def load_teams(seasons, **kw):     return load("teams", seasons, **kw)
 def load_returning(seasons, **kw): return load("returning", seasons, **kw)
+def load_drives(seasons, **kw):    return load("drives", seasons, **kw)
 
 
 def conference_of(season: int, team: str) -> str:

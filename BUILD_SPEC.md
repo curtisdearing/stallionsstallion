@@ -354,7 +354,11 @@ reason for caution in a market this efficient.
 A persistent panel showing measured CLV per market slice (P4 / G5 / FCS-buy /
 bowl / week 0–1 / neutral) with n. This is the only place the interface is
 allowed to imply an edge exists, and only where the kill-check has returned GO
-for that specific slice.
+for that specific slice. `WEEKLY_SCOREBOARD_SPEC.md` extends this into a
+dated weekly recap (what happened, why, a hypothesis ledger for candidate
+factors) with an explicit architectural guarantee that the recap cannot
+itself influence a rating — read it alongside this section, and note its
+slice labels must be the same constant this panel uses, not a second list.
 
 ### F7 — Honesty furniture (inherit from the existing surfaces)
 Carry over what `document.py` and `dashboard.py` already do: leans not locks,
@@ -546,6 +550,14 @@ numbers, not deleted.
 
 ## 12. Workstream H — drift detection and re-validation cadence
 
+**Deep dive:** `FACTOR_REVALIDATION_SPEC.md` works this section through in
+full — registry schema, seeded with the four factors already measured by
+gate 2's re-fit (league HFA, per-team time-varying HFA, explosiveness
+stickiness, conference-strength term), the scheduled job's demotion-only
+logic, and why `killcheck.py`'s prop-tool constants must not silently
+become this workstream's significance bar. Read it before implementing this
+section.
+
 **Why:** `research/core-modeling-philosophy.md` sorts factors into structurally
 timeless, noise, and **real-but-era-dependent**. That third bucket needs
 periodic re-validation, and no cadence was ever scheduled. Realignment,
@@ -571,6 +583,15 @@ demotion is automatic rather than discretionary.
 ---
 
 ## 13. Workstream I — weekly run loop
+
+**Deep dive:** `WEEKLY_LOOP_SPEC.md` works this section through in full —
+why the inherited NFL job cadence (`wed`/`t90`/`tuesday`) doesn't fit CFB's
+Tuesday-through-Saturday schedule, a Phase 1 (buildable today on A+B alone,
+ending in a walk-forward honesty report) vs. Phase 2 (after C and D land)
+split, the manifest/lock/checkpoint design, and a fix for `state_store.py`'s
+`STATE_GLOBS` currently pointing at files this repo doesn't produce. Read it
+before implementing this section. Its weekly `grade` stage is also what
+triggers `WEEKLY_SCOREBOARD_SPEC.md`'s recap job.
 
 **Build:** extend `scripts/auto_weekly.py` and `scripts/state_store.py`.
 Ordered stages: refresh ingest → freshness gate → refit ratings → simulate →

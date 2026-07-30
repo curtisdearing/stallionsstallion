@@ -210,3 +210,94 @@ def test_call_count_is_tallied_against_the_monthly_cap(cache):
 
 def test_missing_season_loads_empty_not_exception(cache):
     assert ingest.load_games([1999]).empty
+
+
+# --------------------------------------------------------------------------- #
+# Drives (Workstream C prerequisite, 2026-07-30) — shape matches the live
+# probe recorded in CFBDClient.drives: camelCase, no week column.
+# --------------------------------------------------------------------------- #
+DRIVES = [
+    {"id": "11", "gameId": 1, "offense": "Boise State", "defense": "Idaho State",
+     "driveNumber": 1, "scoring": True, "startPeriod": 1, "startYardline": 25,
+     "startYardsToGoal": 75, "endYardsToGoal": 0, "plays": 8, "yards": 75,
+     "driveResult": "TD", "isHomeOffense": True,
+     "startOffenseScore": 0, "startDefenseScore": 0,
+     "endOffenseScore": 7, "endDefenseScore": 0},
+    {"id": "12", "gameId": 1, "offense": "Boise State", "defense": "Idaho State",
+     "driveNumber": 17, "scoring": False, "startPeriod": 4, "startYardline": 30,
+     "startYardsToGoal": 70, "endYardsToGoal": 55, "plays": 4, "yards": 15,
+     "driveResult": "PUNT", "isHomeOffense": True,
+     "startOffenseScore": 42, "startDefenseScore": 7,
+     "endOffenseScore": 42, "endDefenseScore": 7},
+    # A game_id that is NOT in the games cache: must be dropped, not guessed.
+    {"id": "13", "gameId": 999999, "offense": "Mystery U", "defense": "Nowhere St",
+     "driveNumber": 1, "scoring": False, "startPeriod": 1, "startYardline": 25,
+     "startYardsToGoal": 75, "endYardsToGoal": 60, "plays": 3, "yards": 15,
+     "driveResult": "PUNT", "isHomeOffense": False,
+     "startOffenseScore": 0, "startDefenseScore": 0,
+     "endOffenseScore": 0, "endDefenseScore": 0},
+]
+
+WEEK_BY_GAME = {1: 1, 2: 2}
+
+
+class FakeDrivesClient:
+    def __init__(self, fail=False):
+        self.calls = 0
+        self.fail = fail
+
+    def drives(self, year, season_type="regular", week=None):
+        self.calls += 1
+        if self.fail:
+            raise CFBDError("simulated outage on drives")
+        return DRIVES
+
+
+def test_normalize_drives_satisfies_contract_and_joins_week():
+    d = ingest.normalize_drives(DRIVES, 2023, WEEK_BY_GAME)
+    ingest.assert_schema(d, "drives")
+    assert set(d["week"]) == {1}, "week must come from the games cache join"
+
+
+def test_drives_with_unknown_game_are_dropped_and_counted():
+    d = ingest.normalize_drives(DRIVES, 2023, WEEK_BY_GAME)
+    assert len(d) == 2, "the unmapped game_id 999999 drive must be dropped"
+    assert d.attrs["dropped_unmapped"] == 1
+    assert "Mystery U" not in set(d["offense"].astype(str))
+
+
+def test_drive_garbage_time_uses_drive_start_state():
+    d = ingest.normalize_drives(DRIVES, 2023, WEEK_BY_GAME)
+    opening = d.loc[d["drive_number"] == 1].iloc[0]
+    late_blowout = d.loc[d["drive_number"] == 17].iloc[0]
+    assert bool(opening["garbage_time"]) is False
+    # 42-7 at the start of the 4th quarter: margin 35 > threshold 22.
+    assert bool(late_blowout["garbage_time"]) is True
+
+
+def test_refresh_drives_requires_games_cache(cache):
+    res = ingest.refresh_drives(2023, client=FakeDrivesClient())
+    assert res.stale is True
+    assert "games_2023" in res.error, "must refuse loudly, never guess weeks"
+
+
+def test_refresh_drives_writes_and_loads(cache):
+    ingest.refresh_season(2023, weeks=[1], client=FakeClient())
+    res = ingest.refresh_drives(2023, client=FakeDrivesClient())
+    assert not res.stale
+    assert res.rows["drives"] == 2
+    assert res.rows["drives_dropped_unmapped"] == 1
+    d = ingest.load_drives([2023])
+    ingest.assert_schema(d, "drives")
+    assert len(d) == 2
+
+
+def test_refresh_drives_outage_keeps_cache_and_reports_stale(cache):
+    ingest.refresh_season(2023, weeks=[1], client=FakeClient())
+    ok = ingest.refresh_drives(2023, client=FakeDrivesClient())
+    assert not ok.stale
+    before = ingest.load_drives([2023])
+    broken = ingest.refresh_drives(2023, client=FakeDrivesClient(fail=True))
+    assert broken.stale is True
+    after = ingest.load_drives([2023])
+    pd.testing.assert_frame_equal(before, after)

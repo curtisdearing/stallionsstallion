@@ -156,6 +156,23 @@ class CFBDClient:
 
     # --- Workstream A additions (probed live 2026-07-19 before coding) ------
 
+    def drives(self, year: int, season_type: str = "regular",
+               week: Optional[int] = None) -> list:
+        """Drive summaries. Bulk: 1 call per season (probed live 2026-07-30).
+
+        Verified shape (2023 week 1, 2,913 rows incl. FCS games): camelCase,
+        every key field 100% non-null — gameId, driveNumber, offense/defense,
+        isHomeOffense, scoring, startPeriod, startYardsToGoal, endYardsToGoal,
+        plays, yards, driveResult, start/end offense/defense scores.
+        **The response carries NO week column** — callers join week from the
+        games cache via gameId; drives whose game is not in the cache must be
+        dropped, never given a guessed week. `week` param kept for narrow
+        re-pulls; omit it for the 1-call season bulk.
+        """
+        return self._get("/drives", {
+            "year": year, "seasonType": season_type, "week": week,
+        })
+
     def teams(self, year: int) -> list:
         """All teams for a season incl. `conference` and `classification`.
 

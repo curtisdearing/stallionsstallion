@@ -122,6 +122,45 @@ def test_garbage_time_uses_only_within_play_state():
     assert recomputed == direct
 
 
+def test_drive_table_future_weeks_cannot_move_earlier_numbers():
+    """Same poison technique, drives layer (Workstream C prerequisite).
+
+    The drives table is week-joined at ingest; any consumer slicing it
+    through-week must be immune to future corruption, and drive-level
+    garbage time must be decided from the drive's own start state.
+    """
+    rows = []
+    for wk in range(1, 7):
+        for i in range(20):
+            rows.append({
+                "id": str(wk * 100 + i), "gameId": wk * 10 + i % 2,
+                "offense": "A" if i % 2 else "B", "defense": "B" if i % 2 else "A",
+                "driveNumber": i + 1, "scoring": i % 3 == 0, "startPeriod": 1 + i % 4,
+                "startYardsToGoal": 75.0, "endYardsToGoal": 40.0,
+                "plays": 6, "yards": 35, "driveResult": "TD" if i % 3 == 0 else "PUNT",
+                "isHomeOffense": bool(i % 2), "startOffenseScore": 0,
+                "startDefenseScore": 0, "endOffenseScore": 7, "endDefenseScore": 0,
+            })
+    week_by_game = {wk * 10 + j: wk for wk in range(1, 7) for j in (0, 1)}
+    clean = ingest.normalize_drives(rows, 2023, week_by_game)
+
+    def summary(df, week):
+        view = df.loc[df["week"] <= week]
+        return (len(view), round(float(view["scoring"].mean()), 10),
+                round(float(view["yards"].mean()), 10),
+                round(float(view["garbage_time"].mean()), 10))
+
+    before = {w: summary(clean, w) for w in range(1, 7)}
+    for cutoff in range(1, 6):
+        poisoned = clean.copy()
+        fut = poisoned["week"] > cutoff
+        poisoned.loc[fut, "yards"] = 999.0
+        poisoned.loc[fut, "scoring"] = True
+        assert summary(poisoned, cutoff) == before[cutoff], (
+            f"LEAKAGE at cutoff week {cutoff}: a through-week drive view moved "
+            "after only future weeks were poisoned")
+
+
 def test_garbage_time_thresholds_are_per_period():
     # 4th quarter has the tightest threshold (22), 1st the loosest (43).
     assert ingest.is_garbage_time(4, 30, 0) is True
@@ -292,6 +331,119 @@ def test_walk_forward_error_grades_each_week_against_the_prior_weeks_only():
     assert err_b > err_a, (
         "poisoning the FINAL week's results did not worsen walk-forward error; "
         "the scorer is fitting on the games it grades")
+
+
+# =========================================================================== #
+# WORKSTREAM C — the drive-level simulation layer
+#
+# Same technique, third target (ingest + ratings coverage above is KEPT, per
+# the standing extend-don't-replace instruction). walk_forward_backtest claims
+# to fit drive rates at week W only on drives labelled strictly before W, and
+# to label week W's drives only AFTER predicting week W. Everything below
+# tries to prove it a liar.
+# =========================================================================== #
+
+from nflvalue import cfb_sim
+from nflvalue.cfb_ot import OTParams
+
+_OT = OTParams(p_td=0.4, p_fg=0.3, td_pts={7: 1.0}, p_two=0.5,
+               n_possessions=500, n_td_ot1=100, n_two=20)
+_TEAMS12 = tuple(f"T{i:02d}" for i in range(12))
+
+
+def _sim_games(weeks=8):
+    strengths = {t: 12.0 - 2.2 * i for i, t in enumerate(_TEAMS12)}
+    rows, gid = [], 7000
+    for wk in range(1, weeks + 1):
+        for i, h in enumerate(_TEAMS12):
+            a = _TEAMS12[(i + wk) % len(_TEAMS12)]
+            if a == h:
+                continue
+            hp = 28.0 + strengths[h] / 2 + 1.5
+            ap = 28.0 + strengths[a] / 2
+            rows.append({
+                "id": gid, "season": 2023, "week": wk, "home_team": h,
+                "away_team": a, "home_points": hp, "away_points": ap,
+                "neutral_site": False, "home_fbs": True, "away_fbs": True,
+                "home_conf": "TEST", "away_conf": "TEST", "margin": hp - ap,
+            })
+            gid += 1
+    return pd.DataFrame(rows).sort_values(["season", "week", "id"]).reset_index(drop=True)
+
+
+def _sim_drives(games, per_side=10, seed=17):
+    rng = np.random.default_rng(seed)
+    rows = []
+    for g in games.itertuples():
+        for home_off in (True, False):
+            for _ in range(per_side):
+                u = rng.random()
+                off = 7 if u < 0.3 else (3 if u < 0.42 else 0)
+                rows.append({
+                    "game_id": int(g.id), "season": 2023, "week": int(g.week),
+                    "is_home_offense": home_off, "start_period": 2,
+                    "start_offense_score": 7, "end_offense_score": 7 + off,
+                    "start_defense_score": 7, "end_defense_score": 7,
+                })
+    return pd.DataFrame(rows)
+
+
+def _run_sim_backtest(games, drives):
+    R.clear_cache()
+    return cfb_sim.walk_forward_backtest(
+        games, drives, _RP, _OT, eval_seasons=[2023], first_week=4,
+        n_sims=200, min_train_drives=300, n_bins=4, min_bin_n=50)
+
+
+def _rows_through(df, week):
+    return (df[df["week"] <= week]
+            .drop(columns=["n_train_drives"])
+            .reset_index(drop=True))
+
+
+def test_simulation_ignores_poisoned_future_drives_and_games():
+    games, drives = _sim_games(), None
+    drives = _sim_drives(games)
+    base = _run_sim_backtest(games, drives)
+    assert len(base) > 20, "backtest produced too few rows to test anything"
+
+    cutoff = 5
+    pg = games.copy()
+    fut_g = pg["week"] > cutoff
+    pg.loc[fut_g, "home_points"] = 999.0
+    pg["margin"] = pg["home_points"] - pg["away_points"]
+    pdrv = drives.copy()
+    fut_d = pdrv["week"] > cutoff
+    pdrv.loc[fut_d, "end_offense_score"] = pdrv.loc[fut_d, "start_offense_score"] + 8
+    poisoned = _run_sim_backtest(pg, pdrv)
+
+    pd.testing.assert_frame_equal(_rows_through(base, cutoff),
+                                  _rows_through(poisoned, cutoff)), (
+        "LEAKAGE: simulation outputs through the cutoff week changed after "
+        "only future weeks' games/drives were poisoned")
+
+
+def test_simulation_does_not_train_on_the_week_it_predicts():
+    """Poisoning week W's OWN drives must leave week W's simulations alone
+    (they are labelled after prediction) and must move a later week's."""
+    games = _sim_games()
+    drives = _sim_drives(games)
+    base = _run_sim_backtest(games, drives)
+
+    w = 5
+    pdrv = drives.copy()
+    now = pdrv["week"] == w
+    pdrv.loc[now, "end_offense_score"] = pdrv.loc[now, "start_offense_score"] + 8
+    poisoned = _run_sim_backtest(games, pdrv)
+
+    pd.testing.assert_frame_equal(_rows_through(base, w),
+                                  _rows_through(poisoned, w))
+    later_b = base[base["week"] > w].reset_index(drop=True)
+    later_p = poisoned[poisoned["week"] > w].reset_index(drop=True)
+    assert not later_b.equals(later_p), (
+        "poisoning week 5's drives changed nothing later — the rate model is "
+        "not actually learning from observed drives, which is the opposite "
+        "failure and equally wrong")
 
 
 def test_preseason_prior_cannot_move_when_results_change(monkeypatch):
