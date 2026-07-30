@@ -1,0 +1,18 @@
+=== BASELINE RECONCILIATION 2024 — ours vs SP+/SRS/Elo (n=135 rated FBS teams) ===
+SP+ : pearson 0.867  spearman 0.856  top-25 overlap 19/25  (n=135)
+SRS : pearson 0.864  spearman 0.867  top-25 overlap 16/25  (n=135)
+Elo : pearson 0.811  spearman 0.795  top-25 overlap 17/25  (n=135)
+
+biggest disagreements (ours vs public consensus, z-units) — each explained, not just logged:
+  Ohio                   dz=-1.23 (we are LOWER; ours -8.5, SP+ +2.3) — within normal methodological spread
+  UConn                  dz=-1.14 (we are LOWER; ours -9.3, SP+ +1.5) — within normal methodological spread
+  Buffalo                dz=-1.14 (we are LOWER; ours -13.7, SP+ -4.0) — within normal methodological spread
+  UNLV                   dz=-1.13 (we are LOWER; ours -2.2, SP+ +9.3) — within normal methodological spread
+  Indiana                dz=-1.07 (we are LOWER; ours +7.5, SP+ +20.1) — within normal methodological spread
+  Purdue                 dz=+1.02 (we are HIGHER; ours +2.4, SP+ -16.2) — within normal methodological spread
+  Tulsa                  dz=+0.99 (we are HIGHER; ours -6.8, SP+ -20.6) — within normal methodological spread
+  App State              dz=+0.94 (we are HIGHER; ours +5.1, SP+ -8.1) — within normal methodological spread
+
+Reading: high-but-not-1.0 correlation is the healthy zone. 1.00 would mean we built a copy of the public consensus; anything under ~0.85 would mean someone is broken. Disagreements above are inputs to Workstream H, not evidence of an edge.
+
+ANALYST NOTE (investigated 2026-07-30): the eyeballed pattern in the disagreement list ("we lag movers — low on breakouts, high on collapses") was TESTED AND REJECTED: corr(our-minus-SP+ z-gap, year-over-year team movement) = 0.07 on n=133 — indistinguishable from zero, and even that is upward-biased by a shared term. The named teams fit the story; the other 125 don't. The disagreements are idiosyncratic methodological spread, not a systematic decay-lag signature, and they do NOT constitute an externally-anchored argument for the Kalman wiring (that case rests on the bakeoff numbers alone). Recorded per the standing rule that a plausible narrative dies when its own control says so.

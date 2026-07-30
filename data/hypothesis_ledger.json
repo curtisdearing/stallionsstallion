@@ -1,0 +1,54 @@
+[
+  {
+    "id": "2024wk10-first-season-coach",
+    "logged": "2024-week-10 recap",
+    "pattern": "first_season_coach",
+    "hypothesis": "3 of this week's 5 biggest misses involved a first-season head coach; display-only context, model does not adjust for it (registry status governs)",
+    "evidence_games": [
+      401636916,
+      401628534,
+      401628411
+    ],
+    "status": "pending",
+    "revisits": [
+      {
+        "week": "2024wk11",
+        "support": false
+      }
+    ],
+    "promoted_to": null
+  },
+  {
+    "id": "2024wk10-qb-change",
+    "logged": "2024-week-10 recap",
+    "pattern": "qb_change",
+    "hypothesis": "3 of this week's 5 biggest misses involved a team whose last game was started by a non-primary QB; display-only context, model does not adjust for it (registry status governs)",
+    "evidence_games": [
+      401636916,
+      401628534,
+      401645358
+    ],
+    "status": "pending",
+    "revisits": [
+      {
+        "week": "2024wk11",
+        "support": true
+      }
+    ],
+    "promoted_to": null
+  },
+  {
+    "id": "2024wk11-qb-change",
+    "logged": "2024-week-11 recap",
+    "pattern": "qb_change",
+    "hypothesis": "3 of this week's 5 biggest misses involved a team whose last game was started by a non-primary QB; display-only context, model does not adjust for it (registry status governs)",
+    "evidence_games": [
+      401628984,
+      401645361,
+      401643829
+    ],
+    "status": "pending",
+    "revisits": [],
+    "promoted_to": null
+  }
+]

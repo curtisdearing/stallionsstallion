@@ -347,6 +347,57 @@ def stage_simulate(season: int, week: int) -> dict:
     return {"n": len(rows), "skipped": skipped}
 
 
+def stage_recap(season: int, week: int) -> dict:
+    """Weekly scoreboard (WEEKLY_SCOREBOARD_SPEC): grade the PUBLISHED
+    projections for the most recently completed week; append/revisit the
+    hypothesis ledger. Read-only w.r.t. the model by construction."""
+    from nflvalue import scoreboard
+    target = week - 1
+    if target < 1:
+        return {"n": 0, "note": "no completed week to recap yet"}
+    try:
+        r = scoreboard.build_recap(season, target)
+    except scoreboard.ScoreboardError as exc:
+        return {"n": 0, "note": str(exc)[:200]}
+    return {"n": r["n_graded"], "week_recapped": target,
+            "model_mae": r["model_mae"], "market_mae": r["market_mae"],
+            "ledger_new": r["ledger_new"],
+            "path": f"recaps/{season}_wk{target:02d}.md"}
+
+
+def stage_clv_capture(season: int, week: int) -> dict:
+    """Close-free live CLV capture for the completed week: the PUBLISHED
+    MC margin (pregame, never recomputed) vs same-book open, scored against
+    that book's close. Appends data/clv_live_{season}.csv. PAPER-ONLY
+    research log — Workstream K's raw material, never a recommendation."""
+    from nflvalue import gameline as GL
+    target = week - 1
+    pub_path = os.path.join(DATA, f"predictions_{season}_wk{target:02d}.csv")
+    if target < 1 or not os.path.exists(pub_path):
+        return {"n": 0, "note": "no published projections for completed week"}
+    pub = pd.read_csv(pub_path)
+    games = R.game_frame([season])
+    lines = ingest.load_lines([season])
+    wk_lines = lines[lines["game_id"].isin(set(pub["id"]))]
+    signal = dict(zip(pub["id"].astype(int), pub["mc_margin"]))
+    log = GL.build_clv_log(games, wk_lines, signal, min_edge_pts=2.0)
+    if log.empty:
+        return {"n": 0, "note": "no open+close candidates this week"}
+    out = os.path.join(DATA, f"clv_live_{season}.csv")
+    if os.path.exists(out):
+        prev = pd.read_csv(out)
+        key = set(zip(prev["game_id"], prev["book"]))
+        log = log[[(g, b) not in key for g, b in
+                   zip(log["game_id"], log["book"])]]
+        if len(log):
+            log.to_csv(out, mode="a", header=False, index=False)
+    else:
+        log.to_csv(out, index=False)
+    return {"n": int(len(log)), "week_captured": target,
+            "mean_clv": (None if log.empty
+                         else round(float(log["clv_pts"].mean()), 3))}
+
+
 def notify(manifest: dict) -> dict:
     """Discord if configured; clean skip otherwise. Fail-of-stage notifies too."""
     try:
@@ -406,7 +457,8 @@ def run(job: str, force_week: int = None) -> int:
         stages = {"week-open": ("refresh", "freshness", "refit", "honesty",
                                 "simulate", "notify"),
                   "pregame": ("freshness", "simulate", "notify"),
-                  "grade": ("refresh", "freshness", "honesty", "notify")}[job]
+                  "grade": ("refresh", "freshness", "honesty", "recap",
+                            "clv_capture", "notify")}[job]
         stage_budget_guard(25 if "refresh" in stages else 0)
         for st in stages:
             if st != "notify" and stage_done(season, week, f"{job}_{st}"):
@@ -424,6 +476,10 @@ def run(job: str, force_week: int = None) -> int:
                     out = stage_refit(season, week)
                 elif st == "honesty":
                     out = stage_honesty(season)
+                elif st == "recap":
+                    out = stage_recap(season, week)
+                elif st == "clv_capture":
+                    out = stage_clv_capture(season, week)
                 elif st == "simulate":
                     out = stage_simulate(season, week)
                 else:

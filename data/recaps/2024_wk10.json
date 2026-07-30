@@ -1,0 +1,85 @@
+{
+  "season": 2024,
+  "week": 10,
+  "generated": "2026-07-30T13:08:37.199123+00:00",
+  "n_graded": 48,
+  "n_with_market": 48,
+  "model_mae": 14.75,
+  "model_mae_h2h": 14.75,
+  "market_mae": 13.53,
+  "baseline": {
+    "model": 13.24,
+    "market": 12.24
+  },
+  "model_beat_market": false,
+  "noise_note": "The market was closer this week, consistent with the historical baseline (model 13.24 vs market 12.24 MAE, pooled 2021-2023).",
+  "misses": [
+    {
+      "id": 401636916,
+      "matchup": "Arizona @ UCF",
+      "published": 5.6,
+      "actual": 44.0,
+      "error": -38.4,
+      "market": 6.5,
+      "context": [
+        "first-season head coach",
+        "recent QB change"
+      ]
+    },
+    {
+      "id": 401628534,
+      "matchup": "Indiana @ Michigan State",
+      "published": -0.9,
+      "actual": -37.0,
+      "error": 36.1,
+      "market": -7.5,
+      "context": [
+        "first-season head coach",
+        "recent QB change"
+      ]
+    },
+    {
+      "id": 401645358,
+      "matchup": "Tulsa @ UAB",
+      "published": 2.7,
+      "actual": 38.0,
+      "error": -35.3,
+      "market": 2.5,
+      "context": [
+        "recent QB change"
+      ]
+    },
+    {
+      "id": 401628411,
+      "matchup": "Texas A&M @ South Carolina",
+      "published": -8.2,
+      "actual": 24.0,
+      "error": -32.2,
+      "market": -3.0,
+      "context": [
+        "first-season head coach"
+      ]
+    },
+    {
+      "id": 401635600,
+      "matchup": "Louisville @ Clemson",
+      "published": 20.0,
+      "actual": -12.0,
+      "error": 32.0,
+      "market": 11.0,
+      "context": [
+        "no cached display-only context flagged"
+      ]
+    }
+  ],
+  "ledger_new": [
+    "2024wk10-first-season-coach",
+    "2024wk10-qb-change"
+  ],
+  "ledger_open": [
+    "2024wk10-first-season-coach",
+    "2024wk10-qb-change"
+  ],
+  "ledger_resolved": [],
+  "paper_note": "PAPER-ONLY diagnostic. Nothing here recommends a bet or implies the model is improving in a load-bearing sense; promotion of any hypothesis runs through the full Workstream E gate. 1-800-GAMBLER."
+}

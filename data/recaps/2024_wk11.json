@@ -1,0 +1,83 @@
+{
+  "season": 2024,
+  "week": 11,
+  "generated": "2026-07-30T13:08:37.648408+00:00",
+  "n_graded": 50,
+  "n_with_market": 50,
+  "model_mae": 14.1,
+  "model_mae_h2h": 14.1,
+  "market_mae": 11.17,
+  "baseline": {
+    "model": 13.24,
+    "market": 12.24
+  },
+  "model_beat_market": false,
+  "noise_note": "The market was closer this week, consistent with the historical baseline (model 13.24 vs market 12.24 MAE, pooled 2021-2023).",
+  "misses": [
+    {
+      "id": 401644761,
+      "matchup": "Ohio @ Kent State",
+      "published": 0.5,
+      "actual": -41.0,
+      "error": 41.5,
+      "market": -20.5,
+      "context": [
+        "no cached display-only context flagged"
+      ]
+    },
+    {
+      "id": 401628984,
+      "matchup": "Florida State @ Notre Dame",
+      "published": 11.7,
+      "actual": 49.0,
+      "error": -37.3,
+      "market": 25.5,
+      "context": [
+        "recent QB change"
+      ]
+    },
+    {
+      "id": 401643827,
+      "matchup": "Arkansas State @ Louisiana",
+      "published": 5.6,
+      "actual": 36.0,
+      "error": -30.4,
+      "market": 14.0,
+      "context": [
+        "no cached display-only context flagged"
+      ]
+    },
+    {
+      "id": 401645361,
+      "matchup": "Florida Atlantic @ East Carolina",
+      "published": 7.8,
+      "actual": 35.0,
+      "error": -27.2,
+      "market": 7.5,
+      "context": [
+        "recent QB change"
+      ]
+    },
+    {
+      "id": 401643829,
+      "matchup": "Marshall @ Southern Miss",
+      "published": -7.2,
+      "actual": -34.0,
+      "error": 26.8,
+      "market": -13.5,
+      "context": [
+        "recent QB change"
+      ]
+    }
+  ],
+  "ledger_new": [
+    "2024wk11-qb-change"
+  ],
+  "ledger_open": [
+    "2024wk10-first-season-coach",
+    "2024wk10-qb-change",
+    "2024wk11-qb-change"
+  ],
+  "ledger_resolved": [],
+  "paper_note": "PAPER-ONLY diagnostic. Nothing here recommends a bet or implies the model is improving in a load-bearing sense; promotion of any hypothesis runs through the full Workstream E gate. 1-800-GAMBLER."
+}

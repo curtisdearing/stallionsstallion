@@ -1,0 +1,28 @@
+=== CALIBRATION DEEP-DIVE (Workstream O) — pooled 2021-2024 walk-forward, n=2377 ===
+Brier 0.2007 = reliability 0.0007 - resolution 0.0440 + uncertainty 0.2444
+  (decomposition identity check: 0.2010; small reliability + large resolution is the healthy shape)
+
+reliability by decile (pred -> observed, n):
+  (0.0, 0.1]     n=  13 pred 0.087 obs 0.308 gap +0.221
+  (0.1, 0.2]     n=  81 pred 0.158 obs 0.111 gap -0.047
+  (0.2, 0.3]     n= 156 pred 0.255 obs 0.244 gap -0.012
+  (0.3, 0.4]     n= 257 pred 0.354 obs 0.342 gap -0.012
+  (0.4, 0.5]     n= 359 pred 0.456 obs 0.471 gap +0.014
+  (0.5, 0.6]     n= 415 pred 0.546 obs 0.542 gap -0.004
+  (0.6, 0.7]     n= 417 pred 0.649 obs 0.635 gap -0.014
+  (0.7, 0.8]     n= 340 pred 0.751 obs 0.774 gap +0.022
+  (0.8, 0.9]     n= 249 pred 0.848 obs 0.888 gap +0.039
+  (0.9, 1.0]     n=  90 pred 0.914 obs 0.933 gap +0.020
+
+50% margin band coverage: 48.0% (NARROW; normal approx from stored sd — see PIT below)
+
+80% margin band coverage: 76.9% (NARROW; normal approx from stored sd — see PIT below)
+PIT z: mean +0.003, sd 1.084 (sd > 1 = simulated distributions too narrow by that factor; the known cause is rating-parameter uncertainty not being simulated — net_band exists but is not sampled)
+
+per-slice Brier + coverage(80):
+  G5vG5    n=1081 Brier 0.2096 cov80 75.5%
+  G5vP4    n= 152 Brier 0.1386 cov80 74.3%
+  P4vP4    n=1076 Brier 0.2008 cov80 78.7%
+  neutral  n=  68 Brier 0.1952 cov80 75.0%
+
+No post-hoc calibration applied: fitting a correction on the evaluation window is circular. If wanted, register an isotonic fit on 2021-2023 graded on 2024+ first. PAPER-ONLY; diagnostics, not an edge.

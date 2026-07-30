@@ -1,0 +1,6 @@
+=== KILL-CHECK MACHINERY CALIBRATION — RESEARCH MODE, 2021-2024 close-free logs (NOT gate 7) ===
+derived bars: min effect 0.499 pts; n-gate at sd 2.4 = 143
+G5vG5    n= 801/74 mean +0.033 pts [-0.086, +0.152] p=0.2925 -> NO-GO (recorded plainly; the expected outcome for most slices; RESEARCH-MODE (backtest-era data; NOT gate 7))
+G5vP4    n= 113/97 mean -0.116 pts [-0.483, +0.251] p=0.7333 -> NO-GO (recorded plainly; the expected outcome for most slices; RESEARCH-MODE (backtest-era data; NOT gate 7))
+P4vP4    n= 797/148 mean +0.302 pts [+0.133, +0.471] p=0.0002 -> GO (input to the gate-7 decision, not the decision; RESEARCH-MODE (backtest-era data; NOT gate 7))
+neutral  n=  47/201 mean +0.693 pts [-0.142, +1.528] p=0.0508 -> INSUFFICIENT_N (unpowered — proves nothing either way; RESEARCH-MODE (backtest-era data; NOT gate 7))
