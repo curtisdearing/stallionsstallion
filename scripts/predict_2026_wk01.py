@@ -2,13 +2,15 @@
 """Preseason projections for 2026 week 0 and week 1 (CFBD labels both week 1).
 
 HONESTY HEADER — read before quoting any number below.
-  * As of 2026-07-19 CFBD serves NO 2026 talent and NO 2026 returning
-    production (both endpoints return empty). The preseason prior therefore
-    contains ONLY the previous-season rating component, diluted exactly as
-    `preseason_prior` would dilute it (talent/returning z-scores enter as 0),
-    i.e. prior = prior_strength * z(prev_net) / 3. Our own research says
-    returning production is the DOMINANT week-0 signal — and it is missing.
-    These are "last year's team + HFA" projections, nothing more.
+  * The prior is built by `ratings.preseason_prior` from whatever 2026
+    components are actually in the cache; the script REPORTS which ones were
+    present at run time — check the printed footer, not this docstring.
+    History: on 2026-07-19 CFBD served neither 2026 talent nor returning
+    production (prev-season-only prior). On 2026-08-10 returning production
+    LANDED (136 teams, cached to returning_2026.parquet) while talent 2026
+    was still empty — talent's z-term enters as 0 via the documented
+    conference-mean→league-mean fallback until it publishes. Re-run (and
+    re-pull talent) when CFBD serves 2026 talent.
   * 2026 conference realignment inside the solve is 2025's map (ratings are
     credited to the conference a team played in last season).
   * Teams new to FBS in 2026 have no rating and are VETOED, not guessed at.
@@ -27,7 +29,6 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from nflvalue import ingest, ratings as R  # noqa: E402
@@ -52,19 +53,19 @@ def main() -> int:
     conf26 = {str(r.team): (str(r.conference) or "Independent")
               for r in teams26.itertuples()}
 
-    # Prior injection mirroring preseason_prior's composite with talent and
-    # returning UNAVAILABLE (their z-terms are 0): strength * z(prev) * w_p/tot.
-    vals = np.array(list(prev_net.values()), dtype=float)
-    mu, sd = float(vals.mean()), float(vals.std(ddof=1))
-    z = {t: (v - mu) / sd for t, v in prev_net.items()}
-    by_conf: dict = {}
-    for t, v in z.items():
-        by_conf.setdefault(conf26.get(t, "Independent"), []).append(v)
-    conf_mean = {c: float(np.mean(v)) for c, v in by_conf.items()}
-    w_tot = params.prior_w_talent + params.prior_w_returning + params.prior_w_prev_rating
-    scale = params.prior_strength * params.prior_w_prev_rating / w_tot
-    prior = {t: scale * z.get(t, conf_mean.get(conf26.get(t, "Independent"), 0.0))
-             for t in fbs26 | set(prev_net)}
+    # Prior via the canonical composite: talent + returning + prev rating,
+    # each component entering only if its 2026 cache exists (missing ones
+    # fall back conference-mean -> league-mean = 0 inside preseason_prior).
+    prior_teams = sorted(fbs26 | set(prev_net))
+    prior = R.preseason_prior(2026, prior_teams, conf26, params,
+                              prev_net=prev_net)
+    talent26 = ingest.load("talent", [2026])
+    returning26 = ingest.load("returning", [2026])
+    components = {
+        "talent": 0 if talent26.empty else len(talent26),
+        "returning": 0 if returning26.empty else len(returning26),
+        "prev_rating": len(prev_net),
+    }
 
     tbl = R.solve(games, 2026, 1, params, prior=prior)
     frame = tbl.to_frame().set_index("team")
@@ -125,8 +126,12 @@ def main() -> int:
         d = df[df["slate"] == lab]
         print(f"\n=== {lab}: {len(d)} games, {int(d['veto'].sum())} vetoed ===")
         print(d.to_string(index=False))
-    print("\nPrior = last-season component ONLY (no 2026 talent/returning at "
-          "CFBD yet). Paper-only; nothing here recommends a bet.")
+    present = [k for k, n in components.items() if n]
+    absent = [k for k, n in components.items() if not n]
+    print("\nPrior components present: "
+          + ", ".join(f"{k} (n={components[k]})" for k in present)
+          + (f"; ABSENT (z=0 fallback): {', '.join(absent)}" if absent else "")
+          + ". Paper-only; nothing here recommends a bet.")
     return 0
 
 
