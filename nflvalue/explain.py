@@ -124,30 +124,46 @@ def decompose_margin(tbl, home: str, away: str, neutral: bool,
                      mc_margin: Optional[float] = None) -> List[Dict]:
     """Signed point contributions that SUM (exactly) to the projection.
 
-    The solve is linear: off[t] = off_dev[t] + conf_off[conf(t)] and
-    def_[t] = def_dev[t] + conf_def[conf(t)], so
-      margin = HFA + team-deviation diff + conference-term diff.
-    If `mc_margin` is given, a fourth row carries the simulation's deviation
+    Shape depends on the engine that produced `tbl`:
+      * ridge — the solve is linear: off[t] = off_dev[t] + conf_off[conf(t)]
+        and def_[t] = def_dev[t] + conf_def[conf(t)], so
+          margin = HFA + team-deviation diff + conference-term diff.
+      * kalman — the state-space has NO conference block; the exact
+        decomposition is margin = HFA + filtered-strength diff, so the
+        conference row is OMITTED (not rendered as a fake zero).
+    If `mc_margin` is given, a final row carries the simulation's deviation
     from the linear prediction, so the rows sum to the SIM margin instead.
     """
     tbl.require_usable(home)
     tbl.require_usable(away)
-    hc, ac = tbl.team_conf.get(home, ""), tbl.team_conf.get(away, "")
     team = ((tbl.off_dev.get(home, 0.0) + tbl.def_dev.get(away, 0.0))
             - (tbl.off_dev.get(away, 0.0) + tbl.def_dev.get(home, 0.0)))
-    conf = ((tbl.conf_off.get(hc, 0.0) + tbl.conf_def.get(ac, 0.0))
-            - (tbl.conf_off.get(ac, 0.0) + tbl.conf_def.get(hc, 0.0)))
     hfa = tbl.hfa(home, neutral)
-    rows = [
-        {"key": "team_rating", "label": "Team rating differential (off/def)",
-         "points": team},
-        {"key": "conference", "label": "Conference-strength term",
-         "points": conf},
-        {"key": "hfa",
-         "label": ("Home-field advantage" if not neutral
-                   else "Home-field advantage (neutral site: zero)"),
-         "points": hfa},
-    ]
+    if getattr(tbl, "engine", "ridge") == "kalman":
+        rows = [
+            {"key": "team_rating",
+             "label": "Team strength differential (state-space filter)",
+             "points": team},
+            {"key": "hfa",
+             "label": ("Home-field advantage" if not neutral
+                       else "Home-field advantage (neutral site: zero)"),
+             "points": hfa},
+        ]
+        conf = 0.0
+    else:
+        hc, ac = tbl.team_conf.get(home, ""), tbl.team_conf.get(away, "")
+        conf = ((tbl.conf_off.get(hc, 0.0) + tbl.conf_def.get(ac, 0.0))
+                - (tbl.conf_off.get(ac, 0.0) + tbl.conf_def.get(hc, 0.0)))
+        rows = [
+            {"key": "team_rating", "label": "Team rating differential (off/def)",
+             "points": team},
+            {"key": "conference", "label": "Conference-strength term",
+             "points": conf},
+            {"key": "hfa",
+             "label": ("Home-field advantage" if not neutral
+                       else "Home-field advantage (neutral site: zero)"),
+             "points": hfa},
+        ]
     if mc_margin is not None:
         linear = hfa + team + conf
         rows.append({"key": "simulation",

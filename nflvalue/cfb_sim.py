@@ -292,7 +292,8 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
                           min_train_drives: int = 5000,
                           n_bins: int = 8, min_bin_n: int = 400,
                           seed: int = 20260730,
-                          progress=None) -> pd.DataFrame:
+                          progress=None,
+                          engine: Optional[str] = None) -> pd.DataFrame:
     """Walk every week in chronological order; fit rates on the past only.
 
     For each eval week W: fit DriveRateModel on all drives labelled so far
@@ -317,7 +318,8 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
                        games.loc[games["season"] == season, "week"].unique())
         for w in weeks:
             try:
-                tbl = R.solve_cached(games, season, w, params)
+                from . import engine as EG
+                tbl = EG.solve_table(games, season, w, params, engine=engine)
             except (R.RatingsError, np.linalg.LinAlgError):
                 continue
             gw = games[(games["season"] == season) & (games["week"] == w)]

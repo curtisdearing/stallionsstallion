@@ -25,7 +25,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from nflvalue import cfb_ot, cfb_sim, explain, gameline as GL  # noqa: E402
-from nflvalue import ingest, ratings as R  # noqa: E402
+from nflvalue import engine as EG, ingest, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HISTORY_START = 2019
@@ -42,7 +42,7 @@ def rate_models_before(games, drives_c, params, season, week):
             if s == season and w >= week:
                 break
             try:
-                tbl = R.solve_cached(games, int(s), int(w), params)
+                tbl = EG.solve_table(games, int(s), int(w), params)
             except (R.RatingsError, np.linalg.LinAlgError):
                 continue
             gw = games[(games["season"] == s) & (games["week"] == w)]
@@ -73,7 +73,7 @@ def main() -> int:
     ot = cfb_ot.fit_ot_params(ingest.load_drives(range(2021, 2026)))
     rates, pace = rate_models_before(games, drives_c, params,
                                      args.season, args.week)
-    tbl = R.solve_cached(games, args.season, args.week, params)
+    tbl = EG.solve_table(games, args.season, args.week, params)
 
     lines = ingest.load_lines([args.season])
     med_spread = (lines.dropna(subset=["spread"])

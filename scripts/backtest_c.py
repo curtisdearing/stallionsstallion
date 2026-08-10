@@ -42,10 +42,17 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from nflvalue import cfb_ot, cfb_sim, ingest, oddsmath, ratings as R  # noqa: E402
+from nflvalue import cfb_ot, cfb_sim, engine as EG, ingest, oddsmath, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "data", "backtest_c.csv")
+
+
+def out_path(engine: str) -> str:
+    """Engine-suffixed artifact. The registered 2026-07-30 ridge run stays
+    data/backtest_c.csv; a non-incumbent engine writes its own file so the
+    gate-3 record is never overwritten by a re-run."""
+    name = "backtest_c.csv" if engine == "ridge" else f"backtest_c_{engine}.csv"
+    return os.path.join(ROOT, "data", name)
 
 BURN_IN = [2019, 2020]
 EVAL_SEASONS = [2021, 2022, 2023]
@@ -73,7 +80,7 @@ def market_frames(seasons):
     return med_spread, probs, med_total
 
 
-def run_season(season: int) -> pd.DataFrame:
+def run_season(season: int, engine: str) -> pd.DataFrame:
     params = R.load_params()
     hist = sorted(set(BURN_IN) | {s for s in EVAL_SEASONS if s <= season})
     games = R.game_frame(hist)
@@ -85,13 +92,14 @@ def run_season(season: int) -> pd.DataFrame:
     df = cfb_sim.walk_forward_backtest(
         games, drives, params, ot, eval_seasons=[season],
         burn_in_seasons=burn, first_week=FIRST_WEEK, n_sims=N_SIMS,
+        engine=engine,
         progress=lambda s, w, pool, done: print(
             f"  walked {s} wk{w:<2d} pool={pool} simulated={done}", flush=True)
         if w % 5 == 0 else None)
     return df
 
 
-def report(df: pd.DataFrame) -> None:
+def report(df: pd.DataFrame, engine: str) -> None:
     med_spread, ml_probs, med_total = market_frames(EVAL_SEASONS)
     df = df.copy()
     df["market"] = [-med_spread.get(g) if g in med_spread.index else np.nan
@@ -100,8 +108,9 @@ def report(df: pd.DataFrame) -> None:
     df["market_total"] = [med_total.get(g, np.nan) for g in df["id"]]
     df["won"] = (df["margin"] > 0).astype(float)
 
-    print("\n=== GATE 3 — drive-level MC, walk-forward, weeks >= "
-          f"{FIRST_WEEK}, pre-registered eval {EVAL_SEASONS} ===")
+    print(f"\n=== GATE 3 — drive-level MC, walk-forward, weeks >= "
+          f"{FIRST_WEEK}, pre-registered eval {EVAL_SEASONS} "
+          f"[margin engine: {engine}] ===")
     for season in EVAL_SEASONS + ["pooled"]:
         d = df if season == "pooled" else df[df["season"] == season]
         if d.empty:
@@ -156,16 +165,23 @@ def report(df: pd.DataFrame) -> None:
 
 
 def main() -> int:
-    done = (pd.read_csv(OUT) if os.path.exists(OUT)
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--engine", default=None,
+                    help="margin engine (default: config margin_engine)")
+    args = ap.parse_args()
+    engine = args.engine or EG.margin_engine()
+    out = out_path(engine)
+    done = (pd.read_csv(out) if os.path.exists(out)
             else pd.DataFrame(columns=["season"]))
     for season in EVAL_SEASONS:
         if len(done) and (done["season"] == season).any():
             continue
-        df = run_season(season)
-        df.to_csv(OUT, mode="a", header=not os.path.exists(OUT), index=False)
+        df = run_season(season, engine)
+        df.to_csv(out, mode="a", header=not os.path.exists(out), index=False)
         print(f"[gate3] season {season}: {len(df)} simulated games written")
         return 3
-    report(pd.read_csv(OUT))
+    report(pd.read_csv(out), engine)
     return 0
 
 

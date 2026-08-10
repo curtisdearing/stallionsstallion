@@ -53,7 +53,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from nflvalue import cfb_ot, cfb_sim, explain, freshness, gameline as GL  # noqa: E402
-from nflvalue import ingest, ratings as R  # noqa: E402
+from nflvalue import engine as EG, ingest, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -212,7 +212,7 @@ def stage_freshness(season: int) -> dict:
 def stage_refit(season: int, week: int) -> dict:
     params = R.load_params()
     games = R.game_frame(list(range(HISTORY_START, season + 1)))
-    tbl = R.solve_cached(games, season, week, params)
+    tbl = EG.solve_table(games, season, week, params)
     frame = tbl.to_frame()
     ingest._atomic_write_parquet(
         frame, os.path.join(DATA, f"ratings_{season}.parquet"))
@@ -234,7 +234,7 @@ def stage_honesty(season: int) -> dict:
         if w < 2:
             continue
         try:
-            tbl = R.solve_cached(games, season, int(w), params)
+            tbl = EG.solve_table(games, season, int(w), params)
         except (R.RatingsError, np.linalg.LinAlgError):
             continue
         for g in season_games[season_games["week"] == w].itertuples():
@@ -288,7 +288,7 @@ def stage_simulate(season: int, week: int) -> dict:
             if s == season and w >= week:
                 break
             try:
-                tbl_w = R.solve_cached(games, int(s), int(w), params)
+                tbl_w = EG.solve_table(games, int(s), int(w), params)
             except (R.RatingsError, np.linalg.LinAlgError):
                 continue
             gw = games[(games["season"] == s) & (games["week"] == w)]
@@ -298,7 +298,7 @@ def stage_simulate(season: int, week: int) -> dict:
                 pool.append(lab)
     rates = cfb_sim.DriveRateModel.fit(pd.concat(pool, ignore_index=True))
     pace = cfb_sim.PaceModel.fit(drives_c)
-    tbl = R.solve_cached(games, season, week, params)
+    tbl = EG.solve_table(games, season, week, params)
 
     teams = ingest.load_teams([season])
     conf = {str(r.team): str(r.conference) for r in teams.itertuples()}

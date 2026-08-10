@@ -1,4 +1,7 @@
 {
+  "margin_engine": "kalman",
+  "margin_engine_provenance": "Workstream G bakeoff (pre-registered, 2026-07-30): kalman 254.71 vs ridge 281.64 pooled MSE (2021-2024 wk>=4, n=2377); CONFIRMED on virgin 2025 holdout 234.87 vs 291.13 (n=617) -> ships per registered rule. Frozen params in nflvalue/kalman_engine.FROZEN. 'ridge' stays wired as the H-spec drift baseline; flipping this key back is the rollback.",
+
   "odds_api_key": "",
 
   "regions": "us",
