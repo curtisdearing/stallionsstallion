@@ -10,3 +10,8 @@ data/*.db-journal
 # secrets (webhooks, API keys) live here — NEVER tracked
 config.local.json
 data/*.joblib
+
+# weekly-runner local byproducts (launchd writes these on the Mac; never publishable)
+.venv/
+data/logs/
+data/manifests/
