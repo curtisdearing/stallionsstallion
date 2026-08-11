@@ -398,5 +398,19 @@ function card(h){const d=document.createElement("div");d.className="card";d.inne
 """
 
 
+def _also_build_hub_feed() -> None:
+    """The hub feed rides along with every site rebuild; never fatal."""
+    import subprocess
+    import sys as _sys
+    script = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "build_hub_feed.py")
+    try:
+        subprocess.run([_sys.executable, script], check=False)
+    except Exception:  # noqa: BLE001
+        pass
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    _code = main()
+    _also_build_hub_feed()
+    raise SystemExit(_code)

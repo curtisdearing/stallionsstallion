@@ -48,6 +48,25 @@ echo "[runner] $JOB finished with exit $CODE" | tee -a "$LOG"
 if [ "$JOB" = "grade" ] && [ "$CODE" -eq 0 ]; then
   "$VENV/bin/python3" scripts/build_site.py >>"$LOG" 2>&1 || \
     echo "[runner] site rebuild failed (loop itself succeeded)" | tee -a "$LOG"
+  "$VENV/bin/python3" scripts/build_hub_feed.py >>"$LOG" 2>&1 || \
+    echo "[runner] hub feed rebuild failed (site itself succeeded)" | tee -a "$LOG"
+
+  # Publish: the Pages workflow deploys the COMMITTED data/site only, so an
+  # unpushed rebuild is invisible to the public site. Commit+push exactly
+  # that path; tolerate failure (publishing must never fail the grade job).
+  # Disable with STALLIONS_NO_PUBLISH=1.
+  if [ -z "${STALLIONS_NO_PUBLISH:-}" ]; then
+    if git -C "$REPO" diff --quiet -- data/site && \
+       [ -z "$(git -C "$REPO" ls-files --others --exclude-standard data/site)" ]; then
+      echo "[runner] site unchanged; nothing to publish" | tee -a "$LOG"
+    else
+      ( git -C "$REPO" add data/site && \
+        git -C "$REPO" commit -m "weekly: publish site + hub feed ($STAMP)" -- data/site && \
+        git -C "$REPO" push origin master ) >>"$LOG" 2>&1 && \
+        echo "[runner] site published (Pages deploy will pick it up)" | tee -a "$LOG" || \
+        echo "[runner] site PUBLISH FAILED — data/site committed-or-dirty locally; push manually" | tee -a "$LOG"
+    fi
+  fi
 fi
 
 # Keep the last 60 logs; never let the log dir grow unbounded.
