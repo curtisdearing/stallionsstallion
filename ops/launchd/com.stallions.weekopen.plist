@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.stallions.weekopen</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/scripts/run_weekly.sh</string>
+    <string>week-open</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion</string>
+
+  <!-- Tuesday 10:00 local — refresh cache, refit ratings, honesty report,
+       simulate the upcoming week, render the explainer. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key><integer>2</integer>
+    <key>Hour</key><integer>10</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- launchd-level stdout/err. run_weekly.sh additionally writes its own
+       dated per-run log to data/logs/week-open_<UTCSTAMP>.log -->
+  <key>StandardOutPath</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/data/logs/launchd-weekopen.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/data/logs/launchd-weekopen.log</string>
+
+  <!-- launchd's bare environment: give the runner a sane PATH so
+       /usr/bin/env python3 and git resolve (incl. Homebrew installs). -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+</dict>
+</plist>

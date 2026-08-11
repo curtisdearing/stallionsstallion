@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.stallions.grade</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/scripts/run_weekly.sh</string>
+    <string>grade</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion</string>
+
+  <!-- Sunday 09:00 local — pull finals, honesty report, weekly scoreboard
+       recap + hypothesis ledger, close-free CLV capture, rebuild the public
+       site + hub feed, then COMMIT+PUSH data/site so Pages redeploys.
+       Set STALLIONS_NO_PUBLISH=1 below to disable the publish step. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key><integer>0</integer>
+    <key>Hour</key><integer>9</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- launchd-level stdout/err. run_weekly.sh additionally writes its own
+       dated per-run log to data/logs/grade_<UTCSTAMP>.log -->
+  <key>StandardOutPath</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/data/logs/launchd-grade.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/data/logs/launchd-grade.log</string>
+
+  <!-- git push runs from this job: PATH must reach git and the
+       osxkeychain/gh credential helper (Homebrew paths included).
+       To stop the grade job publishing (paper-only kill switch), add:
+         <key>STALLIONS_NO_PUBLISH</key><string>1</string>
+       inside this dict. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+</dict>
+</plist>
