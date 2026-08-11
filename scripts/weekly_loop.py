@@ -316,13 +316,18 @@ def stage_simulate(season: int, week: int) -> dict:
         except R.DisconnectedTeamError:
             skipped += 1
             continue
-        sim = cfb_sim.simulate_game(rng, e_h, e_a, rates, pace, ot, n=4000)
+        psd = cfb_sim.param_margin_sd(tbl, home, away)
+        sim = cfb_sim.simulate_game(
+            rng, e_h, e_a, rates, pace, ot, n=4000, param_sd=psd,
+            param_rng=(np.random.default_rng([SEED, int(g.id)])
+                       if psd > 0.0 else None))
         rows.append({"season": season, "week": week, "id": int(g.id),
                      "home": home, "away": away,
                      "mc_margin": sim["margin_mean"],
                      "mc_margin_sd": sim["margin_sd"],
                      "mc_total": sim["total_mean"],
-                     "p_home_win": sim["p_home_win"]})
+                     "p_home_win": sim["p_home_win"],
+                     "param_sd": psd})
         exps.append(explain.build_explanation(
             tbl=tbl, game={"id": g.id, "season": season, "week": week,
                            "home_team": home, "away_team": away,

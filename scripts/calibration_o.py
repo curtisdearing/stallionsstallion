@@ -25,6 +25,7 @@ Writes data/calibration_report.txt. Diagnostic only; PAPER-ONLY stands.
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 
@@ -34,7 +35,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from scipy import stats  # noqa: E402
 
-from nflvalue import gameline as GL, ingest, ratings as R  # noqa: E402
+from nflvalue import gameline as GL, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,18 +58,33 @@ def brier_decomposition(p: np.ndarray, y: np.ndarray, n_bins: int = 10):
 
 
 def main() -> int:
-    df = pd.concat([pd.read_csv(os.path.join(ROOT, "data", "backtest_c.csv")),
-                    pd.read_csv(os.path.join(ROOT, "data",
-                                             "backtest_c_2024.csv"))],
-                   ignore_index=True)
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--engine", choices=("ridge", "kalman"), default="ridge",
+                    help="which gate-3 artifact set to grade: ridge = the "
+                         "registered 2026-07-30 record (backtest_c.csv + "
+                         "backtest_c_2024.csv, default, output unchanged); "
+                         "kalman = backtest_c_kalman.csv (2021-2023 only — "
+                         "2024 stayed virgin for the bakeoff holdout)")
+    args = ap.parse_args()
+    if args.engine == "kalman":
+        paths = [os.path.join(ROOT, "data", "backtest_c_kalman.csv")]
+        report_path = os.path.join(ROOT, "data",
+                                   "calibration_report_kalman.txt")
+        window_note = "pooled 2021-2023 walk-forward (kalman engine)"
+    else:
+        paths = [os.path.join(ROOT, "data", "backtest_c.csv"),
+                 os.path.join(ROOT, "data", "backtest_c_2024.csv")]
+        report_path = os.path.join(ROOT, "data", "calibration_report.txt")
+        window_note = "pooled 2021-2024 walk-forward"
+    df = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
     df["won"] = (df["margin"] > 0).astype(float)
     p = df["p_home_win"].to_numpy()
     y = df["won"].to_numpy()
     brier = float(np.mean((p - y) ** 2))
     rel, res, unc = brier_decomposition(p, y)
 
-    lines = [f"=== CALIBRATION DEEP-DIVE (Workstream O) — pooled 2021-2024 "
-             f"walk-forward, n={len(df)} ===",
+    lines = [f"=== CALIBRATION DEEP-DIVE (Workstream O) — {window_note}, "
+             f"n={len(df)} ===",
              f"Brier {brier:.4f} = reliability {rel:.4f} - resolution "
              f"{res:.4f} + uncertainty {unc:.4f}",
              f"  (decomposition identity check: {rel - res + unc:.4f}; "
@@ -90,13 +106,17 @@ def main() -> int:
         lines.append(f"\n{want:.0%} margin band coverage: {got:.1%} "
                      f"({'NARROW' if got < want else 'ok/wide'}; normal "
                      "approx from stored sd — see PIT below)")
+    sampled = "param_sd" in df.columns and bool((df["param_sd"] > 0).any())
     lines.append(f"PIT z: mean {float(zz.mean()):+.3f}, sd {float(zz.std()):.3f} "
-                 "(sd > 1 = simulated distributions too narrow by that "
-                 "factor; the known cause is rating-parameter uncertainty "
-                 "not being simulated — net_band exists but is not sampled)")
+                 "(sd > 1 = simulated distributions too narrow by that factor; "
+                 + ("rating-parameter uncertainty IS sampled in these rows — "
+                    f"mean param_sd {float(df['param_sd'].mean()):.2f} pts "
+                    "from the kalman posterior)" if sampled else
+                    "the known cause is rating-parameter uncertainty not "
+                    "being simulated — net_band exists but is not sampled)"))
 
     # Per-slice calibration
-    games = R.game_frame([2021, 2022, 2023, 2024])
+    games = R.game_frame(sorted(int(s) for s in df["season"].unique()))
     meta = {int(g.id): GL.slice_tag(str(g.home_conf), str(g.away_conf),
                                     int(g.week), bool(g.neutral_site))
             for g in games.itertuples()}
@@ -115,7 +135,7 @@ def main() -> int:
                  "PAPER-ONLY; diagnostics, not an edge.")
     report = "\n".join(lines)
     print(report)
-    with open(os.path.join(ROOT, "data", "calibration_report.txt"), "w") as fh:
+    with open(report_path, "w") as fh:
         fh.write(report + "\n")
     return 0
 

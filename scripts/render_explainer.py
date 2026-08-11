@@ -99,8 +99,11 @@ def main() -> int:
         except R.DisconnectedTeamError as exc:
             skipped.append(f"{g.away_team} @ {g.home_team}: {exc}")
             continue
-        sim = cfb_sim.simulate_game(rng, e_h, e_a, rates, pace, ot,
-                                    n=args.n_sims)
+        psd = cfb_sim.param_margin_sd(tbl, g.home_team, g.away_team)
+        sim = cfb_sim.simulate_game(
+            rng, e_h, e_a, rates, pace, ot, n=args.n_sims, param_sd=psd,
+            param_rng=(np.random.default_rng([20260730, int(g.id)])
+                       if psd > 0.0 else None))
         mkt = med_spread.get(g.id)
         exps.append(explain.build_explanation(
             tbl=tbl,

@@ -245,10 +245,47 @@ def _sample_side(rng, n: int, max_d: int, counts: np.ndarray,
     return off, dfn
 
 
+def param_margin_sd(tbl, home: str, away: str) -> float:
+    """Rating-parameter uncertainty of the predicted margin, in points.
+
+    The Kalman posterior sd (`net_sd`, which `KalmanTable` carries per team)
+    is the filter's own statement of how unsure it is about each strength.
+    Independent-posterior (diagonal) approximation — exactly the registered
+    model's own covariance structure: sd = sqrt(sd_home^2 + sd_away^2).
+
+    Scoped to the kalman engine ON PURPOSE: the ridge table's `net_sd` fed
+    the registered gate-3 ridge record WITHOUT sampling, and widening the
+    ridge baseline would silently rewrite that record. Any table that does
+    not declare `engine == "kalman"` gets 0.0 (no sampling, bit-identical
+    legacy behaviour).
+    """
+    if getattr(tbl, "engine", "") != "kalman":
+        return 0.0
+    sd_h = float(tbl.net_sd.get(home, 0.0))
+    sd_a = float(tbl.net_sd.get(away, 0.0))
+    return float(np.sqrt(sd_h * sd_h + sd_a * sd_a))
+
+
 def simulate_game(rng, e_home: float, e_away: float, rates: DriveRateModel,
-                  pace: PaceModel, ot: OTParams, n: int = 4000) -> Dict:
+                  pace: PaceModel, ot: OTParams, n: int = 4000,
+                  param_sd: float = 0.0, param_rng=None) -> Dict:
     """Simulate one matchup n times. Returns full margin/total arrays plus a
-    summary. Margins are home-minus-away and never zero (OT resolves ties)."""
+    summary. Margins are home-minus-away and never zero (OT resolves ties).
+
+    `param_sd` > 0 additionally samples rating-parameter uncertainty (the
+    Kalman posterior sd of the two teams, via `param_margin_sd`): each sim
+    path gets an antithetic zero-mean N(0, param_sd) margin shift. Antithetic
+    pairing makes the sample mean of the shift EXACTLY zero, so the point
+    prediction (`margin_mean`) is unchanged to float precision — only the
+    band widens (mixture-of-normals: fatter tails than a scaled gaussian,
+    which is the honest shape of parameter uncertainty). The shift is applied
+    to the margin, not routed through the drive-rate curve, precisely so the
+    mean cannot move (the curve is nonlinear); first-order in a ~2-4 pt sd,
+    the two are the same thing. Totals are untouched: a net-strength error
+    moves the margin, not the combined scoring level. Draw the shift from
+    `param_rng` (a rng SEPARATE from `rng`) so the base drive simulation
+    consumes an identical random stream with or without sampling — that is
+    what makes before/after point predictions comparable run-to-run."""
     nh, na = pace.sample(rng, n)
     max_d = int(max(nh.max(), na.max()))
     p_home = rates.class_probs(e_home)
@@ -270,6 +307,13 @@ def simulate_game(rng, e_home: float, e_away: float, rates: DriveRateModel,
         total = total.copy()
         margin[tied] = ot_m
         total[tied] = total[tied] + ot_pts
+
+    if param_sd > 0.0:
+        prng = param_rng if param_rng is not None else rng
+        half = prng.standard_normal(n // 2)
+        shift = float(param_sd) * np.concatenate(
+            [half, -half] + ([np.zeros(1)] if n % 2 else []))
+        margin = margin.astype(float) + shift
 
     return {
         "margin": margin, "total": total,
@@ -338,8 +382,12 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
                                               bool(g.neutral_site))
                     except R.DisconnectedTeamError:
                         continue
-                    sim = simulate_game(rng, e_h, e_a, rates, pace, ot,
-                                        n=n_sims)
+                    psd = param_margin_sd(tbl, g.home_team, g.away_team)
+                    sim = simulate_game(
+                        rng, e_h, e_a, rates, pace, ot, n=n_sims,
+                        param_sd=psd,
+                        param_rng=(np.random.default_rng([seed, int(g.id)])
+                                   if psd > 0.0 else None))
                     rows.append({
                         "season": season, "week": w, "id": int(g.id),
                         "home": g.home_team, "away": g.away_team,
@@ -354,6 +402,7 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
                         "margin": float(g.margin),
                         "total": float(g.home_points + g.away_points),
                         "n_train_drives": pool_n,
+                        "param_sd": psd,
                     })
             labeled = label_week_drives(dw, gw, tbl)
             if len(labeled):
