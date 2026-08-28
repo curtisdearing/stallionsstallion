@@ -1,0 +1,313 @@
+{
+  "schema": "stallionsstallion.context_sources.v1",
+  "written": "2026-08-28",
+  "purpose": "Single manifest of every source the pregame-context layer may read. A source that is not `approved` here CANNOT emit a value, whatever code exists for it. Adding a new external provider or a new dependency requires an approval record in this file with a named approver, a date and a decision record; the layer refuses to run one otherwise.",
+  "rules": {
+    "display_only": "No source in this file may alter a projected margin, total or win probability. Factor promotion is governed exclusively by data/factor_registry.json.",
+    "approval_states": [
+      "approved",
+      "pending",
+      "not_requested",
+      "denied"
+    ],
+    "approval_required_for": [
+      "any source with `external: true`",
+      "any source needing a new python dependency",
+      "any source with a cost"
+    ],
+    "unavailable_is_a_value": "A source that is missing, stale, low-coverage, conflicting or unapproved renders as an explicit unavailable state. It is never imputed, defaulted or silently omitted."
+  },
+  "sources": {
+    "cfbd_games": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/games",
+      "cache": "data/cfbd/games_{season}.parquet",
+      "loader": "nflvalue.ingest.load_games",
+      "source_url_or_id": "https://api.collegefootballdata.com/games",
+      "max_age_hours": 36,
+      "min_coverage": 1.0,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-18",
+        "decision_record": "PHASE0_DECISIONS.md; already the schedule spine of the model"
+      },
+      "serves": [
+        "venue_context",
+        "rest_travel_bodyclock"
+      ]
+    },
+    "cfbd_teams": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/teams/fbs",
+      "cache": "data/cfbd/teams_{season}.parquet",
+      "loader": "nflvalue.ingest.load_teams",
+      "source_url_or_id": "https://api.collegefootballdata.com/teams/fbs",
+      "max_age_hours": 168,
+      "min_coverage": 1.0,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-18",
+        "decision_record": "PHASE0_DECISIONS.md; per-season conference lookup, never hardcoded"
+      },
+      "serves": [
+        "schedule_connectivity"
+      ]
+    },
+    "cfbd_talent": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/talent",
+      "cache": "data/cfbd/talent_{season}.parquet",
+      "loader": "nflvalue.ingest.load_talent",
+      "source_url_or_id": "https://api.collegefootballdata.com/talent",
+      "max_age_hours": 720,
+      "min_coverage": 0.9,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-18",
+        "decision_record": "gate 0; talent==0 is a MISSING sentinel (service academies), carried as unranked_recruiting, never as a low score"
+      },
+      "serves": [
+        "roster_and_talent"
+      ]
+    },
+    "cfbd_returning": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/player/returning",
+      "cache": "data/cfbd/returning_{season}.parquet",
+      "loader": "nflvalue.ingest.load_returning",
+      "source_url_or_id": "https://api.collegefootballdata.com/player/returning",
+      "max_age_hours": 720,
+      "min_coverage": 0.9,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-08-10",
+        "decision_record": "_worklog.md 2026-08-10: returning production landed for 2026 and was cached"
+      },
+      "serves": [
+        "roster_and_talent"
+      ]
+    },
+    "cfbd_lines_open": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/lines",
+      "cache": "data/cfbd/lines_{season}.parquet",
+      "loader": "nflvalue.ingest.load_lines",
+      "source_url_or_id": "https://api.collegefootballdata.com/lines",
+      "max_age_hours": 36,
+      "min_coverage": 0.5,
+      "calls_per_refresh": 1,
+      "line_kind": "open",
+      "closing_fields_forbidden": [
+        "spread_close",
+        "close",
+        "closing_spread",
+        "over_under_close",
+        "total_close",
+        "formatted_spread_close"
+      ],
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-30",
+        "decision_record": "OPENING PRICES ONLY, DIAGNOSTIC ONLY. The market blend FAILED out-of-sample twice and is disabled; this project carries a retraction for a CLV finding that was closing-line look-ahead (+0.8 fake pts vs +0.1/+0.27 honest). The closing line is denied to this layer by field denylist and by test."
+      },
+      "serves": [
+        "market_open_diagnostic"
+      ]
+    },
+    "cfbd_venues": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/venues",
+      "cache": "data/cfbd/venues.parquet",
+      "loader": null,
+      "source_url_or_id": "https://api.collegefootballdata.com/venues",
+      "max_age_hours": 8760,
+      "min_coverage": 0.9,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "not_requested",
+        "approved_by": null,
+        "approved_at": null,
+        "decision_record": "CFBDClient.venues() exists and costs 1 bulk call, but no venues cache is written yet. Approve + cache to turn on venue name, lat/lng, altitude and true travel distance. Until then the venue family renders unavailable and travel distance is not estimated."
+      },
+      "serves": [
+        "venue_context",
+        "rest_travel_bodyclock"
+      ],
+      "loader_planned": "nflvalue.ingest.load_venues (does not exist yet)"
+    },
+    "cfbd_coaches": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/coaches",
+      "cache": "data/cfbd/coaches_{season}.parquet",
+      "loader": "nflvalue.ingest.load_coaches",
+      "source_url_or_id": "https://api.collegefootballdata.com/coaches",
+      "max_age_hours": 720,
+      "min_coverage": 0.9,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-30",
+        "decision_record": "factor_battery coaching_change_y1; source approved but the 2026 season is NOT cached (newest file is coaches_2025.parquet), so the family renders unavailable_no_data until a refresh writes coaches_2026.parquet"
+      },
+      "serves": [
+        "coaching_continuity"
+      ]
+    },
+    "cfbd_portal": {
+      "provider": "CollegeFootballData",
+      "external": false,
+      "endpoint": "/player/portal",
+      "cache": "data/cfbd/portal_{season}.parquet",
+      "loader": null,
+      "source_url_or_id": "https://api.collegefootballdata.com/player/portal",
+      "max_age_hours": 720,
+      "min_coverage": 0.8,
+      "calls_per_refresh": 1,
+      "approval": {
+        "status": "not_requested",
+        "approved_by": null,
+        "approved_at": null,
+        "decision_record": "CFBDClient.portal() exists; nothing is cached and no portal effect has ever been measured by this project. Approve + cache to render net portal movement as display-only colour. It carries no effect estimate and must not acquire one outside the factor-registry gate."
+      },
+      "serves": [
+        "roster_and_talent"
+      ],
+      "loader_planned": "nflvalue.ingest.load_portal (does not exist yet)"
+    },
+    "qb_availability_feed": {
+      "provider": null,
+      "external": true,
+      "endpoint": null,
+      "cache": null,
+      "loader": null,
+      "source_url_or_id": null,
+      "max_age_hours": 12,
+      "min_coverage": 0.95,
+      "approval": {
+        "status": "not_requested",
+        "approved_by": null,
+        "approved_at": null,
+        "decision_record": "NO APPROVED SOURCE EXISTS for confirmed/probable QB availability. data/cfbd/qb_starts_*.parquet is a RETROSPECTIVE proxy that reads the week's starter from in-game attempts; factor_registry records that its effect (-3.52 pts) is inflated by in-game reverse causation, and the pregame-knowable variant backup_qb_pregame was REJECTED (p=0.075, n=745). Approving a live availability feed requires: a named provider, a written licence check, a stated update cadence, a confirmed/probable/doubtful/out vocabulary, and a pre-registered pregame evaluation. Until all five exist this family renders unavailable and NO availability adjustment is applied anywhere."
+      },
+      "requires": [
+        "named_provider",
+        "licence_check",
+        "update_cadence",
+        "status_vocabulary",
+        "pre_registered_evaluation"
+      ],
+      "serves": [
+        "qb_availability"
+      ]
+    },
+    "unit_availability_feed": {
+      "provider": null,
+      "external": true,
+      "endpoint": null,
+      "cache": null,
+      "loader": null,
+      "source_url_or_id": null,
+      "max_age_hours": 12,
+      "min_coverage": 0.9,
+      "approval": {
+        "status": "not_requested",
+        "approved_by": null,
+        "approved_at": null,
+        "decision_record": "NO APPROVED SOURCE for offensive-line or key-unit availability. research/situational-factors.md flags OL depth as plausibly underpriced; that is a hypothesis, not a measurement. Same five requirements as the QB feed."
+      },
+      "requires": [
+        "named_provider",
+        "licence_check",
+        "update_cadence",
+        "status_vocabulary",
+        "pre_registered_evaluation"
+      ],
+      "serves": [
+        "unit_availability"
+      ]
+    },
+    "weather_forecast": {
+      "provider": null,
+      "external": true,
+      "endpoint": null,
+      "cache": null,
+      "loader": null,
+      "source_url_or_id": null,
+      "max_age_hours": 6,
+      "min_coverage": 0.9,
+      "approval": {
+        "status": "not_requested",
+        "approved_by": null,
+        "approved_at": null,
+        "decision_record": "NO APPROVED FORECAST PROVIDER and no dependency added. CFBD's weather is OBSERVED, not forecast, and would be post-kickoff for a pregame packet. A forecast provider is a NEW EXTERNAL PROVIDER: it needs a named service, a licence/terms read, a stated refresh cadence, a forecast-issue-time field distinct from observed_at, venue coordinates (which need cfbd_venues first), and a pre-registered evaluation before any weather value could ever leave display-only. Wind, precipitation and temperature fields are contracted here so the panel can show them as unavailable rather than pretending the question was never asked."
+      },
+      "requires": [
+        "named_provider",
+        "licence_check",
+        "refresh_cadence",
+        "forecast_issued_at_field",
+        "venue_coordinates",
+        "pre_registered_evaluation"
+      ],
+      "serves": [
+        "weather_forecast"
+      ]
+    },
+    "model_ratings": {
+      "provider": "stallionsstallion",
+      "external": false,
+      "endpoint": null,
+      "cache": "data/ratings_{season}.parquet",
+      "loader": "nflvalue.engine.solve_table",
+      "source_url_or_id": "internal:ratings_table",
+      "max_age_hours": 168,
+      "min_coverage": 1.0,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-19",
+        "decision_record": "gate 2; the connectivity / rated-games / band figures the panel reports are read back OUT of the finished table, never fed into it"
+      },
+      "serves": [
+        "schedule_connectivity",
+        "venue_context"
+      ]
+    },
+    "model_drive_features": {
+      "provider": "stallionsstallion",
+      "external": false,
+      "endpoint": null,
+      "cache": "data/cfbd/plays_clean_{season}.parquet",
+      "loader": "nflvalue.ingest.load_plays_clean",
+      "source_url_or_id": "internal:walk_forward_drive_features",
+      "max_age_hours": 36,
+      "min_coverage": 0.8,
+      "approval": {
+        "status": "approved",
+        "approved_by": "Curtis Dearing",
+        "approved_at": "2026-07-30",
+        "decision_record": "factor_battery: finishing_drives_diff and field_position_diff both PASSED their gates and both remain display_only. Walk-forward only: prior weeks of the current season, never the game being described."
+      },
+      "serves": [
+        "five_factors"
+      ]
+    }
+  }
+}
