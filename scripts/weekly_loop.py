@@ -53,7 +53,8 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from nflvalue import cfb_ot, cfb_sim, explain, freshness, gameline as GL  # noqa: E402
-from nflvalue import engine as EG, ingest, ratings as R  # noqa: E402
+from nflvalue import cfb_calendar, engine as EG, ingest, ratings as R  # noqa: E402
+from nflvalue import snapshots as SN  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -63,10 +64,41 @@ LOCK_STALE_HOURS = 2.0
 BUDGET_HEADROOM = 50
 SEED = 20260730
 HISTORY_START = 2019
+REFRESH_CALLS = 25
+
+# Ordered stages per job.  `pregame` deliberately has NO refresh stage: its
+# repeat-suppression is decided from the snapshot store (nflvalue/snapshots.py),
+# so running it five times between Tuesday and Saturday costs zero CFBD calls.
+JOB_STAGES = {
+    "week-open": ("refresh", "freshness", "refit", "honesty", "simulate",
+                  "notify"),
+    "pregame": ("freshness", "simulate", "notify"),
+    "grade": ("refresh", "freshness", "honesty", "recap", "clv_capture",
+              "notify"),
+}
+
+# Jobs whose "already done this week" sentinel is meaningful.  pregame is
+# excluded on purpose: a per-week sentinel is exactly the bug that stopped a
+# Saturday run from reacting to a Friday injury report or to a slate kicking
+# off.  Its idempotency is fingerprint-based instead.
+SENTINEL_JOBS = ("week-open", "grade")
+
+
+def projected_calls(job: str) -> int:
+    """CFBD calls a job may spend, for the budget guard."""
+    return REFRESH_CALLS if "refresh" in JOB_STAGES[job] else 0
+
+
+def sentinel_applies(job: str, stage: str) -> bool:
+    return job in SENTINEL_JOBS and stage != "notify"
 
 
 class LoopError(RuntimeError):
     pass
+
+
+KICKED_OFF_NOTE = ("KICKED OFF: the pregame window for this game closed; its "
+                   "frozen pregame snapshot stands")
 
 
 def utcstamp() -> str:
@@ -142,14 +174,100 @@ def sentinel_path(season: int, week: int, stage: str) -> str:
     return os.path.join(MANIFESTS, f"_done_{season}_wk{week:02d}_{stage}")
 
 
-def stage_done(season: int, week: int, stage: str) -> bool:
-    return os.path.exists(sentinel_path(season, week, stage))
+def stage_done(season: int, week: int, stage: str,
+               fingerprint: str = None) -> bool:
+    """Has this stage already run for this week?
+
+    With a `fingerprint`, the sentinel is honoured only while that fingerprint
+    still matches — which is how `grade` reopens as more games go final instead
+    of staying "done" for the rest of the week.
+    """
+    path = sentinel_path(season, week, stage)
+    if not os.path.exists(path):
+        return False
+    if fingerprint is None:
+        return True
+    try:
+        with open(path) as fh:
+            stored = json.load(fh).get("fingerprint")
+    except (OSError, ValueError):
+        return False        # pre-fingerprint sentinel: re-run rather than guess
+    return stored == fingerprint
 
 
-def mark_done(season: int, week: int, stage: str) -> None:
+def mark_done(season: int, week: int, stage: str,
+              fingerprint: str = None) -> None:
     os.makedirs(MANIFESTS, exist_ok=True)
     with open(sentinel_path(season, week, stage), "w") as fh:
-        fh.write(utcstamp() + "\n")
+        json.dump({"utc": utcstamp(), "fingerprint": fingerprint}, fh)
+
+
+def finals_fingerprint(games: pd.DataFrame, week: int) -> str:
+    """Digest of which games in `week` have final scores.
+
+    Moves the moment another game goes final, so an interrupted grade run — or
+    one that ran before the night slate finished — reopens instead of being
+    suppressed for the rest of the week.
+    """
+    if games is None or games.empty:
+        return SN.source_digest({"finals": []})
+    wk = games[games["week"] == week] if "week" in games.columns else games
+    done = wk[wk["home_points"].notna() & wk["away_points"].notna()]
+    rows = sorted([int(r.id), float(r.home_points), float(r.away_points)]
+                  for r in done.itertuples())
+    return SN.source_digest({"finals": rows})
+
+
+def loop_version() -> dict:
+    """Code+config identity: a change here may legitimately move a forecast."""
+    return {"config_hash": config_hash(), "git_sha": git_sha(), "seed": SEED}
+
+
+def simulatable_ids(games: pd.DataFrame, now: datetime) -> list:
+    """Games that may still be forecast: kickoff strictly in the future.
+
+    BUILD_SPEC section 0.4 — a "pregame" number computed after kickoff is not a
+    pregame number.  This filter is what makes that structural rather than
+    aspirational.
+    """
+    return SN.pending_game_ids(games, now)
+
+
+def pregame_decision(season: int, week: int, *, games: pd.DataFrame = None,
+                     degraded: bool = False, now: datetime = None,
+                     force: bool = False) -> dict:
+    """Should this pregame tick do real work?
+
+    Pure and free: reads the schedule already on disk plus the snapshot store,
+    and spends no API budget.
+    """
+    now = now or datetime.now(timezone.utc)
+    if games is None:
+        games = ingest.load_games([season])
+    wk = games[games["week"] == week] if "week" in games.columns else games
+    digest, _ = SN.collect_source_digest(DATA, season, week, games,
+                                         version=loop_version())
+    window = SN.kickoff_window(wk, now)
+    out = SN.decide(DATA, season, week, source_digest=digest, window=window,
+                    degraded=degraded, force=force)
+    out.update({"source_digest": digest, "window": window,
+                "n_pending": len(SN.pending_game_ids(wk, now))})
+    return out
+
+
+def assemble_week_artifact(season: int, week: int, schedule: pd.DataFrame,
+                           simulated: dict, refusals: dict, now: datetime,
+                           data_dir: str = None) -> tuple:
+    """Full-schedule rows for the week, with started games frozen verbatim.
+
+    Order matters: freeze BEFORE splicing, and freeze only from snapshots taken
+    strictly before each game's own kickoff, so a started game's published
+    number provably predates that kickoff.
+    """
+    data_dir = data_dir or DATA
+    rows = week_prediction_rows(season, week, schedule, simulated, refusals)
+    SN.freeze_kicked_off(data_dir, season, week, schedule, now)
+    return SN.apply_frozen(rows, SN.load_frozen(data_dir, season, week))
 
 
 # --------------------------------------------------------------------------- #
@@ -277,12 +395,13 @@ def week_prediction_rows(season: int, week: int, upcoming: pd.DataFrame,
     rows = []
     for game in upcoming.sort_values(["start_date", "id"], kind="mergesort").itertuples():
         game_id = int(game.id)
-        date = str(game.start_date)[:10]
+        slate, date = cfb_calendar.public_slate(
+            season, week, getattr(game, "start_date"))
         row = {
             "season": season,
             "week": week,
             "id": game_id,
-            "slate": "wk0" if week == 1 and date < f"{season}-09-01" else f"wk{week}",
+            "slate": slate,
             "date": date,
             "home": str(game.home_team),
             "away": str(game.away_team),
@@ -325,16 +444,37 @@ def week_prediction_rows(season: int, week: int, upcoming: pd.DataFrame,
     return pd.DataFrame(rows)
 
 
-def stage_simulate(season: int, week: int) -> dict:
-    """Simulate the upcoming week and render its explainer. Paper-only."""
+def stage_simulate(season: int, week: int, *, now: datetime = None,
+                   decision: dict = None, degraded: bool = False,
+                   degraded_reason: str = None) -> dict:
+    """Forecast the week, render its explainer, and leave an immutable
+    snapshot behind. Paper-only.
+
+    The published artifact covers the WHOLE week's schedule, not just its
+    unplayed games: a game that has already kicked off keeps the final pregame
+    row it was published with (frozen, with provenance) instead of silently
+    vanishing from the file the scoreboard later grades.
+    """
+    now = now or datetime.now(timezone.utc)
     params = R.load_params()
     seasons = list(range(HISTORY_START, season + 1))
     games = R.game_frame(seasons)
     upcoming_all = ingest.load_games([season])
-    upcoming = upcoming_all[(upcoming_all["week"] == week)
-                            & upcoming_all["home_points"].isna()]
-    if upcoming.empty:
-        return {"n": 0, "note": "no unplayed games in target week"}
+    # DENOMINATOR: every scheduled game in the week, played or not.
+    schedule = upcoming_all[upcoming_all["week"] == week]
+    if schedule.empty:
+        return {"n": 0, "note": "no games scheduled in target week"}
+    # NUMERATOR: only games that are still genuinely pregame may be simulated.
+    live = set(simulatable_ids(schedule, now)) & set(
+        int(i) for i in schedule.loc[schedule["home_points"].isna(), "id"])
+    if not live:
+        rows, n_frozen = assemble_week_artifact(
+            season, week, schedule, {},
+            {int(g.id): KICKED_OFF_NOTE for g in schedule.itertuples()}, now)
+        return _publish_week(season, week, rows, None, now, decision,
+                             degraded, degraded_reason, schedule,
+                             n_sim=0, skipped=int(len(schedule)),
+                             n_frozen=n_frozen)
     drives = ingest.load_drives(seasons)
     drives_c, _ = cfb_sim.classify_drives(drives)
     drives_c = drives_c[drives_c["start_period"] <= 4]
@@ -366,9 +506,16 @@ def stage_simulate(season: int, week: int) -> dict:
     model_mae = float((bt["mc_margin"] - bt["margin"]).abs().mean())
     clv = pd.read_csv(os.path.join(DATA, "clv_log_backtest.csv"))
     clv_slices = clv.groupby("slice")["clv_pts"].agg(["count", "mean"])
-    for g in upcoming.itertuples():
+    for g in schedule.itertuples():
         game_id = int(g.id)
         home, away = str(g.home_team), str(g.away_team)
+        if game_id not in live:
+            # Already kicked off (or already final). Never compute a "pregame"
+            # number now — the frozen pre-kickoff snapshot is the only honest
+            # answer, and assemble_week_artifact splices it back in.
+            skipped += 1
+            refusals[game_id] = KICKED_OFF_NOTE
+            continue
         if bool(g.home_fcs) or bool(g.away_fcs):
             skipped += 1
             continue
@@ -400,22 +547,61 @@ def stage_simulate(season: int, week: int) -> dict:
             slice_tag=GL.slice_tag(conf.get(home, ""), conf.get(away, ""),
                                    week, bool(g.neutral_site)),
             clv_slices=clv_slices))
-    artifact_rows = week_prediction_rows(season, week, upcoming, simulated, refusals)
-    artifact_rows.to_csv(
-        os.path.join(DATA, f"predictions_{season}_wk{week:02d}.csv"),
-        index=False)
+    artifact_rows, n_frozen = assemble_week_artifact(
+        season, week, schedule, simulated, refusals, now)
+
+    html_text = None
     if simulated:
         html_text = explain.render_week_html(
             exps, clv_slices=clv_slices,
             title=f"stallionsstallion — {season} week {week} (upcoming)",
             generated_note=(f"weekly loop {utcstamp()}; {len(simulated)} games, "
-                            f"{skipped} refused as unratable"))
+                            f"{skipped} refused or past kickoff, "
+                            f"{n_frozen} frozen at kickoff"))
         with open(os.path.join(DATA,
                                f"explainer_{season}_wk{week:02d}.html"),
                   "w") as fh:
             fh.write(html_text)
-    return {"n": len(simulated), "skipped": skipped,
-            "n_schedule": len(artifact_rows)}
+
+    return _publish_week(season, week, artifact_rows, html_text, now, decision,
+                         degraded, degraded_reason, schedule,
+                         n_sim=len(simulated), skipped=skipped,
+                         n_frozen=n_frozen)
+
+
+def _publish_week(season: int, week: int, rows: pd.DataFrame,
+                  html_text, now: datetime, decision: dict, degraded: bool,
+                  degraded_reason: str, schedule: pd.DataFrame,
+                  *, n_sim: int, skipped: int, n_frozen: int) -> dict:
+    """Immutable snapshot first, then the flat `latest` file the site reads.
+
+    The snapshot is the record; the flat artifact is a convenience copy of the
+    newest snapshot and is the only thing ever overwritten.  Written via
+    tmp + os.replace so a crash cannot leave a half-file where the hub reads.
+    """
+    if decision is None:
+        digest, _ = SN.collect_source_digest(
+            DATA, season, week, schedule, version=loop_version())
+        window = SN.kickoff_window(schedule, now)
+    else:
+        digest, window = decision["source_digest"], decision["window"]
+
+    snap = SN.write_snapshot(
+        DATA, season, week, utcstamp(), rows,
+        source_digest=digest, window=window, degraded=degraded,
+        degraded_reason=degraded_reason, taken_at=now,
+        explainer_html=html_text)
+
+    latest_csv = os.path.join(DATA, f"predictions_{season}_wk{week:02d}.csv")
+    tmp = latest_csv + ".tmp"
+    pd.read_csv(os.path.join(snap["path"], "predictions.csv")).to_csv(
+        tmp, index=False)
+    os.replace(tmp, latest_csv)
+
+    return {"n": n_sim, "skipped": skipped, "n_schedule": len(rows),
+            "n_scheduled_games": int(len(schedule)), "n_frozen": n_frozen,
+            "snapshot": snap["stamp"], "window": window,
+            "source_digest": digest, "degraded": bool(degraded)}
 
 
 def stage_recap(season: int, week: int) -> dict:
@@ -525,14 +711,20 @@ def run(job: str, force_week: int = None) -> int:
     if not acquire_lock(job):
         return 0
     try:
-        stages = {"week-open": ("refresh", "freshness", "refit", "honesty",
-                                "simulate", "notify"),
-                  "pregame": ("freshness", "simulate", "notify"),
-                  "grade": ("refresh", "freshness", "honesty", "recap",
-                            "clv_capture", "notify")}[job]
-        stage_budget_guard(25 if "refresh" in stages else 0)
+        stages = JOB_STAGES[job]
+        stage_budget_guard(projected_calls(job))
+        grade_fp = None
+        if job == "grade":
+            try:
+                grade_fp = finals_fingerprint(ingest.load_games([season]),
+                                              week - 1)
+            except Exception:  # noqa: BLE001
+                grade_fp = None     # cannot fingerprint -> re-run, never skip
+        decision = None
         for st in stages:
-            if st != "notify" and stage_done(season, week, f"{job}_{st}"):
+            if (sentinel_applies(job, st)
+                    and stage_done(season, week, f"{job}_{st}",
+                                   fingerprint=grade_fp)):
                 manifest["stages"][st] = {"ok": True, "note": "sentinel: done earlier"}
                 continue
             try:
@@ -552,12 +744,28 @@ def run(job: str, force_week: int = None) -> int:
                 elif st == "clv_capture":
                     out = stage_clv_capture(season, week)
                 elif st == "simulate":
-                    out = stage_simulate(season, week)
+                    if job == "pregame":
+                        decision = pregame_decision(
+                            season, week, degraded=manifest["degraded"])
+                        manifest["decision"] = {
+                            k: decision.get(k) for k in
+                            ("run", "reason", "window", "source_digest",
+                             "n_pending")}
+                        if not decision["run"]:
+                            manifest["stages"][st] = {
+                                "ok": True, "skipped": True,
+                                "reason": decision["reason"]}
+                            continue
+                    out = stage_simulate(
+                        season, week, decision=decision,
+                        degraded=manifest["degraded"],
+                        degraded_reason=("freshness gate did not pass"
+                                         if manifest["degraded"] else None))
                 else:
                     out = notify(manifest)
                 manifest["stages"][st] = {"ok": True, **out}
-                if st != "notify":
-                    mark_done(season, week, f"{job}_{st}")
+                if sentinel_applies(job, st):
+                    mark_done(season, week, f"{job}_{st}", fingerprint=grade_fp)
             except Exception as exc:  # noqa: BLE001
                 manifest["stages"][st] = {"ok": False, "error": str(exc)[:300]}
                 manifest["degraded"] = True
