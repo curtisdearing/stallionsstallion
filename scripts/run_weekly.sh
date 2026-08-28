@@ -24,16 +24,37 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="$LOG_DIR/${JOB}_${STAMP}.log"
 mkdir -p "$LOG_DIR"
 
+# launchd resolves /usr/bin/python3 on macOS (currently 3.9), while this CFB
+# pipeline uses Python 3.11 syntax.  Permit an explicit override but prefer
+# the Homebrew interpreter installed for this Mac and fail before any API work.
+PYTHON="${STALLIONS_PYTHON:-/opt/homebrew/opt/python@3.11/bin/python3.11}"
+if [ ! -x "$PYTHON" ]; then
+  PYTHON="$(command -v python3.11 || true)"
+fi
+if [ -z "$PYTHON" ] || ! "$PYTHON" -c 'import sys; raise SystemExit(sys.version_info < (3, 11))'; then
+  echo "[runner] requires Python 3.11+; install Homebrew python@3.11 or set STALLIONS_PYTHON" | tee -a "$LOG"
+  exit 1
+fi
+
 # One-time venv bootstrap; self-heals if an OS update breaks the interpreter.
 if [ ! -x "$VENV/bin/python3" ]; then
   echo "[runner] creating venv" | tee -a "$LOG"
-  /usr/bin/env python3 -m venv "$VENV"
+  "$PYTHON" -m venv "$VENV"
   "$VENV/bin/pip" install -q --upgrade pip
-  "$VENV/bin/pip" install -q -r "$REPO/requirements.txt"
+  "$VENV/bin/pip" install -q -r "$REPO/requirements-weekly.txt"
+fi
+# A prior runner release could have created this venv with macOS's Python 3.9.
+# Recreate rather than discovering an incompatible interpreter after scheduling.
+if ! "$VENV/bin/python3" -c 'import sys; raise SystemExit(sys.version_info < (3, 11))'; then
+  echo "[runner] recreating venv with Python 3.11+" | tee -a "$LOG"
+  rm -rf "$VENV"
+  "$PYTHON" -m venv "$VENV"
+  "$VENV/bin/pip" install -q --upgrade pip
+  "$VENV/bin/pip" install -q -r "$REPO/requirements-weekly.txt"
 fi
 # Dep sanity — fail loud BEFORE touching the API budget.
-"$VENV/bin/python3" - <<'PY' || { echo "[runner] deps broken — reinstalling" | tee -a "$LOG"; "$VENV/bin/pip" install -q -r "$REPO/requirements.txt"; }
-import pandas, pyarrow, numpy, scipy
+"$VENV/bin/python3" - <<'PY' || { echo "[runner] deps broken — reinstalling" | tee -a "$LOG"; "$VENV/bin/pip" install -q -r "$REPO/requirements-weekly.txt"; }
+import pandas, pyarrow, numpy
 PY
 
 cd "$REPO"

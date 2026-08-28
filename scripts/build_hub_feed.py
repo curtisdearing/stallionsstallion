@@ -148,9 +148,9 @@ def main() -> int:
             "season": season, "week": week,
             "n_games": len(games), "n_priced": len(priced),
             "n_vetoed": len(games) - len(priced),
-            "veto_note": ("Vetoed games are refused, not guessed at: "
-                          "FBS-vs-FCS and unratable teams stay unpriced "
-                          "by design."),
+            "veto_note": ("Vetoed games are refused, not guessed at: unsupported "
+                          "cross-/lower-division matchups and unratable teams "
+                          "stay unpriced by design."),
             "games": games,
         }
         feed["record"] = _season_record(season)

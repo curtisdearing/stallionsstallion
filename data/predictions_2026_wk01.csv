@@ -1,212 +1,409 @@
-slate,date,home,away,neutral,pred_margin,p_home_win,band_pm,veto,note
-wk0,2026-08-27,Morehead State,Ohio Dominican,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Towson,Maine,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Delaware State,Stony Brook,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Youngstown State,Mercyhurst,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Elon,Glenville State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Murray State,Eastern Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Austin Peay,Gardner-Webb,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Lindenwood,Charleston Southern,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Western Illinois,Northwestern (IA),False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,West Georgia,Chattanooga,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Presbyterian,UVA Wise,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,St. Thomas (MN),Winona State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,SE Louisiana,Houston Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Nicholls,Mississippi Valley State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,West Florida,Southern Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Davidson,Concord University,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,UT Martin,Central Arkansas,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-27,Drake,South Dakota Mines,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,North Dakota,Long Island University,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,Northwestern State,Louisiana College,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,Merrimack,Rhode Island,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,Villanova,William & Mary,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,New Haven,Marist,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-28,UAlbany,New Hampshire,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Cal Poly,Idaho,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Wagner,Robert Morris,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Lamar,Abilene Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Chicago State,Roosevelt,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,TCU,North Carolina,True,6.3,0.648,3.0,False,
-wk0,2026-08-29,Dayton,Fairmont State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Butler,Georgetown College Kentucky,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Valparaiso,Lawrence Tech,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,South Dakota,Central Connecticut,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,USC,San José State,False,29.1,0.96,3.0,False,
-wk0,2026-08-29,Portland State,UC Davis,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Alabama State,Southern,True,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Virginia,NC State,False,-2.1,0.449,3.0,False,
-wk0,2026-08-29,Holy Cross,Lehigh,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Northern Arizona,Eastern Washington,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,North Dakota State,Jacksonville State,False,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
-wk0,2026-08-29,East Tennessee State,Campbell,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Hampton,Virginia University Of Lynchburg,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,North Carolina A&T,Morgan State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Stonehill,Bryant,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Indiana State,Southeast Missouri State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Norfolk State,Winston-Salem,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,South Carolina State,Savannah St,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Richmond,Bucknell,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Fordham,Colgate,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Idaho State,VMI,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Wofford,The Citadel,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Eastern Michigan,Sacramento State,False,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
-wk0,2026-08-29,Stanford,Hawai'i,False,5.9,0.638,3.0,False,
-wk0,2026-08-29,Florida State,New Mexico State,False,26.1,0.941,3.0,False,
-wk0,2026-08-29,Tennessee Tech,Monmouth,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Texas Southern,North Carolina Central,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Georgetown,Lafayette,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Western Carolina,Eastern Kentucky,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,North Alabama,Samford,True,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,McNeese,Stephen F. Austin,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Furman,Anderson (Sc),False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Arkansas-Pine Bluff,Morehouse College,True,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Florida A&M,Albany State GA,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Grambling,Clark Atlanta,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,South Dakota State,Stetson,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Mercer,East Texas A&M,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Illinois State,St Francis Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Alcorn State,Miles College,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-29,Howard,Alabama A&M,True,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,UT Rio Grande Valley,UT Permian Basin,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,Tennessee State,Jackson State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,Montana,Southern Utah,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,Northern Colorado,Weber State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,Tarleton State,Prairie View A&M,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk0,2026-08-30,UNLV,Memphis,False,2.2,0.551,3.0,False,
-wk0,2026-08-30,Utah Tech,Montana State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Samford,Southern Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Morehead State,Kentucky Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Rutgers,Massachusetts,False,38.5,0.99,3.0,False,
-wk1,2026-09-03,UCF,Bethune-Cookman,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Wake Forest,Akron,False,17.2,0.849,3.0,False,
-wk1,2026-09-03,Delaware,Merrimack,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Kennesaw State,West Georgia,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Buffalo,UAlbany,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Stony Brook,Lindenwood,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-03,Beloit,Rockford,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Missouri,Arkansas-Pine Bluff,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Georgia Tech,Colorado,False,5.9,0.638,3.0,False,
-wk1,2026-09-04,Minnesota,Eastern Illinois,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Utah,Idaho,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Illinois,UAB,False,14.5,0.808,3.0,False,
-wk1,2026-09-04,Eastern Michigan,San José State,False,0.9,0.52,3.1,False,
-wk1,2026-09-04,Purdue,Indiana State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Georgia State,North Carolina A&T,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-04,Marist,Franklin Pierce,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Oklahoma,UTEP,False,35.4,0.983,3.0,False,
-wk1,2026-09-05,Kansas,Long Island University,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Michigan State,Toledo,False,5.6,0.632,3.0,False,
-wk1,2026-09-05,Stanford,Miami,False,-12.5,0.227,3.0,False,
-wk1,2026-09-05,USC,Fresno State,False,22.2,0.909,3.0,False,
-wk1,2026-09-05,New Haven,Stonehill,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Wagner,Southern Connecticut State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Howard,Richmond,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Stetson,Webber International,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Alabama,East Carolina,False,27.4,0.95,3.0,False,
-wk1,2026-09-05,Houston,Oregon State,False,11.3,0.751,3.1,False,
-wk1,2026-09-05,West Virginia,Coastal Carolina,False,12.2,0.769,3.0,False,
-wk1,2026-09-05,Pittsburgh,Miami (OH),False,17.8,0.857,3.0,False,
-wk1,2026-09-05,Syracuse,New Hampshire,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Indiana,North Texas,False,19.7,0.882,3.0,False,
-wk1,2026-09-05,Nebraska,Ohio,False,14.5,0.807,3.0,False,
-wk1,2026-09-05,UConn,Lafayette,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Army,Bryant,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Bowling Green,Tarleton State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,East Tennessee State,Greeneville,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,James Madison,Liberty,False,14.3,0.804,3.1,False,
-wk1,2026-09-05,Ohio State,Ball State,False,48.6,0.998,3.0,False,
-wk1,2026-09-05,Georgetown,Lehigh,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,South Carolina,Kent State,False,32.9,0.976,3.0,False,
-wk1,2026-09-05,Kentucky,Youngstown State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Iowa State,Southeast Missouri State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Air Force,Duquesne,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Colgate,Holy Cross,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Puget Sound,Lewis & Clark College,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Kean,SUNY Morrisville,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Wofford,Gardner-Webb,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Temple,Rhode Island,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Monmouth,Sacred Heart,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Georgia,Tennessee State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Montana,Drake,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Auburn,Baylor,True,-0.1,0.497,3.0,False,
-wk1,2026-09-05,Tennessee,Furman,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Texas,Texas State,False,27.3,0.949,3.0,False,
-wk1,2026-09-05,Cincinnati,Boston College,False,10.3,0.731,3.0,False,
-wk1,2026-09-05,Duke,Tulane,False,3.0,0.571,3.0,False,
-wk1,2026-09-05,Oregon,Boise State,False,22.3,0.909,3.0,False,
-wk1,2026-09-05,Penn State,Marshall,False,17.2,0.849,3.0,False,
-wk1,2026-09-05,Charlotte,The Citadel,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Navy,Towson,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,UTSA,UT Rio Grande Valley,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,North Dakota State,Fordham,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Campbell,Western Carolina,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,App State,Maine,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Tulsa,Oklahoma State,False,-4.4,0.395,3.0,False,
-wk1,2026-09-05,North Dakota,St. Thomas (MN),False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Arkansas,North Alabama,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Iowa,Northern Illinois,False,24.0,0.925,3.0,False,
-wk1,2026-09-05,Southern Miss,Alcorn State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Colorado State,Wyoming,False,-0.0,0.5,3.1,False,
-wk1,2026-09-05,Davidson,Elon,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,William & Mary,Delaware State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Robert Morris,West Virginia State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Old Dominion,Norfolk State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,North Carolina Central,Elizabeth City State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Bucknell,Villanova,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Mercer,Presbyterian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Alabama State,Lane College,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Chattanooga,Tennessee Tech,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Texas A&M,Missouri State,False,30.5,0.966,3.8,False,
-wk1,2026-09-05,Vanderbilt,Austin Peay,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Texas Tech,Abilene Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Kansas State,Nicholls,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Utah State,Idaho State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Memphis,Arkansas State,False,15.1,0.817,3.0,False,
-wk1,2026-09-05,Rice,Houston Christian,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,South Florida,Florida International,False,16.5,0.839,3.0,False,
-wk1,2026-09-05,UT Martin,Chicago State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Western Illinois,Illinois State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Middle Tennessee,Murray State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Central Arkansas,West Florida,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Eastern Washington,Northern Iowa,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Jacksonville State,Eastern Kentucky,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Georgia Southern,Charleston Southern,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Alabama A&M,Miles College,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,South Alabama,SE Louisiana,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Grambling,Central State (OH),False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Jackson State,Edward Waters,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Southern,Kentucky State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,McNeese,Texas Wesleyan,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Troy,Sam Houston,False,8.6,0.698,3.1,False,
-wk1,2026-09-05,LSU,Clemson,False,3.2,0.575,3.0,False,
-wk1,2026-09-05,Mississippi State,UL Monroe,False,23.1,0.917,3.0,False,
-wk1,2026-09-05,Virginia Tech,VMI,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Michigan,Western Michigan,False,25.8,0.939,3.0,False,
-wk1,2026-09-05,Louisiana Tech,Northwestern State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-05,Florida,Florida Atlantic,False,20.1,0.886,3.0,False,
-wk1,2026-09-06,BYU,Utah Tech,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Maryland,Hampton,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Northwestern,South Dakota State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Northern Colorado,South Dakota,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Cal Poly,Central Washington,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Southern Utah,Weber State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Stephen F. Austin,East Texas A&M,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Louisiana,Lamar,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Montana State,Butler,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Arizona State,Morgan State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,New Mexico State,Mercyhurst,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Arizona,Northern Arizona,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,San Diego State,Portland State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Hawai'i,UNLV,False,0.2,0.505,3.0,False,
-wk1,2026-09-06,New Mexico,Central Michigan,False,7.1,0.665,3.0,False,
-wk1,2026-09-06,Sacramento State,Mississippi Valley State,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,San Diego,UC Davis,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,California,UCLA,False,1.6,0.538,3.0,False,
-wk1,2026-09-06,Nevada,Western Kentucky,False,-5.0,0.382,3.0,False,
-wk1,2026-09-06,Prairie View A&M,Texas Southern,False,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Florida A&M,South Carolina State,True,,,,True,"FBS-vs-FCS: not priced, by design"
-wk1,2026-09-06,Washington,Washington State,False,13.4,0.79,3.1,False,
-wk1,2026-09-06,Ole Miss,Louisville,True,8.1,0.686,3.0,False,
-wk1,2026-09-06,Notre Dame,Wisconsin,True,11.2,0.75,3.1,False,
-wk1,2026-09-07,Florida State,SMU,False,-1.6,0.461,3.0,False,
+season,week,id,slate,date,home,away,neutral,mc_margin,mc_margin_sd,mc_total,p_home_win,param_sd,pred_margin,band_pm,veto,note
+2026,1,401906839,wk0,2026-08-27,Kentucky Christian,Kentucky Wesleyan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907195,wk0,2026-08-27,Indianapolis,Marian (IN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868016,wk0,2026-08-27,Georgetown,Lafayette,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907536,wk0,2026-08-27,Seton Hill,East Stroudsburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907161,wk0,2026-08-28,West Texas,Western Colorado,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866617,wk0,2026-08-28,Merrimack,Rhode Island,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868007,wk0,2026-08-28,Fordham,Colgate,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868040,wk0,2026-08-28,Villanova,William & Mary,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868261,wk0,2026-08-28,New Haven,Marist,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906145,wk0,2026-08-28,Lenoir Rhyne,Virginia Union,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866616,wk0,2026-08-28,UAlbany,New Hampshire,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868129,wk0,2026-08-29,Northern Colorado,Weber State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868073,wk0,2026-08-29,Cal Poly,Idaho,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856766,wk0,2026-08-29,TCU,North Carolina,True,9.783,18.202151847903043,51.1295,0.70225,10.349586811383825,9.783,18.202151847903043,False,
+2026,1,401867916,wk0,2026-08-29,Wagner,Robert Morris,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868792,wk0,2026-08-29,Dayton,Fairmont State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401869156,wk0,2026-08-29,Chicago State,Roosevelt,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906177,wk0,2026-08-29,West Virginia State,Chowan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906641,wk0,2026-08-29,Wheeling,Thomas More,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907012,wk0,2026-08-29,Davenport,Gannon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868209,wk0,2026-08-29,Butler,Georgetown College Kentucky,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906126,wk0,2026-08-29,Elizabeth City State,Fort Valley State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906205,wk0,2026-08-29,Shorter,Andrew,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906588,wk0,2026-08-29,Northeastern State,Delta State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907150,wk0,2026-08-29,William Jewell,Fort Lewis,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907454,wk0,2026-08-29,American International,Monroe,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907576,wk0,2026-08-29,West Virginia Wesleyan,Post,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907631,wk0,2026-08-29,Shippensburg,Lock Haven,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906185,wk0,2026-08-29,BLUEFIELD,Erskine,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867882,wk0,2026-08-29,South Dakota,Central Connecticut,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868288,wk0,2026-08-29,Valparaiso,Lawrence Tech,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907137,wk0,2026-08-29,Colorado School of Mines,Western Oregon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401864494,wk0,2026-08-29,USC,San José State,False,20.4745,19.026221806924625,52.5285,0.86625,10.366315912542122,20.4745,19.026221806924625,False,
+2026,1,401868154,wk0,2026-08-29,Portland State,UC Davis,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868324,wk0,2026-08-29,Alabama State,Southern,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906949,wk0,2026-08-29,Central State,Kentucky State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907246,wk0,2026-08-29,Upper Iowa,Jamestown,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858202,wk0,2026-08-29,Virginia,NC State,False,5.32775,18.34567610985185,50.36075,0.617,10.354909454883515,5.32775,18.34567610985185,False,
+2026,1,401868022,wk0,2026-08-29,Holy Cross,Lehigh,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868084,wk0,2026-08-29,Northern Arizona,Eastern Washington,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906157,wk0,2026-08-29,Benedict,Johnson C. Smith,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401864577,wk0,2026-08-29,North Dakota State,Jacksonville State,False,,,,,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
+2026,1,401866620,wk0,2026-08-29,East Tennessee State,Campbell,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866613,wk0,2026-08-29,Hampton,Virginia Lynchburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866618,wk0,2026-08-29,North Carolina A&T,Morgan State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866619,wk0,2026-08-29,Stonehill,Bryant,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867855,wk0,2026-08-29,Indiana State,Southeast Missouri State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867972,wk0,2026-08-29,Norfolk State,Winston-Salem State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867982,wk0,2026-08-29,South Carolina State,Savannah State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867988,wk0,2026-08-29,Richmond,Bucknell,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868101,wk0,2026-08-29,Idaho State,VMI,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868394,wk0,2026-08-29,Wofford,The Citadel,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906151,wk0,2026-08-29,Fayetteville State,Shaw,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906162,wk0,2026-08-29,Livingstone,Allen,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906956,wk0,2026-08-29,Edward Waters,Florida Memorial University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907403,wk0,2026-08-29,Ferrum,Catawba,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866408,wk0,2026-08-29,Eastern Michigan,Sacramento State,False,,,,,,,,True,NO RATING (DisconnectedTeamError): new-to-FBS or unseen team
+2026,1,401858201,wk0,2026-08-29,Stanford,Hawai'i,False,3.1047499999999997,18.541696934081394,51.13575,0.5695,10.406051282766244,3.1047499999999997,18.541696934081394,False,
+2026,1,401864570,wk0,2026-08-29,Florida State,New Mexico State,False,20.9665,18.428116021079543,52.6605,0.875,10.347754409405841,20.9665,18.428116021079543,False,
+2026,1,401866621,wk0,2026-08-29,Tennessee Tech,Monmouth,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867977,wk0,2026-08-29,Texas Southern,North Carolina Central,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868049,wk0,2026-08-29,Lamar,Abilene Christian,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868139,wk0,2026-08-29,Western Carolina,Eastern Kentucky,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868149,wk0,2026-08-29,North Alabama,Samford,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868305,wk0,2026-08-29,McNeese,Stephen F. Austin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868934,wk0,2026-08-29,Arkansas-Pine Bluff,Morehouse,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868948,wk0,2026-08-29,Florida A&M,Albany State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868952,wk0,2026-08-29,Grambling,Clark Atlanta,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401872615,wk0,2026-08-29,South Dakota State,Stetson,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401874042,wk0,2026-08-29,Mercer,East Texas A&M,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401891332,wk0,2026-08-29,Illinois State,St. Francis (IL),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401896385,wk0,2026-08-29,Alcorn State,Miles,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907204,wk0,2026-08-29,Lincoln (MO),Central Methodist,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907219,wk0,2026-08-29,Missouri S&T,Westgate Christian University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907243,wk0,2026-08-29,Truman State,Washburn,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907297,wk0,2026-08-29,Midwestern State,Missouri Southern State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401913104,wk0,2026-08-29,Incarnate Word,Oklahoma Panhandle,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867935,wk0,2026-08-29,Howard,Alabama A&M,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868245,wk0,2026-08-30,UT Rio Grande Valley,UT Permian Basin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907308,wk0,2026-08-30,Texas A&M-Kingsville,Northwest Missouri State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907324,wk0,2026-08-30,Bethel University Tennessee,Lane College,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907334,wk0,2026-08-30,Sul Ross State,Wayland Baptist,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868194,wk0,2026-08-30,Tennessee State,Jackson State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868110,wk0,2026-08-30,Montana,Southern Utah,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868235,wk0,2026-08-30,Tarleton State,Prairie View A&M,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401862693,wk0,2026-08-30,UNLV,Memphis,False,-1.302,18.274160436829995,51.2315,0.47575,10.342641925549826,-1.302,18.274160436829995,False,
+2026,1,401868118,wk0,2026-08-30,Utah Tech,Montana State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906596,wk0,2026-08-31,Tuskegee,West Alabama,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907838,wk1,2026-09-02,Olivet,Millikin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908891,wk1,2026-09-03,Montclair State,Merchant Marine,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858423,wk1,2026-09-03,Rutgers,Massachusetts,False,20.6015,18.84129423380687,52.3205,0.8605,10.369255001915278,20.6015,18.84129423380687,False,
+2026,1,401868269,wk1,2026-09-03,Morehead State,Kentucky Christian,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906880,wk1,2026-09-03,Wayne State (MI),Northwood,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907412,wk1,2026-09-03,Carson Newman,Thomas,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907484,wk1,2026-09-03,Assumption,Kutztown,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907493,wk1,2026-09-03,Fairmont State,Bloomsburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907516,wk1,2026-09-03,California (PA),Charleston (WV),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907526,wk1,2026-09-03,Clarion,West Virginia Wesleyan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907610,wk1,2026-09-03,Glenville State,Millersville,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856767,wk1,2026-09-03,UCF,Bethune-Cookman,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858204,wk1,2026-09-03,Wake Forest,Akron,False,19.341,18.612760282918526,52.552,0.8575,10.354257750560636,19.341,18.612760282918526,False,
+2026,1,401864424,wk1,2026-09-03,Delaware,Merrimack,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401864425,wk1,2026-09-03,Kennesaw State,West Georgia,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866409,wk1,2026-09-03,Buffalo,UAlbany,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866622,wk1,2026-09-03,Stony Brook,Lindenwood,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867889,wk1,2026-09-03,Samford,Southern Illinois,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906526,wk1,2026-09-03,Arkansas Monticello,Southeastern Oklahoma State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906545,wk1,2026-09-03,Harding,Northwestern (OK),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906553,wk1,2026-09-03,Southern Nazarene,Henderson State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906603,wk1,2026-09-03,Valdosta State,Warner,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906649,wk1,2026-09-03,Edinboro,Ohio Dominican,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906877,wk1,2026-09-03,Ashland,IU Pennsylvania,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907003,wk1,2026-09-03,Grand Valley State,West Texas,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907644,wk1,2026-09-03,Minnesota Duluth,Augustana (SD),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907666,wk1,2026-09-03,Trine,Chicago,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907677,wk1,2026-09-03,Minnesota St Moorhead,Concordia St. Paul,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907697,wk1,2026-09-03,Northern State,Winona State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907727,wk1,2026-09-03,Minot State,Wayne State (NE),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907871,wk1,2026-09-03,Brockport,Buffalo State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907995,wk1,2026-09-03,Wisconsin River Falls,Southern Virginia,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908201,wk1,2026-09-03,King's,Wilkes,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908216,wk1,2026-09-03,Ohio Wesleyan,Bluffton,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908346,wk1,2026-09-03,Juniata,Gettysburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908789,wk1,2026-09-03,Marietta,Westminster (PA),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908854,wk1,2026-09-03,Wooster,Wilmington (OH),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856663,wk1,2026-09-04,Missouri,Arkansas-Pine Bluff,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856776,wk1,2026-09-04,Georgia Tech,Colorado,False,11.12325,18.62593407944891,51.32775,0.73075,10.391812207672201,11.12325,18.62593407944891,False,
+2026,1,401858422,wk1,2026-09-04,Minnesota,Eastern Illinois,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401873393,wk1,2026-09-04,Beloit,Rockford,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906515,wk1,2026-09-04,Arkansas Tech,Southwestern Oklahoma State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906536,wk1,2026-09-04,Ouachita Baptist,East Central,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906566,wk1,2026-09-04,Oklahoma Baptist,Southern Arkansas,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907121,wk1,2026-09-04,Chadron State,Nebraska Kearney,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907145,wk1,2026-09-04,Fort Hays,CSU Pueblo,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907156,wk1,2026-09-04,Western New Mexico,New Mexico Highlands,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907162,wk1,2026-09-04,Western Colorado,Angelo State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907337,wk1,2026-09-04,Central Missouri,Missouri Western,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908386,wk1,2026-09-04,Millsaps,Belhaven,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856768,wk1,2026-09-04,Utah,Idaho,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858424,wk1,2026-09-04,Illinois,UAB,False,20.56925,18.544820313780964,52.76725,0.86825,10.370300819831604,20.56925,18.544820313780964,False,
+2026,1,401907008,wk1,2026-09-04,Ferris State,Bentley,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908094,wk1,2026-09-04,Methodist,Shenandoah,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908162,wk1,2026-09-04,Albright,Gallaudet,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908318,wk1,2026-09-04,Rowan,Mary Hardin Baylor,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908331,wk1,2026-09-04,Dickinson,Randolph Macon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908537,wk1,2026-09-04,Nichols,MIT,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401864495,wk1,2026-09-04,Eastern Michigan,San José State,False,2.86425,18.462773835969028,50.44875,0.5675,10.380581786392563,2.86425,18.462773835969028,False,
+2026,1,401906610,wk1,2026-09-04,Keystone,Alvernia,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858435,wk1,2026-09-04,Purdue,Indiana State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866623,wk1,2026-09-04,Georgia State,North Carolina A&T,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868262,wk1,2026-09-04,Marist,Franklin Pierce,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907537,wk1,2026-09-04,Pace,East Stroudsburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907736,wk1,2026-09-04,Rochester (NY),Case Western Reserve,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907862,wk1,2026-09-04,Hobart,Alfred,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907966,wk1,2026-09-04,Misericordia,Hartwick,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908181,wk1,2026-09-04,Ursinus,Delaware Valley,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908263,wk1,2026-09-04,Franklin & Marshall,Lebanon Valley,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908309,wk1,2026-09-04,Stevenson,Bridgewater,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908517,wk1,2026-09-04,Springfield,Western New England,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908606,wk1,2026-09-04,UMass Dartmouth,Salve Regina,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908690,wk1,2026-09-04,Norwich,St. Lawrence,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908359,wk1,2026-09-04,McDaniel,Catholic,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856664,wk1,2026-09-05,Oklahoma,UTEP,False,20.69725,18.39768880786203,52.74975,0.87075,10.37070820735344,20.69725,18.39768880786203,False,
+2026,1,401856769,wk1,2026-09-05,Kansas,Long Island University,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858429,wk1,2026-09-05,Michigan State,Toledo,False,-2.11625,18.37210345874823,50.30425,0.453,10.367595122907579,-2.11625,18.37210345874823,False,
+2026,1,401907818,wk1,2026-09-05,Carthage,Lakeland,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858206,wk1,2026-09-05,Stanford,Miami,False,-21.06675,18.981743244077354,52.79025,0.13025,10.37081818359945,-21.06675,18.981743244077354,False,
+2026,1,401858436,wk1,2026-09-05,USC,Fresno State,False,18.67725,18.333930091398834,52.04775,0.8435,10.391368395551376,18.67725,18.333930091398834,False,
+2026,1,401908292,wk1,2026-09-05,Pacific (OR),Howard Payne,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867928,wk1,2026-09-05,Wagner,Southern Connecticut State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401869127,wk1,2026-09-05,Howard,Richmond,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907332,wk1,2026-09-05,Southern Oregon,Western Oregon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868284,wk1,2026-09-05,Stetson,Webber International,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856634,wk1,2026-09-05,Alabama,East Carolina,False,16.74375,18.70572540897647,52.13475,0.81975,10.328103668481113,16.74375,18.70572540897647,False,
+2026,1,401856778,wk1,2026-09-05,Houston,Oregon State,False,16.229,18.34160628332814,51.485,0.81675,10.391782853707443,16.229,18.34160628332814,False,
+2026,1,401856780,wk1,2026-09-05,West Virginia,Coastal Carolina,False,12.0695,18.570074201351225,51.3015,0.74125,10.374216350769682,12.0695,18.570074201351225,False,
+2026,1,401858208,wk1,2026-09-05,Syracuse,New Hampshire,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858425,wk1,2026-09-05,Indiana,North Texas,False,21.16525,18.41614412440358,52.44975,0.87775,10.310713494966777,21.16525,18.41614412440358,False,
+2026,1,401858430,wk1,2026-09-05,Nebraska,Ohio,False,9.472,18.460545030485015,50.727,0.687,10.373896097638632,9.472,18.460545030485015,False,
+2026,1,401861962,wk1,2026-09-05,UConn,Lafayette,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401862701,wk1,2026-09-05,Army,Bryant,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866410,wk1,2026-09-05,Bowling Green,Tarleton State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401867924,wk1,2026-09-05,New Haven,Stonehill,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401869960,wk1,2026-09-05,James Madison,Liberty,False,20.61975,18.341865262690295,52.78475,0.8665,10.325307807285215,20.61975,18.341865262690295,False,
+2026,1,401906844,wk1,2026-09-05,Hillsdale,McKendree,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907013,wk1,2026-09-05,Davenport,Truman State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907832,wk1,2026-09-05,Albion,Illinois Wesleyan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907879,wk1,2026-09-05,Grove City,SUNY Cortland,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908091,wk1,2026-09-05,Utica,Washington & Jefferson,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908101,wk1,2026-09-05,Heidelberg,Maryville (TN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908189,wk1,2026-09-05,Endicott,Eastern,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908353,wk1,2026-09-05,Johns Hopkins,Ithaca,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908364,wk1,2026-09-05,Moravian,Muhlenberg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908475,wk1,2026-09-05,Bridgewater State,Curry,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908530,wk1,2026-09-05,Coast Guard,New England,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908557,wk1,2026-09-05,Plymouth State,New England College,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908563,wk1,2026-09-05,Mass Maritime,Maine Maritime,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908568,wk1,2026-09-05,Dean,Fitchburg State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908624,wk1,2026-09-05,Rensselaer,WPI,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908738,wk1,2026-09-05,Otterbein,Calvin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401909005,wk1,2026-09-05,Wabash,Hampden Sydney,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858207,wk1,2026-09-05,Pittsburgh,Miami (OH),False,15.36475,18.62040794032528,51.49175,0.79625,10.325600625129416,15.36475,18.62040794032528,False,
+2026,1,401858432,wk1,2026-09-05,Ohio State,Ball State,False,20.99275,18.95487662258253,51.82725,0.864,10.321937095680491,20.99275,18.95487662258253,False,
+2026,1,401868017,wk1,2026-09-05,Georgetown,Lehigh,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856665,wk1,2026-09-05,South Carolina,Kent State,False,20.888,18.5857164182403,52.8315,0.871,10.367685650281118,20.888,18.5857164182403,False,
+2026,1,401856659,wk1,2026-09-05,Kentucky,Youngstown State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856779,wk1,2026-09-05,Iowa State,Southeast Missouri State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401864496,wk1,2026-09-05,Air Force,Duquesne,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868000,wk1,2026-09-05,Colgate,Holy Cross,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401873228,wk1,2026-09-05,Puget Sound,Lewis & Clark,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401873403,wk1,2026-09-05,Kean,SUNY Morrisville,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906118,wk1,2026-09-05,Virginia State,Bowie State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906133,wk1,2026-09-05,Lincoln (PA),West Chester,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906994,wk1,2026-09-05,Michigan Tech,Midwestern State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907138,wk1,2026-09-05,Washburn,Colorado School of Mines,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907250,wk1,2026-09-05,Morehouse,Clark Atlanta,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907604,wk1,2026-09-05,Shepherd,Frostburg State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907826,wk1,2026-09-05,Elmhurst,Illinois College,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907843,wk1,2026-09-05,North Central College,Bethel (MN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908049,wk1,2026-09-05,Wisconsin Eau Claire,Alma,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908069,wk1,2026-09-05,Saint Vincent,Hilbert,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908285,wk1,2026-09-05,Hardin Simmons,Chapman,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908470,wk1,2026-09-05,Crown,Hamline,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908576,wk1,2026-09-05,Husson,Framingham State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908609,wk1,2026-09-05,William Paterson,Western Connecticut State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908617,wk1,2026-09-05,Vermont State Castleton,Westfield State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908623,wk1,2026-09-05,SUNY Maritime,Worcester State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908644,wk1,2026-09-05,The College of New Jersey,Lycoming,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908650,wk1,2026-09-05,Adrian,Ohio Northern,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908662,wk1,2026-09-05,Waynesburg,Capital,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908684,wk1,2026-09-05,Union,Susquehanna,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908744,wk1,2026-09-05,Denison,Hope,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908805,wk1,2026-09-05,Kalamazoo,Kenyon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908965,wk1,2026-09-05,Washington and Lee,Wittenberg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868186,wk1,2026-09-05,Wofford,Gardner-Webb,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908206,wk1,2026-09-05,Anderson (IN),Allegheny,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401862698,wk1,2026-09-05,Temple,Rhode Island,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866624,wk1,2026-09-05,Monmouth,Sacred Heart,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906049,wk1,2026-09-05,Concord,Bluefield State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906860,wk1,2026-09-05,Indianapolis,Findlay,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906929,wk1,2026-09-05,Quincy,Roosevelt,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907420,wk1,2026-09-05,Ferrum,Emory & Henry,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907655,wk1,2026-09-05,Carnegie Mellon,John Carroll,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907691,wk1,2026-09-05,Jamestown,Sioux Falls,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907758,wk1,2026-09-05,Buena Vista,Benedictine (IL),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907789,wk1,2026-09-05,St. Norbert,Carroll (WI),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907850,wk1,2026-09-05,Wheaton (IL),Mount Union,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907886,wk1,2026-09-05,Wisconsin Whitewater,Carleton,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908008,wk1,2026-09-05,Wisconsin Platteville,Aurora,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908018,wk1,2026-09-05,Wisconsin Oshkosh,Linfield,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908039,wk1,2026-09-05,Saint John's (MN),Wisconsin La Crosse,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908088,wk1,2026-09-05,St. John Fisher,FDU Florham,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908141,wk1,2026-09-05,Gustavus Adolphus,Central College,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908150,wk1,2026-09-05,Coe,Cornell (IA),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908231,wk1,2026-09-05,Hanover,Centre,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908247,wk1,2026-09-05,Nebraska Wesleyan,Concordia (MN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908257,wk1,2026-09-05,Manchester,Westminster (MO),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908412,wk1,2026-09-05,Sewanee,Bethany (WV),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908499,wk1,2026-09-05,Lake Forest,Greenville,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908508,wk1,2026-09-05,Martin Luther,Macalester,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908514,wk1,2026-09-05,Minnesota Morris,Concordia Chicago,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908759,wk1,2026-09-05,Luther,Lawrence,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908765,wk1,2026-09-05,Ripon,Concordia (WI),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908771,wk1,2026-09-05,Grinnell,Mount Mercy,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908921,wk1,2026-09-05,St. Scholastica,Wisconsin Lutheran,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401909047,wk1,2026-09-05,Oberlin,Hiram,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856658,wk1,2026-09-05,Georgia,Tennessee State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868111,wk1,2026-09-05,Montana,Drake,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906206,wk1,2026-09-05,Shorter,Benedict,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906597,wk1,2026-09-05,Lenoir Rhyne,West Alabama,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906682,wk1,2026-09-05,Lake Erie,Saint Anselm,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907111,wk1,2026-09-05,Black Hills State,Dakota State University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907159,wk1,2026-09-05,South Dakota Mines,Southwest Baptist,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907475,wk1,2026-09-05,American International,Lock Haven,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908448,wk1,2026-09-05,Claremont Mudd Scripps,Northwestern (MN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908460,wk1,2026-09-05,Pomona Pitzer,Willamette,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908722,wk1,2026-09-05,Geneva,Widener,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856636,wk1,2026-09-05,Auburn,Baylor,True,6.369,18.40161939137368,50.6075,0.63625,10.383424269807817,6.369,18.40161939137368,False,
+2026,1,401856666,wk1,2026-09-05,Tennessee,Furman,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856667,wk1,2026-09-05,Texas,Texas State,False,20.16975,18.34879635835086,52.63875,0.873,10.368117803776007,20.16975,18.34879635835086,False,
+2026,1,401856777,wk1,2026-09-05,Cincinnati,Boston College,False,9.21175,18.807542898788856,50.47525,0.68275,10.374551817574483,9.21175,18.807542898788856,False,
+2026,1,401858209,wk1,2026-09-05,Duke,Tulane,False,2.955,18.258846157394984,50.675,0.56275,10.29819929195823,2.955,18.258846157394984,False,
+2026,1,401858433,wk1,2026-09-05,Oregon,Boise State,False,20.68275,18.08986693947453,52.43525,0.87575,10.328751932110384,20.68275,18.08986693947453,False,
+2026,1,401858434,wk1,2026-09-05,Penn State,Marshall,False,20.44475,18.596740597536925,52.40625,0.8665,10.35603718027282,20.44475,18.596740597536925,False,
+2026,1,401862694,wk1,2026-09-05,Charlotte,The Citadel,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401862696,wk1,2026-09-05,Navy,Towson,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401862700,wk1,2026-09-05,UTSA,UT Rio Grande Valley,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401864499,wk1,2026-09-05,North Dakota State,Fordham,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401866625,wk1,2026-09-05,Campbell,Western Carolina,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401866627,wk1,2026-09-05,App State,Maine,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856772,wk1,2026-09-05,Tulsa,Oklahoma State,False,-0.25375,18.119811979103968,51.25625,0.4915,10.365584552081229,-0.25375,18.119811979103968,False,
+2026,1,401867875,wk1,2026-09-05,North Dakota,St. Thomas (MN),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906921,wk1,2026-09-05,Allen,Florida Memorial University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907130,wk1,2026-09-05,Eastern New Mexico,Colorado Mesa,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907615,wk1,2026-09-05,Seton Hill,West Liberty,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907634,wk1,2026-09-05,Bemidji State,Southwest Minnesota State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907852,wk1,2026-09-05,Alfred State,Thiel,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908429,wk1,2026-09-05,Pacific Lutheran,Cal Lutheran,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856635,wk1,2026-09-05,Arkansas,North Alabama,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858426,wk1,2026-09-05,Iowa,Northern Illinois,False,20.259,18.617215072804367,52.7745,0.86375,10.360316665637978,20.259,18.617215072804367,False,
+2026,1,401868356,wk1,2026-09-05,Southern Miss,Alcorn State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401906973,wk1,2026-09-05,Fort Valley State,Tuskegee,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908275,wk1,2026-09-05,Lyon,East Texas Baptist,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868345,wk1,2026-09-05,East Tennessee State,Tusculum,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401860878,wk1,2026-09-05,Colorado State,Wyoming,False,-2.58875,18.965954003597354,51.50275,0.43975,10.361342536064042,-2.58875,18.965954003597354,False,
+2026,1,401866626,wk1,2026-09-05,Davidson,Elon,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867692,wk1,2026-09-05,William & Mary,Delaware State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867917,wk1,2026-09-05,Robert Morris,West Virginia State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867973,wk1,2026-09-05,Old Dominion,Norfolk State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401867978,wk1,2026-09-05,North Carolina Central,Elizabeth City State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867989,wk1,2026-09-05,Bucknell,Villanova,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868274,wk1,2026-09-05,Mercer,Presbyterian,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868325,wk1,2026-09-05,Alabama State,Lane College,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868336,wk1,2026-09-05,Chattanooga,Tennessee Tech,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906146,wk1,2026-09-05,Virginia Union,Livingstone,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906152,wk1,2026-09-05,Fayetteville State,UNC Pembroke,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906178,wk1,2026-09-05,UVA Wise,Chowan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906199,wk1,2026-09-05,Catawba,North Greenville,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906621,wk1,2026-09-05,Walsh,Wheeling,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906632,wk1,2026-09-05,Northern Michigan,Tiffin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906903,wk1,2026-09-05,Saginaw Valley State,Texas A&M-Kingsville,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907273,wk1,2026-09-05,Anderson (SC),Keiser (Fl),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907847,wk1,2026-09-05,Franklin,North Park,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908076,wk1,2026-09-05,Averett,North Carolina Wesleyan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908241,wk1,2026-09-05,Loras,St. Olaf,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908304,wk1,2026-09-05,Greensboro,Guilford,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907703,wk1,2026-09-05,University of Mary,Minnesota State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856668,wk1,2026-09-05,Texas A&M,Missouri State,False,21.0455,18.67860678880254,52.237,0.875,10.43327749189587,21.0455,18.67860678880254,False,
+2026,1,401856669,wk1,2026-09-05,Vanderbilt,Austin Peay,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856770,wk1,2026-09-05,Texas Tech,Abilene Christian,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856771,wk1,2026-09-05,Kansas State,Nicholls,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401860880,wk1,2026-09-05,Utah State,Idaho State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401862695,wk1,2026-09-05,Memphis,Arkansas State,False,14.672250000000002,18.558869426606968,51.48525,0.78575,10.38901797473197,14.672250000000002,18.558869426606968,False,
+2026,1,401862697,wk1,2026-09-05,Rice,Houston Christian,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401862699,wk1,2026-09-05,South Florida,Florida International,False,19.542,18.53260485010051,51.9955,0.8555,10.357266543105279,19.542,18.53260485010051,False,
+2026,1,401867684,wk1,2026-09-05,UT Martin,Chicago State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867845,wk1,2026-09-05,Western Illinois,Illinois State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867866,wk1,2026-09-05,Middle Tennessee,Murray State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868071,wk1,2026-09-05,Central Arkansas,West Florida,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868085,wk1,2026-09-05,Eastern Washington,Northern Iowa,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868140,wk1,2026-09-05,Jacksonville State,Eastern Kentucky,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868170,wk1,2026-09-05,Georgia Southern,Charleston Southern,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868297,wk1,2026-09-05,Alabama A&M,Miles,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868316,wk1,2026-09-05,South Alabama,SE Louisiana,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868953,wk1,2026-09-05,Grambling,Central State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868958,wk1,2026-09-05,Jackson State,Edward Waters,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868970,wk1,2026-09-05,Southern,Kentucky State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401869136,wk1,2026-09-05,McNeese,Texas Wesleyan,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401870763,wk1,2026-09-05,Troy,Sam Houston,False,16.0735,18.570412974869885,52.163,0.8025,10.337461471624453,16.0735,18.570412974869885,False,
+2026,1,401906166,wk1,2026-09-05,Barton,Shaw,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906589,wk1,2026-09-05,Missouri S&T,Northeastern State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401906605,wk1,2026-09-05,Delta State,Wingate,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907247,wk1,2026-09-05,Missouri Southern State,Upper Iowa,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907456,wk1,2026-09-05,Newberry,Reinhardt,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907956,wk1,2026-09-05,Dubuque,Wisconsin Stout,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907977,wk1,2026-09-05,Wisconsin Stevens Point,Augsburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908267,wk1,2026-09-05,Mount St Joseph,Muskingum,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908272,wk1,2026-09-05,Rose Hulman,DePauw,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908298,wk1,2026-09-05,Huntingdon,Berry,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908325,wk1,2026-09-05,Schreiner,Austin,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908426,wk1,2026-09-05,Southwestern U,McMurry,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908553,wk1,2026-09-05,Centenary (LA),Westgate Christian University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908781,wk1,2026-09-05,Eureka,Knox,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908933,wk1,2026-09-05,Christopher Newport,Apprentice School,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856660,wk1,2026-09-05,LSU,Clemson,False,0.98425,18.58301051591193,50.67825,0.523,10.362954715597912,0.98425,18.58301051591193,False,
+2026,1,401856662,wk1,2026-09-05,Mississippi State,UL Monroe,False,20.39675,18.70796745398782,52.65875,0.861,10.3779825557734,20.39675,18.70796745398782,False,
+2026,1,401858211,wk1,2026-09-05,Virginia Tech,VMI,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858428,wk1,2026-09-05,Michigan,Western Michigan,False,17.69475,18.82891173688028,52.21725,0.82325,10.34780011310404,17.69475,18.82891173688028,False,
+2026,1,401869129,wk1,2026-09-05,Louisiana Tech,Northwestern State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401908111,wk1,2026-09-05,LaGrange,Point University,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856637,wk1,2026-09-05,Florida,Florida Atlantic,False,19.46175,18.389241768620266,52.14875,0.85275,10.360910447083548,19.46175,18.389241768620266,False,
+2026,1,401856775,wk1,2026-09-06,BYU,Utah Tech,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858427,wk1,2026-09-06,Maryland,Hampton,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401858431,wk1,2026-09-06,Northwestern,South Dakota State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401867883,wk1,2026-09-06,Northern Colorado,South Dakota,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868074,wk1,2026-09-06,Cal Poly,Central Washington,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868158,wk1,2026-09-06,Southern Utah,Weber State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868306,wk1,2026-09-06,Stephen F. Austin,East Texas A&M,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401869142,wk1,2026-09-06,Louisiana,Lamar,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401906168,wk1,2026-09-06,Winston-Salem State,Mars Hill,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907100,wk1,2026-09-06,Sul Ross State,Adams State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907151,wk1,2026-09-06,Fort Lewis,Phoenix,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907357,wk1,2026-09-06,Pittsburg State,Emporia State,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907465,wk1,2026-09-06,Rhodes,Washington St. Louis,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401907779,wk1,2026-09-06,Augustana (IL),Simpson (IA),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908254,wk1,2026-09-06,Monmouth (IL),Wartburg,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908433,wk1,2026-09-06,Trinity (TX),Texas Lutheran,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908454,wk1,2026-09-06,La Verne,Azusa Pacific,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908467,wk1,2026-09-06,Whittier,Simpson (CA),False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401868119,wk1,2026-09-06,Montana State,Butler,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401870790,wk1,2026-09-06,New Mexico State,Mercyhurst,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856773,wk1,2026-09-06,Arizona,Northern Arizona,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401860879,wk1,2026-09-06,San Diego State,Portland State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401856774,wk1,2026-09-06,Arizona State,Morgan State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401864497,wk1,2026-09-06,Hawai'i,UNLV,False,-3.39275,18.523403567538274,50.75725,0.42025,10.354452563126696,-3.39275,18.523403567538274,False,
+2026,1,401864498,wk1,2026-09-06,New Mexico,Central Michigan,False,7.3595,18.474697862754148,50.769,0.66025,10.372465856712086,7.3595,18.474697862754148,False,
+2026,1,401866411,wk1,2026-09-06,Sacramento State,Mississippi Valley State,False,,,,,,,,True,FBS-vs-non-FBS: no validated cross-division model
+2026,1,401868163,wk1,2026-09-06,San Diego,UC Davis,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401908393,wk1,2026-09-06,George Fox,Redlands,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858210,wk1,2026-09-06,California,UCLA,False,5.18575,18.675578790837932,50.59425,0.5975,10.378051706048925,5.18575,18.675578790837932,False,
+2026,1,401864432,wk1,2026-09-06,Nevada,Western Kentucky,False,-6.77875,18.063406617865486,50.05125,0.358,10.373849326427004,-6.77875,18.063406617865486,False,
+2026,1,401868967,wk1,2026-09-06,Prairie View A&M,Texas Southern,False,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401867939,wk1,2026-09-06,Florida A&M,South Carolina State,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401858437,wk1,2026-09-06,Washington,Washington State,False,13.461,18.52288759410207,51.1065,0.763,10.367452489625261,13.461,18.52288759410207,False,
+2026,1,401906158,wk1,2026-09-06,Johnson C. Smith,Albany State,True,,,,,,,,True,Non-FBS matchup: no validated lower-division model
+2026,1,401856661,wk1,2026-09-06,Ole Miss,Louisville,True,7.63325,18.579406528149583,50.39875,0.65575,10.367491692315793,7.63325,18.579406528149583,False,
+2026,1,401858438,wk1,2026-09-06,Notre Dame,Wisconsin,True,20.74725,18.812640043167217,52.76175,0.86225,10.366034563195514,20.74725,18.812640043167217,False,
+2026,1,401858212,wk1,2026-09-07,Florida State,SMU,False,-4.221,18.26396779400113,50.3405,0.399,10.365974499905448,-4.221,18.26396779400113,False,

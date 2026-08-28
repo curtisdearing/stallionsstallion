@@ -182,6 +182,20 @@ def grade_week(season: int, week: int,
             "was PUBLISHED; without a published file there is nothing "
             "honest to grade")
     pub = pd.read_csv(pub_path)
+    if "mc_margin" not in pub.columns:
+        raise ScoreboardError(
+            f"{os.path.basename(pub_path)} lacks mc_margin — cannot grade "
+            "an artifact without published model margins")
+    if "veto" in pub.columns:
+        vetoed = (pub["veto"].fillna(False).astype(str).str.strip()
+                  .str.lower().eq("true"))
+    else:
+        # Historical published files predate explicit refusal rows.
+        vetoed = pd.Series(False, index=pub.index)
+    # A public schedule row is not necessarily a published forecast.  Refused
+    # games and rows without the model margin stay visible in the feed but can
+    # never enter a model-scoreboard denominator.
+    pub = pub.loc[~vetoed & pub["mc_margin"].notna()].copy()
     games = ingest.load_games([season])
     finals = games.dropna(subset=["home_points", "away_points"])
     finals = finals[finals["week"] == week][["id", "home_points", "away_points"]]

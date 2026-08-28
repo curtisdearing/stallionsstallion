@@ -104,6 +104,25 @@ def test_recap_grades_the_published_numbers(sandbox):
     assert os.path.exists(sandbox / "recaps" / "2024_wk10.json")
 
 
+def test_recap_excludes_vetoed_and_unpriced_rows(sandbox):
+    rows = _pub_rows(lambda i: 8.0)[:3]
+    rows[0]["veto"] = False
+    rows[1].update({"veto": True, "note": "unvalidated matchup",
+                    "mc_margin": None, "mc_margin_sd": None,
+                    "mc_total": None, "p_home_win": None})
+    rows[2].update({"veto": False, "note": "missing model output",
+                    "mc_margin": None, "mc_margin_sd": None,
+                    "mc_total": None, "p_home_win": None})
+    _publish(sandbox, rows)
+
+    recap = SB.build_recap(2024, 10, data_dir=str(sandbox),
+                           ledger_path=str(sandbox / "ledger.json"))
+
+    assert recap["n_graded"] == 1
+    assert recap["model_mae"] == pytest.approx(3.0, abs=0.01)
+    assert [m["id"] for m in recap["misses"]] == [1]
+
+
 def test_recap_writes_only_recaps_and_ledger(sandbox):
     _publish(sandbox, _pub_rows(lambda i: 8.0))
     before = {}

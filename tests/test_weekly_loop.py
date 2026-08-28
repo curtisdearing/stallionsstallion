@@ -146,3 +146,49 @@ def test_state_globs_capture_real_state():
     assert any("factor_registry.json" in f for f in files)
     assert not any("ml_frame" in f or "weekly_props" in f for f in files), \
         "NFL/prop artifacts must be gone from the glob list"
+
+
+# --------------------------------------------------------------------------- #
+# Prediction artifact contract — every scheduled game must be explicit
+# --------------------------------------------------------------------------- #
+def test_weekly_prediction_rows_preserve_full_schedule_and_refusals():
+    upcoming = pd.DataFrame([
+        {"id": 101, "start_date": "2026-08-29T19:00:00Z",
+         "home_team": "FBS Home", "away_team": "FBS Away",
+         "neutral_site": False, "home_fcs": False, "away_fcs": False},
+        {"id": 102, "start_date": "2026-09-05T19:00:00Z",
+         "home_team": "FBS Home", "away_team": "FCS Away",
+         "neutral_site": False, "home_fcs": False, "away_fcs": True},
+        {"id": 103, "start_date": "2026-09-05T19:00:00Z",
+         "home_team": "FCS Home", "away_team": "FCS Away",
+         "neutral_site": True, "home_fcs": True, "away_fcs": True},
+        {"id": 104, "start_date": "2026-09-05T19:00:00Z",
+         "home_team": "New FBS", "away_team": "FBS Away",
+         "neutral_site": False, "home_fcs": False, "away_fcs": False},
+    ])
+    simulated = {
+        101: {"mc_margin": 4.5, "mc_margin_sd": 17.2, "mc_total": 48.0,
+              "p_home_win": 0.61, "param_sd": 2.1},
+    }
+    refusals = {104: "NO RATING (DisconnectedTeamError): new-to-FBS or unseen team"}
+
+    rows = WL.week_prediction_rows(2026, 1, upcoming, simulated, refusals)
+    by_id = rows.set_index("id")
+
+    assert len(rows) == 4, "a schedule row may never vanish because it is unpriced"
+    assert {"slate", "date", "home", "away", "neutral", "mc_margin",
+            "mc_margin_sd", "mc_total", "p_home_win", "param_sd",
+            "pred_margin", "band_pm", "veto", "note"} <= set(rows.columns)
+
+    assert by_id.loc[101, "slate"] == "wk0"
+    assert by_id.loc[101, "pred_margin"] == 4.5
+    assert by_id.loc[101, "band_pm"] == 17.2
+    assert bool(by_id.loc[101, "veto"]) is False
+
+    assert bool(by_id.loc[102, "veto"]) is True
+    assert by_id.loc[102, "note"] == "FBS-vs-non-FBS: no validated cross-division model"
+    assert bool(by_id.loc[103, "veto"]) is True
+    assert by_id.loc[103, "note"] == "Non-FBS matchup: no validated lower-division model"
+    assert bool(by_id.loc[104, "veto"]) is True
+    assert by_id.loc[104, "note"] == refusals[104]
+    assert pd.isna(by_id.loc[102, "pred_margin"])

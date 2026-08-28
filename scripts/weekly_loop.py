@@ -267,6 +267,64 @@ def stage_honesty(season: int) -> dict:
             "path": os.path.basename(out)}
 
 
+def week_prediction_rows(season: int, week: int, upcoming: pd.DataFrame,
+                         simulated: dict, refusals: dict) -> pd.DataFrame:
+    """Render one public-contract row for every scheduled game.
+
+    The model may honestly refuse a matchup, but that refusal must be visible
+    rather than silently disappearing from the weekly artifact or hub feed.
+    """
+    rows = []
+    for game in upcoming.sort_values(["start_date", "id"], kind="mergesort").itertuples():
+        game_id = int(game.id)
+        date = str(game.start_date)[:10]
+        row = {
+            "season": season,
+            "week": week,
+            "id": game_id,
+            "slate": "wk0" if week == 1 and date < f"{season}-09-01" else f"wk{week}",
+            "date": date,
+            "home": str(game.home_team),
+            "away": str(game.away_team),
+            "neutral": bool(game.neutral_site),
+        }
+        sim = simulated.get(game_id)
+        if sim is not None:
+            row.update({
+                "mc_margin": sim["mc_margin"],
+                "mc_margin_sd": sim["mc_margin_sd"],
+                "mc_total": sim["mc_total"],
+                "p_home_win": sim["p_home_win"],
+                "param_sd": sim["param_sd"],
+                "pred_margin": sim["mc_margin"],
+                "band_pm": sim["mc_margin_sd"],
+                "veto": False,
+                "note": None,
+            })
+        else:
+            note = refusals.get(game_id)
+            if note is None:
+                if bool(game.home_fcs) and bool(game.away_fcs):
+                    note = "Non-FBS matchup: no validated lower-division model"
+                elif bool(game.home_fcs) or bool(game.away_fcs):
+                    note = "FBS-vs-non-FBS: no validated cross-division model"
+                else:
+                    note = "NO RATING: team lacks a validated FBS rating"
+            row.update({
+                "mc_margin": None,
+                "mc_margin_sd": None,
+                "mc_total": None,
+                "p_home_win": None,
+                "param_sd": None,
+                "pred_margin": None,
+                "band_pm": None,
+                "veto": True,
+                "note": note,
+            })
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
 def stage_simulate(season: int, week: int) -> dict:
     """Simulate the upcoming week and render its explainer. Paper-only."""
     params = R.load_params()
@@ -303,31 +361,37 @@ def stage_simulate(season: int, week: int) -> dict:
     teams = ingest.load_teams([season])
     conf = {str(r.team): str(r.conference) for r in teams.itertuples()}
     rng = np.random.default_rng(SEED)
-    rows, exps, skipped = [], [], 0
+    simulated, refusals, exps, skipped = {}, {}, [], 0
     bt = pd.read_csv(os.path.join(DATA, "backtest_c.csv"))
     model_mae = float((bt["mc_margin"] - bt["margin"]).abs().mean())
     clv = pd.read_csv(os.path.join(DATA, "clv_log_backtest.csv"))
     clv_slices = clv.groupby("slice")["clv_pts"].agg(["count", "mean"])
     for g in upcoming.itertuples():
+        game_id = int(g.id)
         home, away = str(g.home_team), str(g.away_team)
+        if bool(g.home_fcs) or bool(g.away_fcs):
+            skipped += 1
+            continue
         try:
             e_h, e_a = cfb_sim.side_edges(tbl, home, away,
                                           bool(g.neutral_site))
-        except R.DisconnectedTeamError:
+        except R.DisconnectedTeamError as exc:
             skipped += 1
+            refusals[game_id] = (
+                f"NO RATING ({type(exc).__name__}): new-to-FBS or unseen team")
             continue
         psd = cfb_sim.param_margin_sd(tbl, home, away)
         sim = cfb_sim.simulate_game(
             rng, e_h, e_a, rates, pace, ot, n=4000, param_sd=psd,
-            param_rng=(np.random.default_rng([SEED, int(g.id)])
+            param_rng=(np.random.default_rng([SEED, game_id])
                        if psd > 0.0 else None))
-        rows.append({"season": season, "week": week, "id": int(g.id),
-                     "home": home, "away": away,
-                     "mc_margin": sim["margin_mean"],
-                     "mc_margin_sd": sim["margin_sd"],
-                     "mc_total": sim["total_mean"],
-                     "p_home_win": sim["p_home_win"],
-                     "param_sd": psd})
+        simulated[game_id] = {
+            "mc_margin": sim["margin_mean"],
+            "mc_margin_sd": sim["margin_sd"],
+            "mc_total": sim["total_mean"],
+            "p_home_win": sim["p_home_win"],
+            "param_sd": psd,
+        }
         exps.append(explain.build_explanation(
             tbl=tbl, game={"id": g.id, "season": season, "week": week,
                            "home_team": home, "away_team": away,
@@ -336,20 +400,22 @@ def stage_simulate(season: int, week: int) -> dict:
             slice_tag=GL.slice_tag(conf.get(home, ""), conf.get(away, ""),
                                    week, bool(g.neutral_site)),
             clv_slices=clv_slices))
-    if rows:
-        pd.DataFrame(rows).to_csv(
-            os.path.join(DATA, f"predictions_{season}_wk{week:02d}.csv"),
-            index=False)
+    artifact_rows = week_prediction_rows(season, week, upcoming, simulated, refusals)
+    artifact_rows.to_csv(
+        os.path.join(DATA, f"predictions_{season}_wk{week:02d}.csv"),
+        index=False)
+    if simulated:
         html_text = explain.render_week_html(
             exps, clv_slices=clv_slices,
             title=f"stallionsstallion — {season} week {week} (upcoming)",
-            generated_note=(f"weekly loop {utcstamp()}; {len(rows)} games, "
+            generated_note=(f"weekly loop {utcstamp()}; {len(simulated)} games, "
                             f"{skipped} refused as unratable"))
         with open(os.path.join(DATA,
                                f"explainer_{season}_wk{week:02d}.html"),
                   "w") as fh:
             fh.write(html_text)
-    return {"n": len(rows), "skipped": skipped}
+    return {"n": len(simulated), "skipped": skipped,
+            "n_schedule": len(artifact_rows)}
 
 
 def stage_recap(season: int, week: int) -> dict:

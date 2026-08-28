@@ -1,0 +1,7 @@
+# Runtime dependencies for the CFB weekly loop and its site/hub rebuild.
+# Kept separate from requirements.txt because the inherited file includes
+# excluded NFL/prop and bakeoff-only dependencies. These are the only
+# third-party modules reachable by the weekly loop, site builder, and hub feed.
+pandas>=1.5
+pyarrow>=10.0
+numpy>=1.23
