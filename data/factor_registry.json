@@ -246,5 +246,190 @@
         "p": 0.07493
       }
     ]
+  },
+  {
+    "factor_id": "short_week",
+    "description": "A team whose days of rest (its previous game's kickoff to this game's kickoff, from games start_date) is <= 6.0 while its opponent's is >= 7.0. One treated row per team-game, side in {home,away}. Games where BOTH teams are on short rest are EXCLUDED (no differential).",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": 16,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "UNDERPOWERED 2026-08-28 (event; effect nan, p=nan, n=16, BH crit 0.05; n-gate FAIL: 16 treated < 40). Pre-registered in data/factor_prereg_2026-08-28.json; BH q<0.05 across exactly the 5 registered hypotheses. display_only \u2014 promotion is a separate reviewed decision. || UNDERPOWERED, which is not the same as absent: 16 treated team-games against a 40-pair gate. A true short week (<=6 days rest while the opponent has >=7) is rare in weeks 4-15 of the CFB calendar, which is the only window the walk-forward backtest covers. This is a statement about the sample, not about football \u2014 the hypothesis is neither supported nor refuted.",
+    "test": "scripts/factor_battery_context.py",
+    "last_validated": "2026-08-28",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-08-28",
+        "hypothesis": "short_week",
+        "result": "underpowered",
+        "p": null
+      }
+    ]
+  },
+  {
+    "factor_id": "rest_days_diff",
+    "description": "home days of rest minus away days of rest, uncapped and untransformed.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": 0.2474,
+    "ci": null,
+    "n": 2377,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "REJECT 2026-08-28 (continuous; effect 0.2474, p=0.031764, n=2377, BH crit 0.03). Pre-registered in data/factor_prereg_2026-08-28.json; BH q<0.05 across exactly the 5 registered hypotheses. display_only \u2014 promotion is a separate reviewed decision. || REJECTED at the registered threshold (p=0.031764 vs BH crit 0.0300 at m=5). It WOULD have passed against a denominator of the 4 hypotheses that produced a p-value (crit 0.0375); the first execution of this script had exactly that bug and it was corrected before anything was recorded. A borderline result that survives only under a looser denominator is not a finding.",
+    "test": "scripts/factor_battery_context.py",
+    "last_validated": "2026-08-28",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-08-28",
+        "hypothesis": "rest_days_diff",
+        "result": "reject",
+        "p": 0.031764
+      }
+    ]
+  },
+  {
+    "factor_id": "coach_year2",
+    "description": "A team whose head coach was flagged first_season in season-1 and is the SAME coach in this season, i.e. a second-year head coach. Distinct from the already-registered coaching_change_y1 (first-year). Requires coaches_{season-1} and coaches_{season}.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": 0.5395,
+    "ci": null,
+    "n": 835,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "REJECT 2026-08-28 (event; effect 0.5395, p=0.51461, n=835, BH crit 0.04). Pre-registered in data/factor_prereg_2026-08-28.json; BH q<0.05 across exactly the 5 registered hypotheses. display_only \u2014 promotion is a separate reviewed decision. || REJECTED cleanly and with power: p=0.515 on 835 matched pairs, effect +0.54 pts. Read beside the registered coaching_change_y1 (-2.66 pts, passed 2026-07-30): first-year disruption registers, a distinct second-year recovery does not.",
+    "test": "scripts/factor_battery_context.py",
+    "last_validated": "2026-08-28",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-08-28",
+        "hypothesis": "coach_year2",
+        "result": "reject",
+        "p": 0.514611
+      }
+    ]
+  },
+  {
+    "factor_id": "returning_production_diff",
+    "description": "home percent_ppa minus away percent_ppa from returning_{season}.parquet \u2014 the share of prior-season PPA back on the roster. Constant within a season by construction.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": -3.8335,
+    "ci": null,
+    "n": 2328,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "PASS 2026-08-28 (continuous; effect -3.8335, p=2.8328e-05, n=2328, BH crit 0.01). Pre-registered in data/factor_prereg_2026-08-28.json; BH q<0.05 across exactly the 5 registered hypotheses. display_only \u2014 promotion is a separate reviewed decision. || CAVEAT THAT CHANGES THE READING, recorded after the run: the registration failed to declare that this variable is ENDOGENOUS to the prediction it is scored against. `ratings.solve` uses `preseason_prior` as the ridge PRIOR MEAN, and that prior is built from talent + returning production with prior_w_returning=1.0, so returning production is already inside pred_b at every week. The slope is also WRONG-SIGNED against the registered direction (-3.83 vs hypothesised positive). The parsimonious reading is therefore NOT 'returning production predicts residuals' but 'the preseason prior over-weights returning production and the residual corrects it' \u2014 a model-calibration finding, not an external signal. Stays display_only. Re-fitting prior_w_returning is a separate exercise needing its own pre-registration and a walk-forward search; never a guessed constant (AGENT_BUILD_PROMPT section 8).",
+    "test": "scripts/factor_battery_context.py",
+    "last_validated": "2026-08-28",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-08-28",
+        "hypothesis": "returning_production_diff",
+        "result": "pass",
+        "p": 2.8e-05
+      }
+    ]
+  },
+  {
+    "factor_id": "special_teams_field_position_diff",
+    "description": "Walk-forward net punt-driven field position. For each team, over strictly-earlier weeks of the same season: mean start_yards_to_goal on that team's drives whose immediately preceding drive in the same game ended in a PUNT by the opponent, minus the mean start_yards_to_goal the opponents received on drives following that team's own PUNTs. Home value minus away value. Garbage-time drives and drives after period 4 are dropped, matching the gate-3 convention.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": -0.1212,
+    "ci": null,
+    "n": 2377,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "PASS 2026-08-28 (continuous; effect -0.1212, p=0.0011056, n=2377, BH crit 0.02). Pre-registered in data/factor_prereg_2026-08-28.json; BH q<0.05 across exactly the 5 registered hypotheses. display_only \u2014 promotion is a separate reviewed decision. || SIGN READS AS INTENDED once the module ERRATUM is applied: the registered differential is (field position received after their punt) minus (conceded after ours), and start_yards_to_goal is distance to the opponent's goal, so BETTER special teams is a more NEGATIVE differential. A negative slope therefore means better net punt play RAISES the residual \u2014 the substantive direction hypothesised. Magnitude 0.12 pts per yard of net punt field position, so a fraction of a point at realistic differentials. OVERLAP DECLARED IN ADVANCE: correlated with the registered field_position_diff (slope +0.6165, passed 2026-07-30), which mixes offence-earned and special-teams-earned field position. Not independent evidence; must not be counted twice.",
+    "test": "scripts/factor_battery_context.py",
+    "last_validated": "2026-08-28",
+    "next_validation_due": "2026 season end",
+    "revalidation_history": [
+      {
+        "date": "2026-08-28",
+        "hypothesis": "special_teams_field_position_diff",
+        "result": "pass",
+        "p": 0.001106
+      }
+    ]
+  },
+  {
+    "factor_id": "qb_availability__not_tested_2026_08_28",
+    "description": "Context family 'qb_availability' \u2014 recorded, not tested in the 2026-08-28 battery.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "NOT TESTED 2026-08-28. ALREADY ADJUDICATED 2026-07-30. backup_qb (retrospective proxy) passed but is contaminated by in-game reverse causation; backup_qb_pregame \u2014 the pregame-knowable definition \u2014 was pre-registered and REJECTED (p=0.07493, n=745). Re-running the identical test on the identical data is a re-report, not replication; choosing a NEW definition now, after seeing that rejection, is precisely the variant search this protocol forbids. Carried forward unchanged. Separately, no live availability feed is approved, so the factor is untestable going forward as well.",
+    "test": null,
+    "last_validated": "2026-08-28",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "ol_unit_availability__not_tested_2026_08_28",
+    "description": "Context family 'ol_unit_availability' \u2014 recorded, not tested in the 2026-08-28 battery.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "NOT TESTED 2026-08-28. NO SOURCE. Nothing cached, no approved provider, no historical record of line availability. The factor cannot be DEFINED, let alone tested.",
+    "test": null,
+    "last_validated": "2026-08-28",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "weather__not_tested_2026_08_28",
+    "description": "Context family 'weather' \u2014 recorded, not tested in the 2026-08-28 battery.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "NOT TESTED 2026-08-28. NO PREGAME SOURCE. There is no approved forecast provider, and CFBD's weather is OBSERVED \u2014 recorded at or after kickoff \u2014 so using it in a pregame factor would be same-game leakage by definition. Not tested.",
+    "test": null,
+    "last_validated": "2026-08-28",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "travel_timezone__not_tested_2026_08_28",
+    "description": "Context family 'travel_timezone' \u2014 recorded, not tested in the 2026-08-28 battery.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "NOT TESTED 2026-08-28. BLOCKED on the cfbd_venues approval gate: no venue coordinates or time zones are cached, so travel distance, zones crossed and body-clock hour cannot be computed. research/circadian-timezone-factor-plan.md already pre-registers a CENSUS first and a priced-in test second, with modelling only after both; this run does NOT override that. Only the census fraction derivable from start_date alone is counted, and NO effect is estimated. || CENSUS (counts only, no effect estimated), the fraction derivable without venue data: {\"full_2021_2024_schedule_total\": 13407, \"full_2021_2024_schedule_kick_before_noon_et\": 51, \"full_2021_2024_schedule_kick_1200_1559_et\": 8625, \"full_2021_2024_schedule_kick_1600_1959_et\": 3691, \"full_2021_2024_schedule_kick_2000_2159_et\": 745, \"full_2021_2024_schedule_kick_2200_et_or_later\": 295, \"walk_forward_evaluation_set_total\": 2377, \"walk_forward_evaluation_set_kick_before_noon_et\": 3, \"walk_forward_evaluation_set_kick_1200_1559_et\": 1169, \"walk_forward_evaluation_set_kick_1600_1959_et\": 841, \"walk_forward_evaluation_set_kick_2000_2159_et\": 222, \"walk_forward_evaluation_set_kick_2200_et_or_later\": 142, \"n_gate_for_a_kill_check_slice\": 143}. Zones crossed, travel distance and body-clock hour remain uncountable until the cfbd_venues gate is opened.",
+    "test": null,
+    "last_validated": "2026-08-28",
+    "next_validation_due": null,
+    "revalidation_history": []
+  },
+  {
+    "factor_id": "portal__not_tested_2026_08_28",
+    "description": "Context family 'portal' \u2014 recorded, not tested in the 2026-08-28 battery.",
+    "bucket": 3,
+    "status": "display_only",
+    "effect_size": null,
+    "ci": null,
+    "n": null,
+    "source_doc": "data/factor_prereg_2026-08-28.json",
+    "source_measurement": "NOT TESTED 2026-08-28. NOT CACHED and the cfbd_portal context source is not approved. returning_production_diff is tested as a roster-disruption proxy in its place, and is labelled as a proxy.",
+    "test": null,
+    "last_validated": "2026-08-28",
+    "next_validation_due": null,
+    "revalidation_history": []
   }
 ]

@@ -1,0 +1,14 @@
+context-layer factor battery — run 1, 2026-08-28
+pre-registered: data/factor_prereg_2026-08-28.json
+BH q<0.05 across m=5
+
+short_week                           underpowered effect=      nan p=      nan n=16
+rest_days_diff                       reject       effect=   0.2474 p= 0.031764 n=2377
+coach_year2                          reject       effect=   0.5395 p=  0.51461 n=835
+returning_production_diff            pass         effect=  -3.8335 p=2.8328e-05 n=2328
+special_teams_field_position_diff    pass         effect=  -0.1212 p=0.0011056 n=2377
+qb_availability                      not_tested
+ol_unit_availability                 not_tested
+weather                              not_tested
+travel_timezone                      not_tested
+portal                               not_tested

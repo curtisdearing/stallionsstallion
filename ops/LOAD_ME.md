@@ -5,11 +5,19 @@ absolute for this Mac (`/Users/curtisdearing/...`); nothing needs editing.
 The plists live in `ops/launchd/`; copies go to `~/Library/LaunchAgents/`
 (launchd loads from there, so the repo copies stay the versioned source).
 
-| Job | Label | Schedule (local) |
-|---|---|---|
-| week-open | `com.stallions.weekopen` | Tue 10:00 |
-| pregame | `com.stallions.pregame` | Fri 16:00 |
-| grade | `com.stallions.grade` | Sun 09:00 |
+| Job | Label | Schedule (local ET) | CFBD calls per fire |
+|---|---|---|---|
+| week-open | `com.stallions.weekopen` | Tue 10:00 | up to 25 |
+| pregame | `com.stallions.pregame` | Tue/Wed/Thu 16:00 · Fri 12:00 & 16:00 · **Sat 08:00, 13:00, 17:00** | **0** |
+| grade | `com.stallions.grade` | Sun 09:00 | up to 25 |
+
+The three Saturday fires are the final windows before the noon, afternoon and
+night kickoff slates. Eight pregame fires a week sounds expensive and is not:
+the pregame job has no refresh stage, so it spends **no CFBD budget at all**,
+and it does real work only when the source fingerprint or the pending kickoff
+window has actually moved. An unchanged tick writes a manifest that says it
+skipped and exits 0. Monthly burn is unchanged from the old one-fire schedule:
+roughly 200 of the 1,000 free calls.
 
 ## Load (paste this whole block)
 
@@ -52,18 +60,45 @@ offseason exit"}`. In season the same command shows every stage `ok: true`.
 - `data/manifests/{season}_wk{NN}_{stamp}.json` — the authoritative per-run
   record: per-stage pass/fail, degraded flag, call tally before/after.
 
-## How the grade job publishes
+## The grade job does NOT publish (changed)
 
-After a successful grade pass, `run_weekly.sh` rebuilds the site + hub feed,
-then **commits and pushes exactly `data/site/`** to `origin master`
-(message `weekly: publish site + hub feed (<stamp>)`). The push triggers
-`pages.yml`, which deploys the committed `data/site/` — that is the only
-publish path; the CFBD key never touches CI. A publish failure logs loudly
-but never fails the grade job. Opt out by adding
-`<key>STALLIONS_NO_PUBLISH</key><string>1</string>` to the
-`EnvironmentVariables` dict in `com.stallions.grade.plist` (then reload it).
-The push uses your normal git credentials (keychain) — run one manual
-`git push` from a terminal first if the keychain hasn't cached them.
+`run_weekly.sh` runs no `git add`, no `git commit` and no `git push`. After a
+successful grade pass it rebuilds `data/site/` and the hub feed **locally** and
+reports whether they are ready:
+
+```
+[runner] local site + hub feed rebuilt; READY TO PUBLISH
+[runner] publish with: ./scripts/publish_site.sh   (nothing was pushed)
+```
+
+A site or hub build failure now makes the run **unsuccessful** (exit 4) instead
+of being logged and swallowed. `STALLIONS_NO_PUBLISH` no longer exists — there
+is nothing to opt out of.
+
+Publishing is one explicit human command, `./scripts/publish_site.sh`, which
+refuses unless it is on `master`, prints every unpushed commit the push would
+carry, refuses outright if the last pipeline run halted on unhealthy inputs,
+and asks for typed confirmation before it commits `data/site` and pushes.
+
+> **Why this changed.** The runner used to commit `data/site` and then run an
+> unscoped `git push origin master` at 09:00 on a Sunday, unattended. The
+> commit was pathspec-scoped but the push was not, and git cannot push one
+> commit without its ancestors — so **every unpushed local commit went public
+> as a side effect of grading a week**. Two further sharp edges, both
+> reproduced: the commit landed on whatever branch was checked out while the
+> push always targeted `master` (on a feature branch the runner logged "site
+> published" and published nothing), and the "nothing to publish" guard
+> compared worktree to index, so one failed commit left `data/site` staged and
+> silently wedged publishing forever. `publish_site.sh` checks all three.
+
+## Exit statuses
+
+| Code | Meaning | What to do |
+|---|---|---|
+| 0 | job completed | nothing; publish by hand if you want the site live |
+| 1 | a stage failed | re-run the same job — it resumes from its sentinels |
+| 3 | **halted: inputs failed their health check** | read `halt_reason` in the manifest and `data/pipeline_health.json`; nothing was published and nothing was overwritten |
+| 4 | local site/hub build failed | the loop itself succeeded; the artifacts are not publishable |
 
 ## Manage
 
@@ -78,3 +113,78 @@ is asleep; the jobs are idempotent and sentinel-guarded, so a missed run is
 absorbed by the next one — no double-counting. ~25 CFBD calls/week; the
 loop's budget guard hard-refuses within 50 calls of the 1,000/month cap.
 Paper-only throughout: nothing in these jobs stakes or recommends anything.
+
+
+---
+
+## What a pregame fire actually does (new 2026-08-28)
+
+The old behaviour was one run per week: the first pregame fire wrote
+`data/manifests/_done_{season}_wk{NN}_pregame_simulate` and every later fire
+that week skipped. A Saturday morning run could not react to a Friday injury
+report. That sentinel no longer applies to `pregame`
+(`weekly_loop.SENTINEL_JOBS`); repeat-suppression is now decided from the
+snapshot store instead.
+
+Each fire:
+
+1. computes a **source fingerprint** over the week's schedule, the cached
+   source artifacts (games / lines / drives / teams / rosters / availability /
+   weather), and the code+config version;
+2. computes the **pending kickoff window** — the next kickoff that has not
+   happened yet, floored to the hour;
+3. runs only if either moved since the last snapshot (or if the last
+   publication was degraded and sources are healthy again);
+4. **freezes** every game that has kicked off, copying its row from the newest
+   snapshot taken *strictly before that game's own kickoff*;
+5. writes an immutable snapshot and advances the `latest` pointer.
+
+Layout under `data/snapshots/{season}_wk{NN}/`:
+
+```
+{stamp}/predictions.csv     immutable — rewriting a stamp raises
+{stamp}/snapshot.json       digest, window, degraded, sha256, taken_at
+{stamp}/explainer.html      optional
+latest.json                 POINTER to the newest stamp (never a copy)
+frozen.json                 append-only game_id -> final pregame row
+```
+
+`data/predictions_{season}_wk{NN}.csv` is still written for the site and hub
+feed; it is now just a copy of the newest snapshot, written tmp+`os.replace`.
+
+**Storage policy — REVERSED, and this is now the single source of truth.**
+`data/snapshots/` is **tracked**. An earlier revision put it in `.gitignore`
+and described it as MACHINE-LOCAL: never committed, never pushed. That made the
+only pre-kickoff record exist on exactly one Mac, which defeats the point of
+freezing at kickoff — the value of a frozen row is that it can be *proved*
+afterwards, and a proof nobody else can see is not one. It also meant a fresh
+clone started with no frozen record, so any already-started game there
+published as a refusal rather than the forecast that really was made.
+
+What is tracked: `predictions.csv` (contract rows), `snapshot.json` (stamp,
+source digest, window, sha256, taken_at, status counts), `frozen.json` (the
+per-game pre-kickoff rows and their provenance), `latest.json` (the pointer).
+Roughly 60 KB per snapshot, a few MB a season.
+
+What is NOT tracked: `explainer.html` inside each stamp
+(`data/snapshots/**/explainer.html` in `.gitignore`) — it is a rendering of
+`predictions.csv`, regenerable from it, and it is most of the bytes.
+
+**No credential goes in.** `snapshot.json` stores the source digest, which is a
+hash — never the config it hashes. The CFBD key and any webhook live in
+`config.local.json`, which stays ignored. Nothing in a snapshot is
+secret-bearing, and nothing in it is CFBD source data: the rows are derived
+analysis, consistent with the recorded terms position.
+
+## Inspecting a week without running anything
+
+```bash
+python3 - <<'PY'
+import sys; sys.path.insert(0, '.')
+from nflvalue import snapshots as SN
+for s in SN.list_snapshots('data', 2026, 1):
+    print(s['stamp'], s['window'], 'degraded' if s['degraded'] else 'ok',
+          s['n_rows'], 'rows', 'verified' if SN.verify_snapshot(s['path']) else 'TAMPERED')
+print('frozen:', len(SN.load_frozen('data', 2026, 1)))
+PY
+```

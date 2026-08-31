@@ -29,6 +29,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 from nflvalue import ingest  # noqa: E402
+from nflvalue import evidence as EV  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -36,24 +37,35 @@ OUT_DIR = os.path.join(DATA, "site")
 
 
 def load_inputs():
+    """Site inputs, with the benchmark chosen ONLY through the manifest.
+
+    This used to read `data/backtest_c.csv` and `data/backtest_c_2024.csv`
+    directly and publish their MAE, calibration and per-game table as
+    statements about the model. Both are pre-correction artifacts: they were
+    produced by a walk-forward that fitted pace on the pooled multi-season
+    frame and OT on the whole window. The site went on quoting them after the
+    method was corrected, which is the specific thing the evidence manifest
+    exists to stop. When no artifact is selected, `bt` is None and every panel
+    that would have quoted it renders the awaiting-revalidation state instead.
+    """
     reg = json.load(open(os.path.join(DATA, "factor_registry.json")))
     clv = pd.concat([pd.read_csv(os.path.join(DATA, "clv_log_backtest.csv")),
                      pd.read_csv(os.path.join(DATA, "clv_log_2024.csv"))],
                     ignore_index=True)
-    bt = pd.concat([pd.read_csv(os.path.join(DATA, "backtest_c.csv")),
-                    pd.read_csv(os.path.join(DATA, "backtest_c_2024.csv"))],
-                   ignore_index=True)
-    lines = ingest.load_lines(sorted(bt["season"].unique()))
-    med = lines.dropna(subset=["spread"]).groupby("game_id")["spread"].median()
-    bt["market"] = [(-float(med.get(i)) if i in med.index else None)
-                    for i in bt["id"]]
+    bt, record, notice = EV.benchmark_or_notice(ROOT, EV.ROLE_WK4PLUS)
+    if bt is not None:
+        lines = ingest.load_lines(sorted(bt["season"].unique()))
+        med = (lines.dropna(subset=["spread"])
+               .groupby("game_id")["spread"].median())
+        bt["market"] = [(-float(med.get(i)) if i in med.index else None)
+                        for i in bt["id"]]
     recaps = []
     rdir = os.path.join(DATA, "recaps")
     if os.path.isdir(rdir):
         for fn in sorted(os.listdir(rdir)):
             if fn.endswith(".json"):
                 recaps.append(json.load(open(os.path.join(rdir, fn))))
-    return reg, clv, bt, recaps
+    return reg, clv, bt, recaps, record, notice
 
 
 def calibration_rows(bt: pd.DataFrame):
@@ -71,22 +83,36 @@ def calibration_rows(bt: pd.DataFrame):
 
 
 def main() -> int:
-    reg, clv, bt, recaps = load_inputs()
+    reg, clv, bt, recaps, record, notice = load_inputs()
     clv_rows = clv[["game_id", "season", "week", "book", "side",
                     "edge_at_open", "clv_pts", "slice"]].round(2)
-    bt_rows = bt[["season", "week", "home", "away", "pred_b", "mc_margin",
-                  "p_home_win", "margin", "market"]].round(2)
+    if bt is None:
+        bt_rows = pd.DataFrame(columns=["season", "week", "home", "away",
+                                        "pred_b", "mc_margin", "p_home_win",
+                                        "margin", "market"])
+        calibration = []
+    else:
+        bt_rows = bt[["season", "week", "home", "away", "pred_b", "mc_margin",
+                      "p_home_win", "margin", "market"]].round(2)
+        calibration = calibration_rows(bt)
 
     payload = {
         "registry": reg,
         "clv": clv_rows.to_dict("records"),
         "games": bt_rows.to_dict("records"),
-        "calibration": calibration_rows(bt),
+        "calibration": calibration,
         "recaps": recaps[-4:],
+        "benchmark": {
+            "available": bt is not None,
+            "notice": notice,
+            "artifact_id": record.artifact_id if record else None,
+            "method": record.method if record else None,
+        },
         "meta": {
             "built": "2026-07-30",
             "games_n": len(bt_rows), "clv_n": len(clv_rows),
-            "windows": "walk-forward 2021-2024, weeks >= 4",
+            "windows": ("walk-forward 2021-2024, weeks >= 4" if bt is not None
+                        else "no benchmark selected"),
             "bakeoff": [
                 {"model": "Kalman state-space", "mse": 254.71, "note":
                  "bakeoff winner; confirmed on virgin 2025 holdout (234.9 vs ridge 291.1)"},
@@ -110,6 +136,9 @@ def main() -> int:
         fh.write(html)
     print(f"[site] wrote {out} ({os.path.getsize(out)//1024} KB, "
           f"{len(bt_rows)} games, {len(clv_rows)} CLV rows)")
+    if bt is None:
+        print(f"[site] BENCHMARK UNAVAILABLE — the model-performance panels "
+              f"render the awaiting-revalidation state. {notice}")
     return 0
 
 
@@ -358,6 +387,12 @@ function card(h){const d=document.createElement("div");d.className="card";d.inne
  $("#g-season").innerHTML=`<option value="">all</option>`+seasons.map(s=>`<option>${s}</option>`).join("");
  function render(){
   const se=$("#g-season").value,q=($("#g-team").value||"").toLowerCase();
+  if(D.benchmark&&D.benchmark.available===false){
+   $("#g-stats").innerHTML="";
+   $("#g-stats").appendChild(card(`<div class="small"><b>Current correction awaiting revalidation.</b><br>${esc(D.benchmark.notice||"")}</div>`));
+   $("#g-table").innerHTML=`<tr><td class="small">No benchmark artifact is selected, so no model MAE, Brier or calibration figure is shown. Pre-correction numbers describe an earlier method and are not claims about the model running now.</td></tr>`;
+   return;
+  }
   const rows=D.games.filter(r=>(!se||r.season==se)&&(!q||r.home.toLowerCase().includes(q)||r.away.toLowerCase().includes(q)));
   const withM=rows.filter(r=>r.market!=null);
   const mae=a=>a.length?(a.reduce((x,r)=>x+Math.abs(r),0)/a.length).toFixed(2):"—";
@@ -398,19 +433,32 @@ function card(h){const d=document.createElement("div");d.className="card";d.inne
 """
 
 
-def _also_build_hub_feed() -> None:
-    """The hub feed rides along with every site rebuild; never fatal."""
+def _also_build_hub_feed() -> int:
+    """The hub feed rides along with every site rebuild. FATAL on failure.
+
+    This used to run with `check=False` inside a bare `except: pass`, so a hub
+    feed that could not be built — including one REFUSED because the artifact
+    behind it did not satisfy the forecast contract — left the site rebuild
+    reporting success while the hub kept serving the previous week. The
+    operator's only signal that the public surface had gone stale was to
+    notice it. A build that cannot produce the hub has not succeeded.
+    """
     import subprocess
     import sys as _sys
     script = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                           "build_hub_feed.py")
     try:
-        subprocess.run([_sys.executable, script], check=False)
-    except Exception:  # noqa: BLE001
-        pass
+        proc = subprocess.run([_sys.executable, script], check=False)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[site] hub feed build could not start: {exc}", file=_sys.stderr)
+        return 1
+    if proc.returncode != 0:
+        print(f"[site] hub feed build FAILED (exit {proc.returncode}); the "
+              "site rebuild is not usable on its own", file=_sys.stderr)
+    return int(proc.returncode)
 
 
 if __name__ == "__main__":
-    _code = main()
-    _also_build_hub_feed()
-    raise SystemExit(_code)
+    _code = main() or 0
+    _hub = _also_build_hub_feed()
+    raise SystemExit(_code or _hub)

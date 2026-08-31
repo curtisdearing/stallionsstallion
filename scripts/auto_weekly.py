@@ -25,6 +25,22 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+# --- LEGACY / UNSUPPORTED --------------------------------------------------- #
+# The inherited NFL scheduling wrapper, kept as historical source and made
+# inert.  Unlike run.py/weekly.py the guard cannot sit at module scope: the
+# existing suite imports this module to exercise its pure clock helpers
+# (current_week / last_completed_week), which touch nothing operational.
+# So the refusal sits at the top of main() AND at the top of every job_*
+# function -- i.e. on every path that can reach pricing, staking, prop or
+# notification logic, whether entered from the command line or by direct
+# call.  See README.md and nflvalue/legacy_guard.py.
+from nflvalue import legacy_guard as _legacy_guard  # noqa: E402
+
+_LEGACY_CAPABILITY = (
+    "the inherited NFL wed/t90/tuesday scheduling wrapper (value-slate "
+    "refresh, bankroll and staking math, player-prop projections and "
+    "Discord posting)")
+
 ET = ZoneInfo("America/New_York")
 T90_WINDOW_HOURS = 2.75      # refresh games kicking off within this window
 
@@ -126,6 +142,8 @@ def last_completed_week(slate, now: dt.datetime):
 
 
 def job_wed() -> int:
+    _legacy_guard.refuse("scripts/auto_weekly.py",
+                         capability=_LEGACY_CAPABILITY)
     from nflvalue import config as cfgmod, ingest
     import pipeline_weekly as pw
     r = ingest.refresh()
@@ -154,6 +172,8 @@ def job_wed() -> int:
 
 
 def job_t90() -> int:
+    _legacy_guard.refuse("scripts/auto_weekly.py",
+                         capability=_LEGACY_CAPABILITY)
     from nflvalue import config as cfgmod, db as dbmod
     import pipeline_weekly as pw
     slate = load_slate()
@@ -215,6 +235,8 @@ def job_t90() -> int:
 
 
 def job_tuesday() -> int:
+    _legacy_guard.refuse("scripts/auto_weekly.py",
+                         capability=_LEGACY_CAPABILITY)
     import subprocess
     import pipeline_weekly as pw
     from nflvalue import killcheck
@@ -252,6 +274,8 @@ def job_tuesday() -> int:
 
 def job_deploy() -> int:
     """Refresh public metadata without spending odds credits or notifying."""
+    _legacy_guard.refuse("scripts/auto_weekly.py",
+                         capability=_LEGACY_CAPABILITY)
     try:
         slate = load_slate()
         status = schedule_status(slate, now_et())
@@ -265,6 +289,8 @@ def job_deploy() -> int:
 
 
 def main() -> None:
+    _legacy_guard.refuse("scripts/auto_weekly.py",
+                         capability=_LEGACY_CAPABILITY)
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--job", choices=["deploy", "wed", "t90", "tuesday"], required=True)
     args = ap.parse_args()

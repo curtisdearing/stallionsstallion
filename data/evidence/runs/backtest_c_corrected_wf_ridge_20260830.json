@@ -1,0 +1,319 @@
+{
+  "artifact_id": "backtest_c_corrected_wf_ridge_20260830",
+  "code_hashes": {
+    "config.json": "ac1f92c8dbef9ccd90aa4c731717d194f8db0dc9183798b69c654210b7533698",
+    "nflvalue/cfb_ot.py": "dfe16ad391ad49da2ad2bbba91867bf41827ca78a1499f746031c6680d0f3169",
+    "nflvalue/cfb_sim.py": "48f169c97360cfe43268f44f63b193a402302e4cb1f2fb3638f41c794982edb6",
+    "nflvalue/engine.py": "380e08a91117f4fd179f6f0d64a82707fe52ce98f5a497850be5be3a00cd0e00",
+    "nflvalue/kalman_engine.py": "f22f7ab4c5b2ba0440e62eb5dc8a2ae4464ab284606448a615cd4df3c5075a2d",
+    "nflvalue/ratings.py": "a511faea9993689232e911d52b95d13034561988ef667d48c6482742e305d299",
+    "scripts/backtest_c.py": "75a95616f37d6629d6ec2676c75b6ebbd199f6ef04099b95ebfb54b55a01a112"
+  },
+  "content_sha256": "004c0f6c3c6a26326d282c7455ee8462555dd32e4d963f99f658a95056c3fc5d",
+  "description": "corrected strict walk-forward gate-3 run: PaceModel and OT parameters fitted per evaluated week from season < S or (season == S and week < W) only",
+  "engine_policy": {
+    "early_season_engine": "ridge",
+    "early_season_weeks": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "margin_engine_config": "kalman",
+    "policy_changed_by_this_run": false,
+    "run_engine": "ridge"
+  },
+  "exclusions": {
+    "by_cause": {
+      "game_not_fbs_v_fbs": 8,
+      "week_pace_or_ot_unfittable": 27
+    },
+    "games": [
+      {
+        "game_id": 401520400,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 10
+      },
+      {
+        "game_id": 401525451,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 10
+      },
+      {
+        "game_id": 401525545,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 10
+      },
+      {
+        "game_id": 401520381,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 11
+      },
+      {
+        "game_id": 401520401,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 12
+      },
+      {
+        "game_id": 401520420,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 12
+      },
+      {
+        "game_id": 401520421,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 12
+      },
+      {
+        "game_id": 401525556,
+        "kind": "game_not_fbs_v_fbs",
+        "reason": "outside the validated division",
+        "season": 2023,
+        "week": 12
+      }
+    ],
+    "weeks": [
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 7 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 4
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 12 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 5
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 13 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 6
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 17 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 7
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 20 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 8
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 26 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 9
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 26 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 10
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 32 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 11
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 37 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 12
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 41 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 13
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 47 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 14
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 47 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2021,
+        "week": 15
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 67 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2022,
+        "week": 4
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 73 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2022,
+        "week": 5
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 78 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2022,
+        "week": 6
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 85 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2022,
+        "week": 7
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 97 standard OT possessions in the 2021+ era \u2014 below the 100 floor; refusing to fit on noise",
+        "season": 2022,
+        "week": 8
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 9
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 10
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 11
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 12
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 13
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 14
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 3 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2022,
+        "week": 15
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 4 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2023,
+        "week": 4
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 4 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2023,
+        "week": 5
+      },
+      {
+        "kind": "week_pace_or_ot_unfittable",
+        "reason": "OTFitError: only 4 mandatory 2-pt attempts in the 2021+ era \u2014 too few to estimate a conversion rate at all; extend the cache first",
+        "season": 2023,
+        "week": 6
+      }
+    ]
+  },
+  "generated_at_utc": "2026-08-30T19:22:08Z",
+  "input_hashes": {
+    "data/cfbd/drives_2019.parquet": "3e526b63923818823ce6b84f8d1d9921346743800cd023b9ff6e1c4b2dc963b1",
+    "data/cfbd/drives_2020.parquet": "8056fb52c5afeb18745508baa19d7072cef8207d593a1d92d4ee4fda6e74ee26",
+    "data/cfbd/drives_2021.parquet": "264d3ac42ae04e7b350c889e25ba5c26ee46eb3fb933e506316fa3228df19a7d",
+    "data/cfbd/drives_2022.parquet": "e651ab97cc60322e79987cf6c1e77c2679b189bd5707f2864cc6e3017ba1338c",
+    "data/cfbd/drives_2023.parquet": "096943ef441a80ff3dfb1f52bcebe3f5ef771faf073cfb158e7bc17f0244c8a3",
+    "data/cfbd/games_2019.parquet": "07855c8ab15d47f2ab4263f9fa6e402a8c3a17b9910285a1380c3eb8af4dd7d9",
+    "data/cfbd/games_2020.parquet": "77eaa39c5c90145f5112e742f73a0c33e3b823d816d9eef52ee721bbabd9b121",
+    "data/cfbd/games_2021.parquet": "ae4d1be4eb0fc902db9c5be67163323c2d3a0688f7e33e38c6fbef82edc3d318",
+    "data/cfbd/games_2022.parquet": "064298912ba1b8a5a2622b785a8c8925dc96e373aa6ab6923d19bcee769b4df6",
+    "data/cfbd/games_2023.parquet": "63fc5d051593042282187d8d27629fea040007a5010a3bc9324fc7824e6bcb08"
+  },
+  "method": "strict_walk_forward_pace_ot_v2_20260829",
+  "metrics": null,
+  "n_rows": 429,
+  "n_sims_per_game": 4000,
+  "not_selected_reason": "",
+  "path": "data/backtest_c_corrected_wf_ridge_20260830.csv",
+  "role": "benchmark_wk4plus",
+  "schema": [
+    "season",
+    "week",
+    "id",
+    "home",
+    "away",
+    "pred_b",
+    "mc_margin",
+    "mc_margin_sd",
+    "mc_total",
+    "mc_total_sd",
+    "p_home_win",
+    "p_ot",
+    "margin",
+    "total",
+    "n_train_drives",
+    "param_sd"
+  ],
+  "seasons": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "seed": 20260730,
+  "selection_rule": "selectable only when the run covers the pre-registered window (eval seasons 2021-2023, weeks >= 4) with the exclusions accounted for and a human records the acceptance. Coverage shortfall is not a reason to widen the window.",
+  "status": "candidate",
+  "weeks": {
+    "burn_in_seasons": [
+      2019,
+      2020
+    ],
+    "eval_seasons": [
+      2021,
+      2022,
+      2023
+    ],
+    "first_week": 4,
+    "seasons_completed": [
+      2021,
+      2022,
+      2023
+    ]
+  }
+}

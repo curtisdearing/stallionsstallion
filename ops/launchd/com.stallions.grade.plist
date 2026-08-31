@@ -17,9 +17,18 @@
   <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion</string>
 
   <!-- Sunday 09:00 local — pull finals, honesty report, weekly scoreboard
-       recap + hypothesis ledger, close-free CLV capture, rebuild the public
-       site + hub feed, then COMMIT+PUSH data/site so Pages redeploys.
-       Set STALLIONS_NO_PUBLISH=1 below to disable the publish step. -->
+       recap + hypothesis ledger, close-free CLV capture, and rebuild the
+       public site + hub feed LOCALLY.
+
+       This job does NOT publish. It runs no git command at all. An earlier
+       revision committed data/site and ran an unscoped `git push origin
+       master` from here, unattended, which pushed every unpushed local commit
+       as a side effect. Publishing is now one manual command:
+       ./scripts/publish_site.sh
+
+       Exit statuses: 0 ok · 1 a stage failed · 3 halted, inputs failed their
+       health check (nothing published, nothing overwritten) · 4 the local
+       site/hub build failed. -->
   <key>StartCalendarInterval</key>
   <dict>
     <key>Weekday</key><integer>0</integer>
@@ -34,11 +43,10 @@
   <key>StandardErrorPath</key>
   <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/data/logs/launchd-grade.log</string>
 
-  <!-- git push runs from this job: PATH must reach git and the
-       osxkeychain/gh credential helper (Homebrew paths included).
-       To stop the grade job publishing (paper-only kill switch), add:
-         <key>STALLIONS_NO_PUBLISH</key><string>1</string>
-       inside this dict. -->
+  <!-- No git command runs from this job, so no credential helper is needed
+       on PATH. Homebrew paths are kept because run_weekly.sh resolves
+       python@3.11 through them. STALLIONS_NO_PUBLISH no longer exists: there
+       is no publish step here to switch off. -->
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>

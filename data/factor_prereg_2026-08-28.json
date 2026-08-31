@@ -1,0 +1,97 @@
+{
+  "schema": "stallionsstallion.factor_prereg.v1",
+  "registered_at_utc": "2026-08-28T07:05:00Z",
+  "registered_before_any_result_was_computed": true,
+  "run_label": "context-layer factor battery, run 1",
+  "operator_note": "Written and appended to _worklog.md BEFORE the analysis code was executed. Thresholds below are the project's already-registered standards, copied unchanged from nflvalue/factor_battery.py; they are NOT adjustable by this run. One run, no re-runs, no variant search. A rejection is the deliverable.",
+
+  "evaluation_set": {
+    "frames": ["data/backtest_c.csv", "data/backtest_c_2024.csv"],
+    "seasons": [2021, 2022, 2023, 2024],
+    "weeks": "4-15 (the only weeks the walk-forward backtest covers)",
+    "n_games_expected": 2377,
+    "outcome": "signed walk-forward residual, margin - pred_b, oriented to the treated/home side",
+    "why_residual": "the rating has already used up 'the factor predicts strength'; only information the rating MISSED can register",
+    "close_free": "no line, price, book or CLV column enters any frame used here; asserted by test"
+  },
+
+  "hypotheses": [
+    {
+      "id": "short_week",
+      "family": "rest_short_week",
+      "shape": "event",
+      "definition": "A team whose days of rest (its previous game's kickoff to this game's kickoff, from games start_date) is <= 6.0 while its opponent's is >= 7.0. One treated row per team-game, side in {home,away}. Games where BOTH teams are on short rest are EXCLUDED (no differential).",
+      "pregame_knowable": "the schedule is published months ahead; kickoff timestamps are fixed before the season",
+      "direction_hypothesised": "negative — the short-rest side underperforms its rating",
+      "n_gate": "40 matched pairs",
+      "matching": "same season, week within +/-1, closest predicted margin for the same side, without replacement"
+    },
+    {
+      "id": "rest_days_diff",
+      "family": "rest_short_week",
+      "shape": "continuous",
+      "definition": "home days of rest minus away days of rest, uncapped and untransformed.",
+      "pregame_knowable": "same as short_week",
+      "direction_hypothesised": "positive — a rest edge for the home side raises its residual",
+      "n_gate": "800 games",
+      "matching": "none; OLS of residual on the differential (the residual IS the control)"
+    },
+    {
+      "id": "coach_year2",
+      "family": "coaching_continuity",
+      "shape": "event",
+      "definition": "A team whose head coach was flagged first_season in season-1 and is the SAME coach in this season, i.e. a second-year head coach. Distinct from the already-registered coaching_change_y1 (first-year). Requires coaches_{season-1} and coaches_{season}.",
+      "pregame_knowable": "head-coach identity is public before the season",
+      "direction_hypothesised": "positive — the year-1 disruption already measured at -2.66 pts should be partly recovered by year 2",
+      "n_gate": "40 matched pairs",
+      "matching": "as short_week"
+    },
+    {
+      "id": "returning_production_diff",
+      "family": "portal_roster_disruption",
+      "shape": "continuous",
+      "definition": "home percent_ppa minus away percent_ppa from returning_{season}.parquet — the share of prior-season PPA back on the roster. Constant within a season by construction.",
+      "pregame_knowable": "published preseason, before any game of the season",
+      "direction_hypothesised": "positive — the side returning more production overperforms its rating",
+      "n_gate": "800 games",
+      "matching": "none; OLS on the residual",
+      "caveat_registered_in_advance": "this is a PROXY for roster disruption. The transfer portal feed itself is not cached and its context source is not approved, so no portal-specific factor is tested in this run."
+    },
+    {
+      "id": "special_teams_field_position_diff",
+      "family": "special_teams",
+      "shape": "continuous",
+      "definition": "Walk-forward net punt-driven field position. For each team, over strictly-earlier weeks of the same season: mean start_yards_to_goal on that team's drives whose immediately preceding drive in the same game ended in a PUNT by the opponent, minus the mean start_yards_to_goal the opponents received on drives following that team's own PUNTs. Home value minus away value. Garbage-time drives and drives after period 4 are dropped, matching the gate-3 convention.",
+      "pregame_knowable": "computed only from weeks strictly BEFORE the game week; the game's own drives are never read",
+      "direction_hypothesised": "positive — a better net punt/return field-position game raises the residual",
+      "n_gate": "800 games",
+      "matching": "none; OLS on the residual",
+      "overlap_declared_in_advance": "correlated with the already-registered field_position_diff (which mixes offence-earned and special-teams-earned field position). A pass here must be read against that entry, not as an independent discovery."
+    }
+  ],
+
+  "multiplicity": {
+    "method": "Benjamini-Hochberg FDR",
+    "q": 0.05,
+    "m": 5,
+    "corrected_across": ["short_week", "rest_days_diff", "coach_year2", "returning_production_diff", "special_teams_field_position_diff"],
+    "note": "exactly this list, frozen before the run; no hypothesis may be added or dropped after seeing a result"
+  },
+
+  "registry_outcome_rule": {
+    "pass": "status display_only with a passed-gate note. Promotion to gated_active is a separate, human-reviewed decision and is NEVER made by this run.",
+    "reject": "status display_only with a rejected note and the p-value recorded",
+    "underpowered": "status display_only with an n-gate FAIL note; an underpowered result is NOT evidence of absence",
+    "unavailable": "status display_only with an unavailable note naming the missing source and the gate that blocks it"
+  },
+
+  "families_recorded_but_not_tested": {
+    "qb_availability": "ALREADY ADJUDICATED 2026-07-30. backup_qb (retrospective proxy) passed but is contaminated by in-game reverse causation; backup_qb_pregame — the pregame-knowable definition — was pre-registered and REJECTED (p=0.07493, n=745). Re-running the identical test on the identical data is a re-report, not replication; choosing a NEW definition now, after seeing that rejection, is precisely the variant search this protocol forbids. Carried forward unchanged. Separately, no live availability feed is approved, so the factor is untestable going forward as well.",
+    "ol_unit_availability": "NO SOURCE. Nothing cached, no approved provider, no historical record of line availability. The factor cannot be DEFINED, let alone tested.",
+    "weather": "NO PREGAME SOURCE. There is no approved forecast provider, and CFBD's weather is OBSERVED — recorded at or after kickoff — so using it in a pregame factor would be same-game leakage by definition. Not tested.",
+    "travel_timezone": "BLOCKED on the cfbd_venues approval gate: no venue coordinates or time zones are cached, so travel distance, zones crossed and body-clock hour cannot be computed. research/circadian-timezone-factor-plan.md already pre-registers a CENSUS first and a priced-in test second, with modelling only after both; this run does NOT override that. Only the census fraction derivable from start_date alone is counted, and NO effect is estimated.",
+    "portal": "NOT CACHED and the cfbd_portal context source is not approved. returning_production_diff is tested as a roster-disruption proxy in its place, and is labelled as a proxy."
+  },
+
+  "stopping_rule": "One execution. If a hypothesis fails, it is recorded as failed. No threshold, cohort, window or definition may be altered and re-run within this registration. A later, differently-registered run is a new registration with its own record."
+}

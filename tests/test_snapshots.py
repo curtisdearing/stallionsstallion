@@ -17,16 +17,25 @@ able to violate by accident:
   * a stale source degrades the output visibly instead of publishing
     confident-looking numbers over old data.
 
+Everything the store handles is a `forecast_contract` schema-2 row, built by
+`FC.build_artifact` and validated on the way in and on the way out. That is
+why "frozen" and "degraded" are read here as row STATUS rather than as extra
+boolean columns: the public contract is closed, so the snapshot writer has
+nowhere to bolt a column of its own, and a row states exactly one thing about
+itself.
+
 PAPER-ONLY throughout: nothing here produces or implies a bet.
 """
 
 import json
+import math
 import os
 from datetime import datetime, timezone
 
 import pandas as pd
 import pytest
 
+from nflvalue import forecast_contract as FC
 from nflvalue import snapshots as SN
 
 
@@ -59,26 +68,71 @@ def _week_games(*starts, played=()):
     return _games(rows)
 
 
-def _rows(margins):
-    """Artifact rows in the published contract shape (see week_prediction_rows)."""
-    out = []
-    for gid, m in margins.items():
-        vetoed = m is None
-        out.append({
-            "season": 2026, "week": 2, "id": gid, "slate": "wk2",
-            "date": "2026-09-05", "home": f"Home{gid}", "away": f"Away{gid}",
-            "neutral": False,
-            "mc_margin": None if vetoed else m,
-            "mc_margin_sd": None if vetoed else 16.5,
-            "mc_total": None if vetoed else 51.0,
-            "p_home_win": None if vetoed else 0.58,
-            "param_sd": None if vetoed else 1.9,
-            "pred_margin": None if vetoed else m,
-            "band_pm": None if vetoed else 16.5,
-            "veto": vetoed,
-            "note": "refused" if vetoed else None,
-        })
-    return pd.DataFrame(out)
+#: The fixture week. Week 2 is the early-season route, so these rows name
+#: `ridge_preseason_prior` — which runs no simulation and therefore may not
+#: publish a `projected_total`. Matching the real production family for the
+#: week matters: `freeze_kicked_off` stamps a structural refusal with
+#: `producers.production_family(week)`, so anything else here would leave one
+#: artifact naming two producers for one week.
+SEASON, WEEK = 2026, 2
+MODEL_FAMILY = "ridge_preseason_prior"
+MODEL_VERSION = "test-fixture-ridge"
+#: The registered out-of-sample basis that covers weeks 0-3 for this family.
+BASIS = "early_ridge_wk1_3_2021_2025"
+FORECAST_SD = 16.5
+RATING_PARAM_SD = 1.9
+REFUSAL = FC.DEFAULT_REFUSALS["unrated"]
+
+#: Fixed, so two builds of the same margins are byte-identical.
+PROVENANCE = FC.Provenance(model_family=MODEL_FAMILY,
+                           model_version=MODEL_VERSION,
+                           generated_at_utc="2026-09-01T12:00:00Z")
+
+#: The fixture week's kickoffs. A row's `kickoff_utc` has to name a real
+#: instant, and these are the week's canonical noon / afternoon / night slots.
+KICKOFFS = {101: "2026-09-05T16:00:00Z",
+            102: "2026-09-05T19:30:00Z",
+            103: "2026-09-05T23:00:00Z"}
+
+#: Several tests use a deliberately absurd margin (99, 500) as a sentinel: a
+#: later number that must never reach a frozen row. Against a 16.5-point SD
+#: those imply a certainty the contract will not print — `p_home_win` must lie
+#: strictly inside (0, 1) — so the probability is read at a capped z. It stays
+#: coherent by a wide margin (beyond |z|=3.5 the true and capped probabilities
+#: differ by <0.0003, against FC.P_COHERENCE_TOL of 0.05) and `from_summary`
+#: re-checks it, so the sentinels stay publishable rows without the fixture
+#: ever publishing a probability that does not belong to its own distribution.
+_Z_CAP = 3.5
+
+
+def _predictive(margin):
+    z = max(-_Z_CAP, min(_Z_CAP, float(margin) / FORECAST_SD))
+    return FC.PredictiveMargin.from_summary(
+        mean=float(margin), sd=FORECAST_SD,
+        p_home_win=0.5 * (1.0 + math.erf(z / math.sqrt(2.0))),
+        basis_id=BASIS)
+
+
+def _rows(margins, *, degraded_reason=None):
+    """Artifact rows in the one public contract (see forecast_contract).
+
+    `{game_id: margin}`, where a `None` margin is a game the model declined.
+    Pass `degraded_reason` for a run that cannot stand behind any number:
+    degradation is a property of the ROWS now, so the same builder produces
+    it and every row comes back `status="degraded"`, reasoned, and numberless.
+    """
+    schedule = pd.DataFrame([
+        {"id": gid, "start_date": KICKOFFS[gid], "home_team": f"Home{gid}",
+         "away_team": f"Away{gid}", "neutral_site": False}
+        for gid in margins
+    ])
+    forecasts = {gid: FC.Forecast(_predictive(m),
+                                  rating_parameter_sd=RATING_PARAM_SD)
+                 for gid, m in margins.items() if m is not None}
+    refusals = {gid: REFUSAL for gid, m in margins.items() if m is None}
+    return FC.build_artifact(SEASON, WEEK, schedule, forecasts, refusals,
+                             PROVENANCE, degraded=degraded_reason is not None,
+                             degraded_reason=degraded_reason)
 
 
 def _write(data_dir, stamp, rows, *, digest="d0", window="w0",
@@ -115,7 +169,7 @@ def test_second_snapshot_does_not_overwrite_the_first(data_dir):
     first = pd.read_csv(os.path.join(
         SN.snapshot_dir(data_dir, 2026, 2, "20260901T120000Z"),
         "predictions.csv"))
-    assert float(first.loc[0, "mc_margin"]) == 3.5, \
+    assert float(first.loc[0, "projected_home_margin"]) == 3.5, \
         "history must survive a later run verbatim"
 
 
@@ -187,7 +241,8 @@ def test_first_run_of_a_week_always_runs(data_dir):
 
 
 def test_recovering_from_a_degraded_snapshot_reruns(data_dir):
-    _write(data_dir, "20260901T120000Z", _rows({101: 3.5}), digest="abc",
+    _write(data_dir, "20260901T120000Z",
+           _rows({101: 3.5}, degraded_reason="games feed stale"), digest="abc",
            window="w", degraded=True, reason="games feed stale")
 
     d = SN.decide(data_dir, 2026, 2, source_digest="abc", window="w",
@@ -320,14 +375,18 @@ def test_a_kicked_off_game_cannot_be_revised(data_dir):
     out, n = SN.apply_frozen(revised, SN.load_frozen(data_dir, 2026, 2))
 
     assert n == 1
-    row101 = out.set_index("id").loc[101]
-    assert float(row101["mc_margin"]) == 3.5, \
+    row101 = out.set_index("game_id").loc[101]
+    assert float(row101["projected_home_margin"]) == 3.5, \
         "the kicked-off game must keep its final PREGAME number, verbatim"
-    assert bool(row101["frozen"]) is True
-    row102 = out.set_index("id").loc[102]
-    assert float(row102["mc_margin"]) == -2.0, \
+    # `frozen` is a status, not a side column: a republished pre-kickoff row
+    # says so about itself, and names the stamp it was republished from.
+    assert row101["status"] == FC.Status.FROZEN.value
+    assert row101["frozen_from_stamp"] == "20260905T150000Z"
+    row102 = out.set_index("game_id").loc[102]
+    assert float(row102["projected_home_margin"]) == -2.0, \
         "a game that has not kicked off is still free to move"
-    assert bool(row102["frozen"]) is False
+    assert row102["status"] == FC.Status.PRICED.value
+    assert pd.isna(row102["frozen_from_stamp"])
 
 
 def test_freeze_uses_the_last_snapshot_taken_before_kickoff(data_dir):
@@ -346,7 +405,7 @@ def test_freeze_uses_the_last_snapshot_taken_before_kickoff(data_dir):
                          datetime(2026, 9, 5, 18, 0, tzinfo=UTC))
     frozen = SN.load_frozen(data_dir, 2026, 2)
     assert frozen[101]["from_stamp"] == "20260905T153000Z"
-    assert float(frozen[101]["row"]["mc_margin"]) == 4.0
+    assert float(frozen[101]["row"]["projected_home_margin"]) == 4.0
 
 
 def test_freezing_is_idempotent_and_append_only(data_dir):
@@ -360,7 +419,8 @@ def test_freezing_is_idempotent_and_append_only(data_dir):
 
     assert first["newly_frozen"] == [101]
     assert second["newly_frozen"] == [], "a frozen row is never re-frozen"
-    assert float(SN.load_frozen(data_dir, 2026, 2)[101]["row"]["mc_margin"]) == 3.5
+    assert float(SN.load_frozen(data_dir, 2026, 2)[101]["row"]
+                 ["projected_home_margin"]) == 3.5
 
 
 def test_a_game_with_no_pre_kickoff_snapshot_is_refused_not_invented(data_dir):
@@ -374,10 +434,11 @@ def test_a_game_with_no_pre_kickoff_snapshot_is_refused_not_invented(data_dir):
     frozen = SN.load_frozen(data_dir, 2026, 2)
 
     assert frozen[101]["from_stamp"] is None
-    assert frozen[101]["row"]["veto"] is True
-    assert "no pregame snapshot" in frozen[101]["row"]["note"].lower(), \
+    assert frozen[101]["row"]["status"] == FC.Status.REFUSED.value
+    assert frozen[101]["row"]["refusal_reason"] == \
+        SN.NO_PREGAME_SNAPSHOT.format(version=FC.SCHEMA_VERSION), \
         "an unforecast game stays an explicit refusal — never back-filled"
-    assert frozen[101]["row"]["mc_margin"] is None
+    assert frozen[101]["row"]["projected_home_margin"] is None
 
 
 def test_frozen_rows_never_vanish_from_the_artifact(data_dir):
@@ -391,14 +452,15 @@ def test_frozen_rows_never_vanish_from_the_artifact(data_dir):
 
     out, _ = SN.apply_frozen(_rows({101: 1.0, 102: 1.0}),
                             SN.load_frozen(data_dir, 2026, 2))
-    assert sorted(out["id"]) == [101, 102]
+    assert sorted(out["game_id"]) == [101, 102]
 
 
 # --------------------------------------------------------------------------- #
 # 6. Degraded mode — stale input degrades visibly, never silently
 # --------------------------------------------------------------------------- #
 def test_stale_source_degrades_visibly_instead_of_publishing_confident_data(data_dir):
-    res = _write(data_dir, "20260901T120000Z", _rows({101: 3.5}),
+    res = _write(data_dir, "20260901T120000Z",
+                 _rows({101: 3.5}, degraded_reason="games feed 9 days stale"),
                  degraded=True, reason="games feed 9 days stale")
 
     meta = json.load(open(os.path.join(res["path"], "snapshot.json")))
@@ -406,10 +468,14 @@ def test_stale_source_degrades_visibly_instead_of_publishing_confident_data(data
     assert "stale" in meta["degraded_reason"]
 
     written = pd.read_csv(os.path.join(res["path"], "predictions.csv"))
-    assert bool(written.loc[0, "degraded"]) is True, \
+    assert written.loc[0, "status"] == FC.Status.DEGRADED.value, \
         "every published row must carry the degraded marker"
-    assert "DEGRADED" in str(written.loc[0, "note"]), \
-        "the note must say so where a reader will actually see it"
+    assert "stale" in str(written.loc[0, "refusal_reason"]), \
+        "the reason must say so where a reader will actually see it"
+    # The marker is not decoration: a degraded row publishes NO number, so
+    # there is nothing confident-looking left to mistake for a forecast.
+    assert pd.isna(written.loc[0, "projected_home_margin"])
+    assert pd.isna(written.loc[0, "p_home_win"])
 
     assert SN.read_latest(data_dir, 2026, 2)["degraded"] is True
 
@@ -417,8 +483,21 @@ def test_stale_source_degrades_visibly_instead_of_publishing_confident_data(data
 def test_a_healthy_snapshot_is_not_marked_degraded(data_dir):
     res = _write(data_dir, "20260901T120000Z", _rows({101: 3.5}))
     written = pd.read_csv(os.path.join(res["path"], "predictions.csv"))
-    assert bool(written.loc[0, "degraded"]) is False
+    assert written.loc[0, "status"] == FC.Status.PRICED.value
+    assert pd.isna(written.loc[0, "refusal_reason"])
     assert SN.read_latest(data_dir, 2026, 2)["degraded"] is False
+
+
+def test_a_degraded_run_must_degrade_its_own_rows(data_dir):
+    """The writer cannot stamp degradation on from outside any more.
+
+    Marking the manifest degraded while every row still publishes a confident
+    number is the exact disagreement between artifact and manifest that the
+    old bolt-on column allowed, so the store refuses the write instead.
+    """
+    with pytest.raises(SN.SnapshotError, match="degraded"):
+        _write(data_dir, "20260901T120000Z", _rows({101: 3.5}),
+               degraded=True, reason="games feed stale")
 
 
 # --------------------------------------------------------------------------- #
@@ -493,20 +572,173 @@ def test_a_full_week_of_ticks_produces_one_snapshot_per_real_change(data_dir):
 
     final = pd.read_csv(os.path.join(
         SN.snapshot_dir(data_dir, 2026, 2, "20260905T210000Z"),
-        "predictions.csv")).set_index("id")
-    assert float(final.loc[101, "mc_margin"]) == 4.0, \
+        "predictions.csv")).set_index("game_id")
+    assert float(final.loc[101, "projected_home_margin"]) == 4.0, \
         "the noon game froze at the last value published before ITS kickoff"
-    assert float(final.loc[102, "mc_margin"]) == -8.0, \
+    assert float(final.loc[102, "projected_home_margin"]) == -8.0, \
         "the afternoon game kept moving until 19:30, then froze — not earlier"
-    assert float(final.loc[103, "mc_margin"]) == 99.0, \
+    assert float(final.loc[103, "projected_home_margin"]) == 99.0, \
         "the night game has not kicked off and may still move"
-    assert [bool(x) for x in final["frozen"]] == [True, True, False]
+    assert list(final["status"]) == [FC.Status.FROZEN.value,
+                                     FC.Status.FROZEN.value,
+                                     FC.Status.PRICED.value]
 
     frozen = SN.load_frozen(data_dir, 2026, 2)
     assert frozen[101]["from_stamp"] == "20260904T140000Z"
     assert frozen[102]["from_stamp"] == "20260905T170000Z"
     assert 103 not in frozen
 
+
+# --------------------------------------------------------------------------- #
+# 9. Hardening — a frozen row's provenance survives every later publish
+# --------------------------------------------------------------------------- #
+def test_a_frozen_degraded_row_keeps_its_degraded_marker_when_a_later_snapshot_is_healthy(data_dir):
+    """A game frozen from a DEGRADED pregame snapshot carries that provenance
+    forever. A later, healthy run for the rest of the week must not relabel
+    it — a row's own `status` and `refusal_reason` describe what its OWN
+    source looked like, not what this week's most recent run looked like.
+
+    Degradation is a row state now rather than a side column, which is what
+    makes "keeps its marker" checkable at all: the splice either reproduces
+    the frozen row's `status="degraded"` and its reason verbatim, or it
+    silently republishes a degraded game as this run's healthy one.
+    """
+    games = _week_games("2026-09-05T16:00:00Z", "2026-09-05T23:00:00Z")
+    _write(data_dir, "20260905T150000Z",
+          _rows({101: 3.5, 102: -1.0}, degraded_reason="games feed stale"),
+          digest="d1", window="w", degraded=True, reason="games feed stale",
+          taken_at=datetime(2026, 9, 5, 15, 0, tzinfo=UTC))
+
+    SN.freeze_kicked_off(data_dir, 2026, 2, games,
+                         datetime(2026, 9, 5, 18, 0, tzinfo=UTC))   # 101 froze
+    frozen = SN.load_frozen(data_dir, 2026, 2)
+    assert frozen[101]["row"]["status"] == FC.Status.DEGRADED.value
+    assert frozen[101]["row"]["refusal_reason"] == "games feed stale"
+
+    # A later, HEALTHY run recomputes the still-pending game and republishes.
+    later_rows, _ = SN.apply_frozen(_rows({101: None, 102: 8.0}), frozen)
+    res = SN.write_snapshot(data_dir, 2026, 2, "20260905T190000Z", later_rows,
+                            source_digest="d2", window="w2", degraded=False,
+                            taken_at=datetime(2026, 9, 5, 19, 0, tzinfo=UTC))
+
+    published = pd.read_csv(os.path.join(res["path"], "predictions.csv")
+                            ).set_index("game_id")
+    assert published.loc[101, "status"] == FC.Status.DEGRADED.value, \
+        "the frozen game's own degraded provenance must survive a healthy rerun"
+    assert published.loc[101, "refusal_reason"] == "games feed stale"
+    assert published.loc[101, "frozen_from_stamp"] == "20260905T150000Z", \
+        "and the freeze still records which snapshot it came from"
+    assert pd.isna(published.loc[101, "projected_home_margin"]), \
+        "a healthy rerun may not fill in the number the degraded run withheld"
+    assert published.loc[102, "status"] == FC.Status.PRICED.value, \
+        "a game that is not frozen must reflect the CURRENT run's health"
+    assert pd.isna(published.loc[102, "refusal_reason"])
+
+
+def test_refused_frozen_row_is_never_altered_by_a_later_publish(data_dir):
+    """A kicked-off game with no qualifying pregame snapshot becomes a
+    structural refusal. A later publish for the rest of the week — even a
+    DEGRADED one — must reproduce that refusal's status and reason unchanged.
+    Restating it as this run's degradation, or flipping it back to a priced
+    row, is backfill wearing a different hat."""
+    games = _week_games("2026-09-05T16:00:00Z", "2026-09-05T23:00:00Z")
+    # Only 102 (the later kickoff) ever gets a pregame snapshot; 101 never does.
+    _write(data_dir, "20260905T150000Z", _rows({102: 5.0}), digest="d1",
+          window="w", taken_at=datetime(2026, 9, 5, 15, 0, tzinfo=UTC))
+
+    SN.freeze_kicked_off(data_dir, 2026, 2, games,
+                         datetime(2026, 9, 5, 17, 0, tzinfo=UTC))   # 101 froze
+    frozen = SN.load_frozen(data_dir, 2026, 2)
+    refusal_reason = frozen[101]["row"]["refusal_reason"]
+    assert frozen[101]["from_stamp"] is None
+
+    # The recompute would have priced 102 at 9.0, but a degraded run stands
+    # behind no number, so the rows it builds carry the reason instead.
+    later_rows, _ = SN.apply_frozen(
+        _rows({101: None, 102: 9.0}, degraded_reason="games feed stale"),
+        frozen)
+    res = SN.write_snapshot(data_dir, 2026, 2, "20260905T173000Z", later_rows,
+                            source_digest="d2", window="w2", degraded=True,
+                            degraded_reason="games feed stale",
+                            taken_at=datetime(2026, 9, 5, 17, 30, tzinfo=UTC))
+
+    published = pd.read_csv(os.path.join(res["path"], "predictions.csv")
+                            ).set_index("game_id")
+    assert published.loc[101, "status"] == FC.Status.REFUSED.value
+    assert published.loc[101, "refusal_reason"] == refusal_reason, \
+        "a structural refusal must not be restated as this run's degradation " \
+        "when it was never part of that run"
+    assert pd.isna(published.loc[101, "projected_home_margin"]), \
+        "a game with no pregame snapshot may never be back-filled with a number"
+    assert published.loc[102, "status"] == FC.Status.DEGRADED.value, \
+        "a genuinely live row this run must still show the current health"
+    assert published.loc[102, "refusal_reason"] == "games feed stale"
+
+
+# --------------------------------------------------------------------------- #
+# 10. Hardening — tampered and forged-duplicate snapshots are never trusted
+# --------------------------------------------------------------------------- #
+def test_freeze_never_trusts_a_tampered_pre_kickoff_snapshot(data_dir):
+    """A tampered snapshot stops the run; it is never quietly stepped over.
+
+    This used to assert that `freeze_kicked_off` skipped the tampered file and
+    froze from an older valid one. That is not enough. A store containing an
+    altered immutable record is DAMAGED, and silently continuing over it makes
+    the week read as though it simply had fewer snapshots — the same shape as
+    a week with none, which `decide` treats as "nothing published yet, go
+    ahead". Damaged state now raises, and nothing is frozen from a store the
+    pipeline cannot vouch for.
+    """
+    games = _week_games("2026-09-05T16:00:00Z", "2026-09-05T16:00:00Z")
+
+    only = _write(data_dir, "20260905T150000Z", _rows({101: 3.5}), digest="d1",
+                 window="w", taken_at=datetime(2026, 9, 5, 15, 0, tzinfo=UTC))
+    csv_path = os.path.join(only["path"], "predictions.csv")
+    open(csv_path, "w").write(open(csv_path).read().replace("3.5", "999.0"))
+    assert SN.verify_snapshot(only["path"]) is False
+
+    with pytest.raises(SN.SnapshotIntegrityError, match="sha256"):
+        SN.list_snapshots(data_dir, 2026, 2)
+
+    with pytest.raises(SN.SnapshotIntegrityError):
+        SN.freeze_kicked_off(data_dir, 2026, 2, games,
+                             datetime(2026, 9, 5, 18, 0, tzinfo=UTC))
+
+    # And the damage did not leak into the freeze record: nothing was written,
+    # so no game is recorded as frozen from a snapshot nobody can trust.
+    assert not os.path.exists(SN.frozen_path(data_dir, 2026, 2))
+
+
+def test_a_forged_duplicate_stamp_fails_loudly(data_dir):
+    """snapshot.json's declared `stamp` is untrusted input.
+
+    A manifest claiming a stamp that belongs to a DIFFERENT directory is a
+    forged or duplicated identity. Excluding it from the replay list kept it
+    from winning, but left a store with a forgery in it looking merely
+    smaller. It raises now, naming the stamp, so the forgery gets looked at
+    rather than routed around.
+    """
+    _write(data_dir, "20260905T140000Z", _rows({101: 4.0}), digest="d1",
+          window="w", taken_at=datetime(2026, 9, 5, 14, 0, tzinfo=UTC))
+
+    forged_dir = SN.snapshot_dir(data_dir, 2026, 2, "20260905T150000Z")
+    os.makedirs(forged_dir)
+    _rows({101: 50.0}).to_csv(os.path.join(forged_dir, "predictions.csv"),
+                              index=False)
+    forged_meta = {
+        "stamp": "20260905T140000Z",   # claims the EARLIER snapshot's identity
+        "season": 2026, "week": 2, "source_digest": "d-forged", "window": "w",
+        "degraded": False, "degraded_reason": None,
+        "taken_at": datetime(2026, 9, 5, 15, 0, tzinfo=UTC).isoformat(),
+        "n_rows": 1, "n_priced": 1,
+        "sha256": SN._sha256_file(os.path.join(forged_dir, "predictions.csv")),
+        "paper_only": True,
+    }
+    with open(os.path.join(forged_dir, "snapshot.json"), "w") as fh:
+        json.dump(forged_meta, fh)
+
+    with pytest.raises(SN.SnapshotIntegrityError, match="20260905T140000Z"):
+        SN.list_snapshots(data_dir, 2026, 2)
 
 def test_replaying_a_snapshot_reproduces_it_byte_for_byte(data_dir):
     """BUILD_SPEC section 13 DoD: re-running the same manifest reproduces

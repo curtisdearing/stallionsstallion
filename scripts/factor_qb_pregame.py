@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pandas as pd  # noqa: E402
 
 from nflvalue import factor_battery as FB, ingest  # noqa: E402
+from nflvalue import evidence as EV  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEASONS = [2021, 2022, 2023, 2024]
@@ -35,10 +36,24 @@ ALPHA = 0.05
 
 
 def load_preds() -> pd.DataFrame:
-    frames = [pd.read_csv(os.path.join(ROOT, "data", "backtest_c.csv")),
-              pd.read_csv(os.path.join(ROOT, "data", "backtest_c_2024.csv"))]
-    return pd.concat(frames, ignore_index=True)[
-        ["id", "season", "week", "home", "away", "pred_b", "margin"]]
+    """The evaluation set, chosen ONLY through the evidence manifest.
+
+    This read `backtest_c.csv` + `backtest_c_2024.csv` directly. Both are
+    pre-correction artifacts, so every factor result computed from them is a
+    statement about a walk-forward that leaked pace and OT — and a factor
+    battery is precisely where a leaked residual turns into a false positive.
+    With no artifact selected this raises rather than falling back: a battery
+    run over archival evidence, labelled as though it graded the current
+    model, is worse than no run.
+    """
+    frame, record, notice = EV.benchmark_or_notice(ROOT, EV.ROLE_WK4PLUS)
+    if frame is None:
+        raise SystemExit(
+            "factor battery refused: no benchmark artifact is selected.\n"
+            f"{notice}")
+    print(f"[battery] evaluation set: {record.artifact_id} "
+          f"({record.n_rows} rows, method {record.method})")
+    return frame[["id", "season", "week", "home", "away", "pred_b", "margin"]]
 
 
 def pregame_events(preds: pd.DataFrame) -> pd.DataFrame:

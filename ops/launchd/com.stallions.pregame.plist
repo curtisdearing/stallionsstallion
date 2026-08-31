@@ -16,14 +16,32 @@
   <key>WorkingDirectory</key>
   <string>/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion</string>
 
-  <!-- Friday 16:00 local — cheap freshness check ahead of the weekend slate;
-       re-simulates + re-renders only if the cache moved. -->
+  <!-- CFB runs Tuesday through Saturday, so pregame does too.  Each tick is
+       CHEAP AND SAFE by construction: the pregame job has no refresh stage
+       (weekly_loop.JOB_STAGES), so it spends ZERO CFBD calls, and it does real
+       work only when nflvalue/snapshots.decide() says the source fingerprint
+       or the pending kickoff window actually moved.  An unchanged tick writes
+       a manifest saying it skipped, and nothing else.
+
+       Tue/Wed/Thu 16:00  - ahead of weeknight kickoffs
+       Fri 12:00 / 16:00  - Friday slate, and the last look before Saturday
+       Sat 08:00          - final window before the noon ET kickoffs
+       Sat 13:00          - final window before the afternoon kickoffs
+       Sat 17:00          - final window before the night kickoffs
+
+       Every game's row freezes at ITS OWN kickoff, so the Saturday ticks can
+       only ever revise games that have not started yet. -->
   <key>StartCalendarInterval</key>
-  <dict>
-    <key>Weekday</key><integer>5</integer>
-    <key>Hour</key><integer>16</integer>
-    <key>Minute</key><integer>0</integer>
-  </dict>
+  <array>
+    <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>16</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>16</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>16</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>12</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>16</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>6</integer><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>6</integer><key>Hour</key><integer>13</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Weekday</key><integer>6</integer><key>Hour</key><integer>17</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
 
   <!-- launchd-level stdout/err. run_weekly.sh additionally writes its own
        dated per-run log to data/logs/pregame_<UTCSTAMP>.log -->

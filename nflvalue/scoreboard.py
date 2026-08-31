@@ -31,10 +31,21 @@ from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 
+from . import forecast_contract as FC
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
 RECAP_DIR = os.path.join(DATA, "recaps")
 LEDGER_PATH = os.path.join(DATA, "hypothesis_ledger.json")
+
+#: There is exactly one published model margin now:
+#: `forecast_contract.projected_home_margin`. This used to be a preference
+#: tuple -- `mc_margin` first, `pred_margin` second -- because two writers
+#: published two schemas into one filename and grading had to accept either.
+#: Coping with that quietly is what let the ambiguity persist: the grader read
+#: whichever column it found and never said the two were different kinds of
+#: number. The contract removes the choice, so the grader no longer has one.
+MODEL_MARGIN_FIELD = "projected_home_margin"
 
 TOP_N_MISSES = 5
 REVISIT_MIN_OBS = 3
@@ -181,21 +192,21 @@ def grade_week(season: int, week: int,
             f"{os.path.basename(pub_path)} missing — the recap grades what "
             "was PUBLISHED; without a published file there is nothing "
             "honest to grade")
-    pub = pd.read_csv(pub_path)
-    if "mc_margin" not in pub.columns:
+    # Validated read: a mixed-schema artifact is rejected here rather than
+    # graded under whichever interpretation happens to parse.
+    try:
+        pub = FC.read_artifact(pub_path)
+    except FC.ContractError as exc:
         raise ScoreboardError(
-            f"{os.path.basename(pub_path)} lacks mc_margin — cannot grade "
-            "an artifact without published model margins")
-    if "veto" in pub.columns:
-        vetoed = (pub["veto"].fillna(False).astype(str).str.strip()
-                  .str.lower().eq("true"))
-    else:
-        # Historical published files predate explicit refusal rows.
-        vetoed = pd.Series(False, index=pub.index)
-    # A public schedule row is not necessarily a published forecast.  Refused
-    # games and rows without the model margin stay visible in the feed but can
-    # never enter a model-scoreboard denominator.
-    pub = pub.loc[~vetoed & pub["mc_margin"].notna()].copy()
+            f"{os.path.basename(pub_path)} does not satisfy forecast contract "
+            f"v{FC.SCHEMA_VERSION}: {exc}") from None
+    # A public schedule row is not necessarily a published forecast. Refused
+    # and degraded rows stay visible in the feed and can never enter a
+    # model-scoreboard denominator.
+    pub = FC.forecast_bearing(pub).copy()
+    pub = pub.loc[pub[MODEL_MARGIN_FIELD].notna()].copy()
+    pub["published_margin"] = pub[MODEL_MARGIN_FIELD]
+    pub["id"] = pub["game_id"].astype(int)
     games = ingest.load_games([season])
     finals = games.dropna(subset=["home_points", "away_points"])
     finals = finals[finals["week"] == week][["id", "home_points", "away_points"]]
@@ -208,7 +219,7 @@ def grade_week(season: int, week: int,
     g["margin"] = g["home_points"] - g["away_points"]
     g["market"] = [(-float(med.get(i)) if i in med.index else np.nan)
                    for i in g["id"]]
-    g["model_err"] = g["mc_margin"] - g["margin"]
+    g["model_err"] = g["published_margin"] - g["margin"]
     g["market_err"] = g["market"] - g["margin"]
     g["closer"] = np.where(g["market_err"].isna(), "model (no line)",
                            np.where(g["model_err"].abs() < g["market_err"].abs(),
@@ -269,7 +280,7 @@ def build_recap(season: int, week: int, data_dir: Optional[str] = None,
         "noise_note": noise_note,
         "misses": [{
             "id": int(m.id), "matchup": f"{m.away} @ {m.home}",
-            "published": round(float(m.mc_margin), 1),
+            "published": round(float(m.published_margin), 1),
             "actual": round(float(m.margin), 1),
             "error": round(float(m.model_err), 1),
             "market": (None if m.market != m.market

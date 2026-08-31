@@ -21,6 +21,18 @@ import json
 import os
 from collections import defaultdict
 
+# --- LEGACY / UNSUPPORTED --------------------------------------------------- #
+# The inherited NFL weekly board, kept as historical source and refused
+# before it can execute.  Module-scope guard, ahead of the simulator import
+# below, so no projection or record-keeping code path is reached.
+# See README.md and nflvalue/legacy_guard.py.
+from nflvalue import legacy_guard as _legacy_guard
+
+_legacy_guard.refuse(
+    "weekly.py",
+    capability="the inherited NFL weekly projections board graded against "
+               "real closing lines (spread and totals record keeping)")
+
 from nflvalue import config, montecarlo as mc
 
 ABBR_OFF = None  # filled from ratings if needed

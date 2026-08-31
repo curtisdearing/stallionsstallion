@@ -1,137 +1,152 @@
 #!/usr/bin/env python3
-"""Preseason projections for 2026 week 0 and week 1 (CFBD labels both week 1).
+"""DEMO/FIXTURE ONLY — the early-season slate, rendered for inspection.
 
-HONESTY HEADER — read before quoting any number below.
-  * The prior is built by `ratings.preseason_prior` from whatever 2026
-    components are actually in the cache; the script REPORTS which ones were
-    present at run time — check the printed footer, not this docstring.
-    History: on 2026-07-19 CFBD served neither 2026 talent nor returning
-    production (prev-season-only prior). On 2026-08-10 returning production
-    LANDED (136 teams, cached to returning_2026.parquet) while talent 2026
-    was still empty — talent's z-term enters as 0 via the documented
-    conference-mean→league-mean fallback until it publishes. Re-run (and
-    re-pull talent) when CFBD serves 2026 talent.
-  * 2026 conference realignment inside the solve is 2025's map (ratings are
-    credited to the conference a team played in last season).
-  * Teams new to FBS in 2026 have no rating and are VETOED, not guessed at.
-  * Week-0/week-1 games are the least predictable of the season. Bands are
-    wide because they should be.
-  * PAPER-ONLY. Nothing here recommends a bet (gate 7 has not run).
+This script used to be the SECOND writer of the live public artifact. It and
+`scripts/weekly_loop.py` both owned `data/predictions_{season}_wk{NN}.csv`,
+emitted different schemas into it, and whichever ran last won. That is the
+defect the versioned forecast contract exists to remove, so this file no
+longer writes the live artifact at all:
 
-Writes data/predictions_2026_wk01.csv and prints the table.
+  * every number it shows comes from `nflvalue.producers.build_early_week`,
+    the same shared producer the weekly loop calls for weeks 0-3, through the
+    same `forecast_contract.build_artifact`. There is no second assembly site
+    left, so there is no second schema to drift into;
+  * `--out` is confined to a demo directory. Pointing it at the live artifact,
+    a snapshot, or the published site is refused, not warned about. The weekly
+    loop is the only supported path to a published forecast.
+
+Weeks 0-3 are the least predictable of the season and the forecast SD says so:
+it is the registered out-of-sample early-week residual SD from
+`data/forecast_sd_basis.json` (pre-registered 2026-08-30T17:20Z,
+`scripts/backtest_early.py`), not the rating band and not the week-4-15 window
+the previous version of this script borrowed. PAPER-ONLY: nothing here is a
+bet, an edge, a stake, a recommendation or an actionable pick.
 """
 
 from __future__ import annotations
 
-import math
+import argparse
 import os
+import re
 import sys
+from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import pandas as pd  # noqa: E402
-
-from nflvalue import ingest, ratings as R  # noqa: E402
+from nflvalue import engine as EG, forecast_contract as FC  # noqa: E402
+from nflvalue import ingest, producers as PR, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "data", "predictions_2026_wk01.csv")
+DATA = os.path.join(ROOT, "data")
+DEMO_DIR = os.path.join(DATA, "demo")
 HISTORY = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+SEASON = 2026
+WEEK = 1                       # CFBD labels week-0 games as week 1
+
+#: The live artifact's filename shape. Writing one of these from here is what
+#: created the two-writer problem in the first place.
+LIVE_ARTIFACT = re.compile(r"predictions_\d{4}_wk\d+\.csv$")
+
+#: Trees this script may never write into, whatever name is passed.
+PROTECTED = ("snapshots", "site")
+
+
+class NotAPublisherError(RuntimeError):
+    """This script tried to write somewhere only the weekly loop may write."""
+
+
+def check_destination(path: str) -> str:
+    """Refuse any destination that is, or feeds, the public artifact."""
+    resolved = os.path.abspath(path)
+    relative = os.path.relpath(resolved, DATA)
+    inside_data = not relative.startswith(os.pardir)
+
+    if LIVE_ARTIFACT.search(os.path.basename(resolved)):
+        raise NotAPublisherError(
+            f"{resolved} has the live artifact's name. This script is a demo "
+            "renderer; `scripts/weekly_loop.py --job pregame` is the only "
+            "supported path to a published forecast")
+    if inside_data:
+        head = relative.split(os.sep)[0]
+        if head in PROTECTED:
+            raise NotAPublisherError(
+                f"{resolved} is inside data/{head}, which only the weekly "
+                "loop may write")
+        if os.sep not in relative:
+            raise NotAPublisherError(
+                f"{resolved} is in the data/ root, where the published "
+                "artifacts live. Use data/demo/ instead")
+    return resolved
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--season", type=int, default=SEASON)
+    ap.add_argument("--week", type=int, default=WEEK)
+    ap.add_argument("--out", default=None,
+                    help="demo destination (default: data/demo/...). Cannot "
+                         "be the live artifact, a snapshot, or the site.")
+    ap.add_argument("--no-write", action="store_true",
+                    help="render to stdout only")
+    args = ap.parse_args()
+
+    if not EG.is_early_season(args.week):
+        raise SystemExit(
+            f"week {args.week} is priced by the in-season simulation route, "
+            "not the early-season ridge route this script renders. Run "
+            "`scripts/weekly_loop.py --job pregame` instead.")
+
+    out = args.out or os.path.join(
+        DEMO_DIR, f"early_{args.season}_wk{args.week:02d}_demo.csv")
+    destination = check_destination(out)
+
     params = R.load_params()
-    games = R.game_frame(HISTORY)
+    games = R.game_frame(HISTORY + ([args.season]
+                                    if args.season not in HISTORY else []))
+    schedule = ingest.load_games([args.season])
+    schedule = schedule[schedule["week"] == args.week].sort_values("start_date")
+    if schedule.empty:
+        raise SystemExit(f"no {args.season} week {args.week} games cached")
 
-    # 2025 final ratings -> prev_net for the 2026 prior.
-    prev_tbl = R.solve(games, 2025, 25, params)
-    prev_frame = prev_tbl.to_frame()
-    prev_net = {r.team: float(r.net) for r in prev_frame.itertuples() if not r.veto}
+    registry = FC.BasisRegistry.load(DATA)
+    basis = registry.require("ridge_preseason_prior", args.week)
+    rows = PR.build_early_week(
+        args.season, args.week, games=games, schedule=schedule,
+        generated_at_utc=datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"),
+        data_dir=DATA, params=params, registry=registry)
 
-    # 2026 teams: conference + FBS flags from the 2026 /teams pull.
-    teams26 = ingest.load("teams", [2026])
-    fbs26 = {str(r.team) for r in teams26.itertuples() if bool(r.is_fbs)}
-    conf26 = {str(r.team): (str(r.conference) or "Independent")
-              for r in teams26.itertuples()}
+    if not args.no_write:
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        FC.write_artifact(rows, destination)
 
-    # Prior via the canonical composite: talent + returning + prev rating,
-    # each component entering only if its 2026 cache exists (missing ones
-    # fall back conference-mean -> league-mean = 0 inside preseason_prior).
-    prior_teams = sorted(fbs26 | set(prev_net))
-    prior = R.preseason_prior(2026, prior_teams, conf26, params,
-                              prev_net=prev_net)
-    talent26 = ingest.load("talent", [2026])
-    returning26 = ingest.load("returning", [2026])
-    components = {
-        "talent": 0 if talent26.empty else len(talent26),
-        "returning": 0 if returning26.empty else len(returning26),
-        "prev_rating": len(prev_net),
-    }
+    summary = FC.summarise(rows)
+    print(f"[demo] {args.season} week {args.week}: {summary['n_rows']} rows, "
+          f"{summary['by_status']} (schema v{FC.SCHEMA_VERSION})")
+    print(f"[demo] forecast SD basis {basis['basis_id']}: "
+          f"sd={basis['forecast_margin_sd']} over n={basis['n']} "
+          f"({basis['window']})")
+    shown = ["game_id", "slate", "public_date", "home", "away", "status",
+             "projected_home_margin", "forecast_margin_sd", "p_home_win",
+             "rating_parameter_sd"]
+    priced = FC.forecast_bearing(rows)
+    print(priced[shown].to_string(index=False) if len(priced)
+          else "[demo] nothing priced")
 
-    tbl = R.solve(games, 2026, 1, params, prior=prior)
-    frame = tbl.to_frame().set_index("team")
-
-    # Forecast sigma comes from OUT-OF-SAMPLE walk-forward residuals
-    # (data/backtest_b.csv, 2021-2023, n=1,765) — NOT from tbl.residual_sd,
-    # which is the in-sample weighted solve residual (~6 pts) and would make a
-    # 7-point favourite look like an 86% winner. Empirically ~16.5 pts, which
-    # matches the CFB literature for margin sd around a point spread.
-    bt = pd.read_csv(os.path.join(ROOT, "data", "backtest_b.csv"))
-    sigma = float((bt["pred"] - bt["margin"]).std(ddof=1))
-
-    sched = ingest.load("games", [2026])
-    sched = sched[sched["week"] == 1].sort_values("start_date")
-
-    rows = []
-    for r in sched.itertuples():
-        date = str(r.start_date)[:10]
-        label = "wk0" if date < "2026-09-01" else "wk1"
-        home, away = str(r.home_team), str(r.away_team)
-        h = home if home in fbs26 else R.FCS_TEAM
-        a = away if away in fbs26 else R.FCS_TEAM
-        note = ""
-        if a == R.FCS_TEAM:
-            note = "opp pooled as FCS"
-        if h == R.FCS_TEAM:
-            note = "home pooled as FCS"
-        try:
-            m = tbl.predict_margin(h, a, bool(r.neutral_site))
-            veto = bool(frame.loc[h, "veto"]) if h in frame.index else True
-            veto = veto or (bool(frame.loc[a, "veto"]) if a in frame.index else True)
-            band = float(frame.loc[h, "net_band"]) + float(frame.loc[a, "net_band"]) \
-                if h in frame.index and a in frame.index else float("nan")
-            p_home = 0.5 * (1.0 + math.erf(m / (sigma * math.sqrt(2))))
-            rows.append({"slate": label, "date": date, "home": home, "away": away,
-                         "neutral": bool(r.neutral_site), "pred_margin": round(m, 1),
-                         "p_home_win": round(p_home, 3),
-                         "band_pm": round(band, 1) if band == band else None,
-                         "veto": veto, "note": note})
-        except R.RatingsError as e:
-            if R.FCS_TEAM in (h, a):
-                # Not an error: the pooled FCS pseudo-team is excluded from
-                # connectivity ON PURPOSE, so the model refuses to price
-                # FBS-vs-FCS games rather than guess at them (same rule the
-                # backtest scores by).
-                why = "FBS-vs-FCS: not priced, by design"
-            else:
-                why = f"NO RATING ({type(e).__name__}): new-to-FBS or unseen team"
-            rows.append({"slate": label, "date": date, "home": home, "away": away,
-                         "neutral": bool(r.neutral_site), "pred_margin": None,
-                         "p_home_win": None, "band_pm": None, "veto": True,
-                         "note": why})
-
-    df = pd.DataFrame(rows)
-    df.to_csv(OUT, index=False)
-    print(f"wrote {OUT} ({len(df)} games; sigma={sigma:.1f})")
-    for lab in ("wk0", "wk1"):
-        d = df[df["slate"] == lab]
-        print(f"\n=== {lab}: {len(d)} games, {int(d['veto'].sum())} vetoed ===")
-        print(d.to_string(index=False))
-    present = [k for k, n in components.items() if n]
+    talent = ingest.load("talent", [args.season])
+    returning = ingest.load("returning", [args.season])
+    components = {"talent": 0 if talent.empty else len(talent),
+                  "returning": 0 if returning.empty else len(returning)}
     absent = [k for k, n in components.items() if not n]
     print("\nPrior components present: "
-          + ", ".join(f"{k} (n={components[k]})" for k in present)
-          + (f"; ABSENT (z=0 fallback): {', '.join(absent)}" if absent else "")
-          + ". Paper-only; nothing here recommends a bet.")
+          + ", ".join(f"{k} (n={n})" for k, n in components.items() if n)
+          + (f"; ABSENT (z=0 fallback): {', '.join(absent)}" if absent else ""))
+    if not args.no_write:
+        print(f"[demo] wrote {destination} — NOT a published artifact")
+    print("PAPER-ONLY research output. Not a bet, edge, stake or "
+          "recommendation.")
     return 0
 
 

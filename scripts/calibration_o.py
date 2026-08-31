@@ -35,7 +35,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from scipy import stats  # noqa: E402
 
-from nflvalue import gameline as GL, ratings as R  # noqa: E402
+from nflvalue import evidence as EV, gameline as GL, ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,23 +59,48 @@ def brier_decomposition(p: np.ndarray, y: np.ndarray, n_bins: int = 10):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--engine", choices=("ridge", "kalman"), default="ridge",
-                    help="which gate-3 artifact set to grade: ridge = the "
-                         "registered 2026-07-30 record (backtest_c.csv + "
-                         "backtest_c_2024.csv, default, output unchanged); "
-                         "kalman = backtest_c_kalman.csv (2021-2023 only — "
-                         "2024 stayed virgin for the bakeoff holdout)")
+    ap.add_argument("--artifact", default=None,
+                    help="grade a NAMED artifact from the evidence manifest "
+                         "(diagnostic; writes a suffixed report). Without it "
+                         "the report is the PUBLIC one and grades only the "
+                         "artifact the manifest has selected.")
     args = ap.parse_args()
-    if args.engine == "kalman":
-        paths = [os.path.join(ROOT, "data", "backtest_c_kalman.csv")]
-        report_path = os.path.join(ROOT, "data",
-                                   "calibration_report_kalman.txt")
-        window_note = "pooled 2021-2023 walk-forward (kalman engine)"
+
+    # The public calibration report may only describe the selected benchmark.
+    # It used to default to `backtest_c.csv` + `backtest_c_2024.csv` — both
+    # pre-correction — and write `data/calibration_report.txt` from them, so
+    # the published reliability table went on describing a superseded method.
+    manifest = EV.Manifest.load(ROOT)
+    if args.artifact:
+        record = manifest.verify(manifest.records[args.artifact])
+        report_path = os.path.join(
+            ROOT, "data", f"calibration_report_{record.artifact_id}.txt")
+        window_note = (f"{record.artifact_id} ({record.status}) — "
+                       f"{record.method}")
+        if record.status != EV.Status.SELECTED.value:
+            window_note += "  [DIAGNOSTIC ONLY: not the selected benchmark]"
+        paths = [os.path.join(ROOT, record.path)]
     else:
-        paths = [os.path.join(ROOT, "data", "backtest_c.csv"),
-                 os.path.join(ROOT, "data", "backtest_c_2024.csv")]
         report_path = os.path.join(ROOT, "data", "calibration_report.txt")
-        window_note = "pooled 2021-2024 walk-forward"
+        try:
+            record = manifest.select(EV.ROLE_WK4PLUS)
+        except EV.BenchmarkUnavailable as exc:
+            text = ("=== CALIBRATION DEEP-DIVE (Workstream O) ===\n"
+                    "CURRENT CORRECTION AWAITING REVALIDATION\n\n"
+                    f"{exc}\n\n"
+                    "No Brier score, reliability table, band coverage or PIT "
+                    "figure is reported here, because none of them would be a "
+                    "statement about the model that is running. The "
+                    "pre-correction artifacts are preserved and labelled "
+                    "archival in data/evidence_manifest.json; grade one "
+                    "explicitly with --artifact if you want its diagnostics.\n")
+            from nflvalue import atomic
+            atomic.write_text(report_path, text)
+            print(text)
+            print(f"wrote {os.path.relpath(report_path, ROOT)}")
+            return 0
+        paths = [os.path.join(ROOT, record.path)]
+        window_note = f"{record.artifact_id} — {record.method}"
     df = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
     df["won"] = (df["margin"] > 0).astype(float)
     p = df["p_home_win"].to_numpy()

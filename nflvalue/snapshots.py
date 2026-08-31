@@ -58,6 +58,11 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
+from . import atomic
+from . import cfb_calendar
+from . import forecast_contract as FC
+from . import producers as PR
+
 import pandas as pd
 
 UTC = timezone.utc
@@ -76,6 +81,19 @@ WINDOW_RESOLUTION_HOURS = 1
 # source (weather, availability) simply does not appear in the fingerprint.
 SOURCE_PREFIXES = ("games", "lines", "drives", "teams", "rosters",
                    "availability", "weather", "talent", "returning")
+
+
+class SnapshotIntegrityError(RuntimeError):
+    """Stored snapshot state exists but cannot be trusted.
+
+    Kept distinct from :class:`SnapshotError` because the two call for
+    opposite reactions. A `SnapshotError` means "this operation was refused"
+    -- a rerun of an immutable stamp, say. A `SnapshotIntegrityError` means
+    the STORE is damaged, and the only safe response is to stop: every
+    integrity failure here used to be swallowed into an empty dict or a
+    `None`, which reads identically to "this week has no snapshots yet" and
+    therefore lets the next run publish over a record it cannot see.
+    """
 
 
 class SnapshotError(RuntimeError):
@@ -265,18 +283,35 @@ def write_snapshot(data_dir: str, season: int, week: int, stamp: str,
         raise SnapshotError(
             f"snapshot {stamp} already exists and is immutable — a rerun must "
             f"write a new stamp, never rewrite {out_dir}")
+
+    # VALIDATE FIRST, then create anything. A contract mismatch must fail
+    # before any public output exists -- not after an empty snapshot
+    # directory has already been published into the store, where the next
+    # run would read it as a stamp that produced nothing.
+    #
+    # The rows arrive already in the public contract, degradation included:
+    # `forecast_contract.build_artifact(degraded=True)` gives every non-frozen
+    # row `status="degraded"` and a reason, and withholds the numbers.
+    #
+    # This function used to bolt `frozen`, `degraded` and a mutated `note`
+    # onto the frame on the way past. That is exactly how v1 came to mean two
+    # things at one `schema_version`: a writer downstream of the schema
+    # quietly widening it. The contract is closed now, so the snapshot stores
+    # what it was handed and records run-level state in `snapshot.json`, where
+    # run-level state belongs.
+    body = FC.validate_frame(rows.copy(), where=f"write_snapshot {stamp}")
+    statuses = set(body["status"]) if len(body) else set()
+    if degraded and statuses and statuses <= {FC.Status.FROZEN.value}:
+        pass                       # every row frozen: nothing left to degrade
+    elif degraded and not (statuses & FC.RUN_DEGRADED_STATUSES):
+        raise SnapshotError(
+            f"snapshot {stamp} is being written degraded, but no row carries "
+            f"a run-degraded status ({sorted(FC.RUN_DEGRADED_STATUSES)}). "
+            "Degradation must be built into the rows by "
+            "build_artifact(degraded=True), not stamped on afterwards, or the "
+            "published numbers and the manifest disagree")
+
     os.makedirs(out_dir, exist_ok=False)
-
-    body = rows.copy()
-    body["degraded"] = bool(degraded)
-    if degraded:
-        banner = ("DEGRADED: "
-                  + (degraded_reason or "source freshness gate did not pass"))
-        if "note" not in body.columns:
-            body["note"] = None
-        body["note"] = [banner if _blank(n) else f"{banner} | {n}"
-                        for n in body["note"]]
-
     csv_path = os.path.join(out_dir, "predictions.csv")
     body.to_csv(csv_path, index=False)
     if explainer_html is not None:
@@ -290,44 +325,106 @@ def write_snapshot(data_dir: str, season: int, week: int, stamp: str,
         "degraded": bool(degraded), "degraded_reason": degraded_reason,
         "taken_at": taken.isoformat(),
         "n_rows": int(len(body)),
-        "n_priced": int((~body["veto"].astype(bool)).sum())
-        if "veto" in body.columns else None,
+        "schema_version": FC.SCHEMA_VERSION,
+        "n_priced": int(body["status"].isin(FC.FORECAST_BEARING).sum())
+        if len(body) else 0,
+        "by_status": {s.value: int((body["status"] == s.value).sum())
+                      for s in FC.Status} if len(body) else {},
         "sha256": _sha256_file(csv_path),
         "paper_only": True,
     }
     with open(os.path.join(out_dir, "snapshot.json"), "w") as fh:
         json.dump(meta, fh, indent=2, sort_keys=True)
 
-    with open(latest_path(data_dir, season, week), "w") as fh:
-        json.dump({**meta, "path": out_dir}, fh, indent=2, sort_keys=True)
+    # The pointer moves LAST and atomically. Until os.replace lands, a reader
+    # sees the previous stamp; after it, the new one. There is no instant at
+    # which `latest` names a snapshot that is not fully on disk.
+    atomic.write_json(latest_path(data_dir, season, week),
+                      {**meta, "path": out_dir})
 
     return {**meta, "path": out_dir}
 
 
 def list_snapshots(data_dir: str, season: int, week: int) -> List[dict]:
-    """Every snapshot for the week, oldest stamp first (replay order)."""
+    """Every snapshot for the week, oldest stamp first (replay order).
+
+    Damaged state RAISES `SnapshotIntegrityError` rather than being skipped.
+    Three kinds of manifest are untrustworthy: unreadable JSON, a `stamp` that
+    does not match the directory it lives in (forged or duplicated identity),
+    and content whose sha256 no longer matches what its own manifest recorded
+    (tampered).
+
+    Skipping them was the wrong instinct even though it kept a bad snapshot
+    out of the freeze. A week whose store is damaged then reads as a week with
+    FEWER snapshots -- and in the limit, as a week with none, which
+    `decide` interprets as "nothing published yet, go ahead and publish". A
+    damaged store must stop the run and be looked at, not quietly shrink.
+
+    A directory with no `snapshot.json` at all is a different thing: an
+    interrupted write that never became a snapshot. Those are ignored, because
+    the atomic pointer means they were never pointed at.
+    """
     out = []
-    for meta_path in glob.glob(os.path.join(
-            week_dir(data_dir, season, week), "*", "snapshot.json")):
+    seen_stamps = set()
+    week_root = week_dir(data_dir, season, week)
+    for meta_path in sorted(glob.glob(os.path.join(week_root, "*",
+                                                   "snapshot.json"))):
+        path = os.path.dirname(meta_path)
         try:
             with open(meta_path) as fh:
                 meta = json.load(fh)
-        except (OSError, ValueError):
-            continue
-        meta["path"] = os.path.dirname(meta_path)
+        except (OSError, ValueError) as exc:
+            raise SnapshotIntegrityError(
+                f"{meta_path} could not be read ({exc}). A snapshot manifest "
+                "that cannot be parsed is damaged state, not an absent "
+                "snapshot") from None
+        if meta.get("stamp") != os.path.basename(path):
+            raise SnapshotIntegrityError(
+                f"{meta_path} claims stamp {meta.get('stamp')!r} but lives in "
+                f"{os.path.basename(path)!r}. A snapshot whose identity is "
+                "forged cannot be replayed, and cannot be ignored either")
+        if meta["stamp"] in seen_stamps:
+            raise SnapshotIntegrityError(
+                f"stamp {meta['stamp']} is claimed by more than one directory "
+                f"under {week_root}")
+        if not verify_snapshot(path):
+            raise SnapshotIntegrityError(
+                f"{path}/predictions.csv no longer matches the sha256 its own "
+                "manifest recorded. The immutable record has been altered")
+        seen_stamps.add(meta["stamp"])
+        meta["path"] = path
         out.append(meta)
     return sorted(out, key=lambda m: str(m.get("stamp", "")))
 
 
 def read_latest(data_dir: str, season: int, week: int) -> Optional[dict]:
+    """The `latest` pointer, or None when the week genuinely has no snapshot.
+
+    An absent pointer is a real state: nothing has been published for this
+    week yet. A pointer that EXISTS but cannot be read, or that names a stamp
+    which is not on disk, is damaged state and raises. Returning `None` for
+    those meant `decide` read "no prior snapshot for this week" and published
+    over a record it had simply failed to open.
+    """
     path = latest_path(data_dir, season, week)
     if not os.path.exists(path):
         return None
     try:
         with open(path) as fh:
-            return json.load(fh)
-    except (OSError, ValueError):
-        return None
+            latest = json.load(fh)
+    except (OSError, ValueError) as exc:
+        raise SnapshotIntegrityError(
+            f"{path} exists but could not be read ({exc}). Refusing to treat "
+            "an unreadable pointer as 'no snapshot yet'") from None
+    if not isinstance(latest, dict) or not latest.get("stamp"):
+        raise SnapshotIntegrityError(
+            f"{path} carries no stamp; the pointer is damaged")
+    target = snapshot_dir(data_dir, season, week, str(latest["stamp"]))
+    if not os.path.isdir(target):
+        raise SnapshotIntegrityError(
+            f"{path} points at stamp {latest['stamp']}, which is not on disk "
+            f"({target}). The record it names is gone")
+    return latest
 
 
 def verify_snapshot(path: str) -> bool:
@@ -381,42 +478,91 @@ def decide(data_dir: str, season: int, week: int, *, source_digest: str,
 # 5. Freeze at kickoff
 # --------------------------------------------------------------------------- #
 def load_frozen(data_dir: str, season: int, week: int) -> Dict[int, dict]:
+    """Frozen rows for the week. A corrupt file RAISES; it never reads empty.
+
+    This is the most consequential of the fail-closed changes. `frozen.json`
+    is the record of which games have already kicked off and what was
+    published for them before they did. Returning `{}` for an unreadable file
+    told the caller "nothing has kicked off", so the next run would recompute
+    a started game and publish a post-kickoff number as a pregame forecast --
+    the exact leakage the freeze exists to make structurally impossible.
+    """
     path = frozen_path(data_dir, season, week)
     if not os.path.exists(path):
-        return {}
+        return {}                       # genuinely nothing frozen yet
     try:
         with open(path) as fh:
             raw = json.load(fh)
-    except (OSError, ValueError):
-        return {}
-    return {int(k): v for k, v in raw.items()}
+    except (OSError, ValueError) as exc:
+        raise SnapshotIntegrityError(
+            f"{path} exists but could not be read ({exc}). Refusing to treat "
+            "an unreadable freeze record as 'no game has kicked off' — that "
+            "would let a started game be re-forecast") from None
+    if not isinstance(raw, dict):
+        raise SnapshotIntegrityError(
+            f"{path} is not a game_id -> row mapping; the freeze record is "
+            "damaged")
+    try:
+        return {int(k): v for k, v in raw.items()}
+    except (TypeError, ValueError) as exc:
+        raise SnapshotIntegrityError(
+            f"{path} contains a non-integer game id ({exc})") from None
 
 
 def _save_frozen(data_dir: str, season: int, week: int,
                  frozen: Dict[int, dict]) -> None:
     os.makedirs(week_dir(data_dir, season, week), exist_ok=True)
-    with open(frozen_path(data_dir, season, week), "w") as fh:
-        json.dump({str(k): v for k, v in sorted(frozen.items())}, fh,
-                  indent=2, sort_keys=True)
+    atomic.write_json(frozen_path(data_dir, season, week),
+                      {str(k): v for k, v in sorted(frozen.items())})
 
 
-def _refusal_row(game, season: int, week: int) -> dict:
-    return {
-        "season": season, "week": week, "id": int(game["id"]),
+#: Why a started game can end up with no forecast at all. Names the schema
+#: explicitly because the commonest cause, at a version bump, is that the only
+#: pre-kickoff snapshots for the week were written under the previous contract
+#: and cannot be read back unambiguously.
+NO_PREGAME_SNAPSHOT = (
+    "REFUSED: no schema-v{version} pregame snapshot existed before kickoff — "
+    "not back-filled, because a number produced after kickoff is not a "
+    "forecast")
+
+
+def _refusal_row(game, season: int, week: int, *,
+                 model_family: str, model_version: str,
+                 generated_at_utc: str) -> dict:
+    """A full contract row for a started game that was never priced.
+
+    `model_family` names the model that *would* have priced it, so the row
+    still says which route it belonged to; `model_version` records that no
+    fitted model stands behind it, which is the honest answer.
+    """
+    kickoff = game.get("start_date")
+    slate, public_date = cfb_calendar.public_slate(season, week, kickoff)
+    row = {column: None for column in FC.COLUMNS}
+    row.update({
+        "schema_version": FC.SCHEMA_VERSION,
+        "season": int(season), "week": int(week),
+        "game_id": int(game["id"]),
         "home": _jsonable(game.get("home_team")),
         "away": _jsonable(game.get("away_team")),
-        "mc_margin": None, "mc_margin_sd": None, "mc_total": None,
-        "p_home_win": None, "param_sd": None,
-        "pred_margin": None, "band_pm": None,
-        "veto": True,
-        "note": ("REFUSED: no pregame snapshot existed before kickoff — "
-                 "not back-filled, because a number produced after kickoff "
-                 "is not a forecast"),
-    }
+        "kickoff_utc": pd.to_datetime(kickoff, utc=True, errors="raise")
+                         .strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "neutral_site": bool(game.get("neutral_site")),
+        "slate": slate, "public_date": public_date,
+        "status": FC.Status.REFUSED.value,
+        "refusal_reason": NO_PREGAME_SNAPSHOT.format(
+            version=FC.SCHEMA_VERSION),
+        "model_family": model_family,
+        "model_version": model_version,
+        "generated_at_utc": generated_at_utc,
+    })
+    return row
 
 
 def freeze_kicked_off(data_dir: str, season: int, week: int,
-                      games: pd.DataFrame, now: datetime) -> dict:
+                      games: pd.DataFrame, now: datetime,
+                      *, model_family: Optional[str] = None,
+                      model_version: str = "none: no pregame snapshot",
+                      generated_at_utc: Optional[str] = None) -> dict:
     """Freeze the final pregame row of every game that has now started.
 
     The row is taken from the newest snapshot whose `taken_at` is strictly
@@ -431,12 +577,23 @@ def freeze_kicked_off(data_dir: str, season: int, week: int,
     cache: Dict[str, pd.DataFrame] = {}
 
     def _rows_for(stamp_path: str) -> pd.DataFrame:
+        """Rows from one snapshot, but only if they satisfy the contract.
+
+        A snapshot written under an earlier schema is history, not a
+        mixed-schema artifact someone is trying to publish now -- so it is
+        skipped rather than raised on. The cost is real and is stated on the
+        row: a game whose only pre-kickoff snapshots predate the bump freezes
+        as an explicit refusal naming the schema, never as a number rebuilt
+        after kickoff. Bump between weeks, not inside one.
+        """
         if stamp_path not in cache:
             try:
-                cache[stamp_path] = pd.read_csv(
-                    os.path.join(stamp_path, "predictions.csv"))
-            except (OSError, ValueError):
-                cache[stamp_path] = pd.DataFrame()
+                body = FC.coerce_frame(
+                    pd.read_csv(os.path.join(stamp_path, "predictions.csv")))
+                FC.validate_frame(body, where=stamp_path)
+            except (OSError, ValueError, FC.ContractError):
+                body = pd.DataFrame()
+            cache[stamp_path] = body
         return cache[stamp_path]
 
     starts = _as_utc(games["start_date"])
@@ -456,16 +613,23 @@ def freeze_kicked_off(data_dir: str, season: int, week: int,
             if pd.isna(taken) or taken >= kickoff:
                 continue                               # never post-kickoff
             body = _rows_for(meta["path"])
-            if body.empty or "id" not in body.columns:
+            if body.empty or "game_id" not in body.columns:
                 continue
-            hit = body[body["id"].astype("Int64") == gid]
+            hit = body[body["game_id"].astype("Int64") == gid]
             if len(hit):
                 source = (meta["stamp"],
                           {k: _jsonable(v) for k, v in
                            hit.iloc[-1].to_dict().items()})
 
         if source is None:
-            frozen[gid] = {"row": _refusal_row(game, season, week),
+            frozen[gid] = {"row": _refusal_row(
+                               game, season, week,
+                               model_family=(model_family
+                                             or PR.production_family(week)),
+                               model_version=model_version,
+                               generated_at_utc=(
+                                   generated_at_utc
+                                   or now.astimezone(UTC).isoformat())),
                            "from_stamp": None,
                            "kickoff": _jsonable(kickoff.isoformat()),
                            "frozen_at": now.astimezone(UTC).isoformat()}
@@ -482,32 +646,40 @@ def freeze_kicked_off(data_dir: str, season: int, week: int,
 
 
 def apply_frozen(rows: pd.DataFrame, frozen: Dict[int, dict]) -> tuple:
-    """Splice frozen rows back in verbatim; mark every row `frozen` true/false.
+    """Splice frozen rows back in verbatim, as `status="frozen"`.
 
-    A frozen game that is missing from `rows` is re-appended rather than
-    dropped -- the full-schedule invariant survives freezing.
+    "Frozen" used to be an extra boolean column welded onto the frame here.
+    It is a status now, which is what it always was: a row republished
+    verbatim from a snapshot taken strictly before kickoff. A frozen row that
+    was never priced keeps `status="refused"` and its reason -- the freeze is
+    recorded either way in `frozen_from_stamp`, so no information is lost and
+    no row has to claim two states at once.
+
+    A frozen game missing from `rows` is re-appended rather than dropped: the
+    full-schedule invariant survives freezing.
     """
     body = rows.copy()
-    if "id" not in body.columns:
-        body["frozen"] = False
+    if "game_id" not in body.columns or not frozen:
         return body, 0
-    if not frozen:
-        body["frozen"] = False
-        return body, 0
+
+    def _spliced(record: dict, entry: dict) -> dict:
+        merged = {**record, **entry["row"]}
+        merged["frozen_from_stamp"] = entry.get("from_stamp")
+        if merged.get("status") == FC.Status.PRICED.value:
+            merged["status"] = FC.Status.FROZEN.value
+        return merged
 
     records = body.to_dict("records")
     seen, out = set(), []
-    for rec in records:
-        gid = int(rec["id"])
+    for record in records:
+        gid = int(record["game_id"])
         seen.add(gid)
-        if gid in frozen:
-            out.append({**rec, **frozen[gid]["row"], "frozen": True})
-        else:
-            out.append({**rec, "frozen": False})
+        entry = frozen.get(gid)
+        out.append(_spliced(record, entry) if entry else record)
     for gid, entry in sorted(frozen.items()):
         if gid not in seen:
-            out.append({**entry["row"], "frozen": True})
+            out.append(_spliced({column: None for column in FC.COLUMNS}, entry))
 
-    return pd.DataFrame(out, columns=list(body.columns) + ["frozen"]
-                        if "frozen" not in body.columns
-                        else list(body.columns)), len(seen & set(frozen))
+    result = pd.DataFrame(out).reindex(columns=list(FC.COLUMNS))
+    FC.validate_frame(result, where="apply_frozen")
+    return result, len(seen & set(frozen))

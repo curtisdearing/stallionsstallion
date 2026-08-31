@@ -11,7 +11,24 @@ data/*.db-journal
 config.local.json
 data/*.joblib
 
-# weekly-runner local byproducts (launchd writes these on the Mac; never publishable)
+# weekly-runner local byproducts (launchd writes these on the Mac)
 .venv/
 data/logs/
 data/manifests/
+
+# data/snapshots/ IS TRACKED, deliberately. It is the immutable pre-kickoff
+# record: what was published for each game before it started, the sha256 that
+# proves the row has not moved since, and the freeze provenance. A record that
+# exists only on one Mac cannot be audited by anyone — including by a future
+# run of this repository — and the whole point of freezing at kickoff is that
+# the pre-kickoff number is provable afterwards. An earlier revision ignored
+# this directory; that decision is reversed here and in ops/LOAD_ME.md.
+#
+# Nothing in a snapshot carries a credential: predictions.csv is contract rows,
+# snapshot.json holds a digest (a hash, never the source config it hashes),
+# frozen.json holds published rows. The CFBD key lives in config.local.json,
+# which stays ignored above.
+#
+# Only the rendered explainer is excluded: it is a presentation of
+# predictions.csv, regenerable from it, and it is the bulk of the bytes.
+data/snapshots/**/explainer.html

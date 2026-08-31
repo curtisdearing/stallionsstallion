@@ -446,6 +446,182 @@ def test_simulation_does_not_train_on_the_week_it_predicts():
         "failure and equally wrong")
 
 
+# =========================================================================== #
+# WORKSTREAM C, pace/OT correction (2026-08-29, Prompt 5A)
+#
+# PaceModel and OT fitting were bounded by SEASON only, never by WEEK: the
+# rate model's own-week-strictly-before discipline (above) was never extended
+# to PaceModel.fit (fit once, up front, over every season pooled together)
+# or to OT params (fit over the full 2021+ window with no week cutoff at
+# all). Same poison technique, same failure mode, now on those two inputs.
+#
+# PREREGISTERED CUTOFF RULE (approved after Prompt 5A): for a target game in
+# (season S, week W), every model input — rating table, DriveRateModel,
+# PaceModel, OTParams — may be fit only on drives/games satisfying
+#
+#     season < S  OR  (season == S AND week < W)
+#
+# at WEEK granularity, never season granularity alone, regardless of what is
+# already present in the ingest cache at run time.
+# =========================================================================== #
+
+def test_pace_model_ignores_poisoned_future_drive_counts():
+    """PaceModel.fit must not see drive COUNTS from weeks after the cutoff.
+
+    The poison test above only corrupts drive SCORES, which DriveRateModel is
+    sensitive to but PaceModel is not (it only cares how many drives each
+    side ran). This poisons drive COUNTS specifically — the vector the
+    existing coverage does not exercise.
+    """
+    games = _sim_games()
+    drives = _sim_drives(games)
+    base = _run_sim_backtest(games, drives)
+    assert len(base) > 20, "backtest produced too few rows to test anything"
+
+    cutoff = 5
+    pdrv = drives.copy()
+    fut = pdrv["week"] > cutoff
+    extra = pdrv[fut].sample(n=200, replace=True, random_state=1)
+    poisoned = pd.concat([pdrv, extra], ignore_index=True)
+    result = _run_sim_backtest(games, poisoned)
+
+    pd.testing.assert_frame_equal(
+        _rows_through(base, cutoff), _rows_through(result, cutoff),
+    ), ("LEAKAGE: PaceModel changed pre-cutoff simulations after future "
+        "weeks' drive COUNTS were poisoned — PaceModel.fit is not "
+        "walk-forward bounded")
+
+
+def _sim_ot_drives(games, per_week=8, reps=3, seed=23):
+    """Standard 2021+ OT possessions per week, attached to a subset of that
+    week's games: period >= 5, start_yards_to_goal == 25, off_delta in
+    {0, 3, 6, 7, 8}, with a mix of forced mandatory-two (period >= 6)
+    possessions — enough VOLUME (`reps` copies per game) that `fit_ot_params`
+    clears both its 100-possession and 5-mandatory-two floors within just a
+    few weeks of cumulative history, so the walk-forward cutoff has real
+    pre- and post-cutoff weeks to compare, not just the tail of the season.
+    """
+    rng = np.random.default_rng(seed)
+    rows = []
+    by_week = {}
+    for g in games.itertuples():
+        by_week.setdefault(int(g.week), []).append(g)
+    for wk, gs in by_week.items():
+        for g in gs[:per_week]:
+            for _ in range(reps):
+                for rnd, home_off in ((5, True), (5, False),
+                                      (6, True), (6, False)):
+                    u = rng.random()
+                    delta = 7 if u < 0.35 else (3 if u < 0.55 else 0)
+                    if rnd >= 6 and delta == 7:
+                        delta = 8 if rng.random() < 0.5 else 6
+                    rows.append({
+                        "game_id": int(g.id), "season": 2023, "week": wk,
+                        "is_home_offense": home_off, "start_period": rnd,
+                        "start_yards_to_goal": 25.0,
+                        "start_offense_score": 7,
+                        "end_offense_score": 7 + delta,
+                        "start_defense_score": 7, "end_defense_score": 7,
+                    })
+    return pd.DataFrame(rows)
+
+
+def _run_sim_backtest_walkforward_ot(games, drives):
+    """Same driver as `_run_sim_backtest`, but with `ot=None` so
+    `walk_forward_backtest` fits OT params itself, walk-forward."""
+    R.clear_cache()
+    return cfb_sim.walk_forward_backtest(
+        games, drives, _RP, None, eval_seasons=[2023], first_week=4,
+        n_sims=200, min_train_drives=300, n_bins=4, min_bin_n=50)
+
+
+def test_ot_params_ignore_poisoned_later_week_possessions():
+    """Walk-forward OT fitting must not see OT possessions from weeks after
+    the cutoff, mirroring the pace/rate poisoning tests above."""
+    games = _sim_games()
+    drives = pd.concat([_sim_drives(games), _sim_ot_drives(games)],
+                       ignore_index=True)
+    base = _run_sim_backtest_walkforward_ot(games, drives)
+    assert len(base) > 20, "backtest produced too few rows to test anything"
+
+    cutoff = 5
+    pdrv = drives.copy()
+    fut_ot = (pdrv["week"] > cutoff) & (pdrv["start_period"] >= 5)
+    # Absurd OT outcomes: if they bleed backward through the OT fit it will
+    # move every pre-cutoff game that reaches OT.
+    pdrv.loc[fut_ot, "end_offense_score"] = (
+        pdrv.loc[fut_ot, "start_offense_score"] + 8)
+    poisoned = _run_sim_backtest_walkforward_ot(games, pdrv)
+
+    pd.testing.assert_frame_equal(
+        _rows_through(base, cutoff), _rows_through(poisoned, cutoff),
+    ), ("LEAKAGE: OT params for pre-cutoff weeks changed after only later "
+        "weeks' OT possessions were poisoned — OT fitting is not "
+        "walk-forward bounded")
+
+
+def test_pace_and_ot_do_not_train_on_the_week_they_predict():
+    """Same-week, post-kickoff contamination: poisoning week W's OWN drive
+    counts and OT possessions must leave week W's own simulations alone
+    (pace/OT for W come only from weeks < W) and must move a LATER week's,
+    proving they are not simply frozen/inert."""
+    games = _sim_games()
+    drives = pd.concat([_sim_drives(games), _sim_ot_drives(games)],
+                       ignore_index=True)
+    base = _run_sim_backtest_walkforward_ot(games, drives)
+
+    w = 5
+    pdrv = drives.copy()
+    now = pdrv["week"] == w
+    now_ot = now & (pdrv["start_period"] >= 5)
+    extra_now = pdrv[now & (pdrv["start_period"] <= 4)].sample(
+        n=30, replace=True, random_state=2)
+    pdrv.loc[now_ot, "end_offense_score"] = (
+        pdrv.loc[now_ot, "start_offense_score"] + 8)
+    pdrv = pd.concat([pdrv, extra_now], ignore_index=True)
+    poisoned = _run_sim_backtest_walkforward_ot(games, pdrv)
+
+    pd.testing.assert_frame_equal(_rows_through(base, w),
+                                  _rows_through(poisoned, w))
+    later_b = base[base["week"] > w].reset_index(drop=True)
+    later_p = poisoned[poisoned["week"] > w].reset_index(drop=True)
+    assert not later_b.equals(later_p), (
+        "poisoning week 5's own drives/OT changed nothing later — pace/OT "
+        "are not actually learning from observed weeks, which is the "
+        "opposite failure and equally wrong")
+
+
+def test_simulation_stable_under_unrelated_reordering_and_extra_games():
+    """A target week's simulated rows must not depend on row order elsewhere
+    in the frame (RNG determinism), or on unrelated data appearing anywhere
+    in the drives table (membership) — only on (season, week) history
+    strictly before the target."""
+    games = _sim_games()
+    drives = pd.concat([_sim_drives(games), _sim_ot_drives(games)],
+                       ignore_index=True)
+    base = _run_sim_backtest_walkforward_ot(games, drives)
+
+    shuffled_games = games.sample(frac=1.0, random_state=7).reset_index(drop=True)
+    shuffled_drives = drives.sample(frac=1.0, random_state=7).reset_index(drop=True)
+    reordered = _run_sim_backtest_walkforward_ot(shuffled_games, shuffled_drives)
+    pd.testing.assert_frame_equal(
+        base.sort_values(["season", "week", "id"]).reset_index(drop=True),
+        reordered.sort_values(["season", "week", "id"]).reset_index(drop=True))
+
+    cutoff = 5
+    phantom_gid = 8_888_888
+    phantom = pd.DataFrame([
+        {"game_id": phantom_gid, "season": 2023, "week": 6,
+         "is_home_offense": side, "start_period": 2,
+         "start_offense_score": 0, "end_offense_score": 0,
+         "start_defense_score": 0, "end_defense_score": 0}
+        for side in ([True] * 12 + [False] * 11)])
+    with_extra = _run_sim_backtest_walkforward_ot(
+        games, pd.concat([drives, phantom], ignore_index=True))
+    pd.testing.assert_frame_equal(_rows_through(base, cutoff),
+                                  _rows_through(with_extra, cutoff))
+
+
 def test_preseason_prior_cannot_move_when_results_change(monkeypatch):
     """The prior is preseason by definition: talent + returning production.
 

@@ -26,6 +26,7 @@ import pandas as pd  # noqa: E402
 
 from nflvalue import cfb_ot, cfb_sim, explain, gameline as GL  # noqa: E402
 from nflvalue import engine as EG, ingest, ratings as R  # noqa: E402
+from nflvalue import evidence as EV  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HISTORY_START = 2019
@@ -42,8 +43,11 @@ def rate_models_before(games, drives_c, params, season, week):
             if s == season and w >= week:
                 break
             try:
-                tbl = EG.solve_table(games, int(s), int(w), params)
+                tbl = EG.solve_production_table(games, int(s), int(w), params)
             except (R.RatingsError, np.linalg.LinAlgError):
+                # Includes EarlySeasonPriorError: the first history season has
+                # no prior year, so its early weeks cannot be labelled the way
+                # production prices them. Skipped, never mislabelled.
                 continue
             gw = games[(games["season"] == s) & (games["week"] == w)]
             dw = drives_c[(drives_c["season"] == s) & (drives_c["week"] == w)]
@@ -73,7 +77,9 @@ def main() -> int:
     ot = cfb_ot.fit_ot_params(ingest.load_drives(range(2021, 2026)))
     rates, pace = rate_models_before(games, drives_c, params,
                                      args.season, args.week)
-    tbl = EG.solve_table(games, args.season, args.week, params)
+    # The page IS a published forecast, so it is priced by the production
+    # policy — the same table the weekly loop would publish for this week.
+    tbl = EG.solve_production_table(games, args.season, args.week, params)
 
     lines = ingest.load_lines([args.season])
     med_spread = (lines.dropna(subset=["spread"])
@@ -81,9 +87,14 @@ def main() -> int:
     med_total = (lines.dropna(subset=["over_under"])
                  .groupby("game_id")["over_under"].median())
 
-    # model MAE from the recorded gate-3 backtest (honest, out-of-sample)
-    bt = pd.read_csv(os.path.join(ROOT, "data", "backtest_c.csv"))
-    model_mae = float((bt["mc_margin"] - bt["margin"]).abs().mean())
+    # Model MAE comes from the SELECTED benchmark or from nowhere. Reading
+    # data/backtest_c.csv directly is what let a pre-correction figure keep
+    # appearing in the explainer after the method it measured was replaced.
+    bt, bench, notice = EV.benchmark_or_notice(ROOT, EV.ROLE_WK4PLUS)
+    model_mae = (None if bt is None
+                 else float((bt["mc_margin"] - bt["margin"]).abs().mean()))
+    if bt is None:
+        print(f"[explainer] benchmark unavailable: {notice}")
     clv = pd.read_csv(os.path.join(ROOT, "data", "clv_log_backtest.csv"))
     clv_slices = clv.groupby("slice")["clv_pts"].agg(["count", "mean"])
 

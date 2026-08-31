@@ -212,3 +212,111 @@ def test_cached_solve_returns_identical_fingerprint():
     b = K.solve_kalman_cached(games, 2024, 3)
     assert a is b
     assert a.fingerprint() == K.solve_kalman(games, 2024, 3).fingerprint()
+
+
+# --------------------------------------------------------------------------- #
+# 5 — early-season production policy
+# --------------------------------------------------------------------------- #
+def test_production_engine_is_ridge_through_week_three():
+    for week in (0, 1, 2, 3):
+        assert EG.production_margin_engine(week) == "ridge", \
+            "weeks 0-3 are priced by ridge + preseason prior, by policy"
+
+
+def test_production_engine_defers_to_the_dispatcher_from_week_four():
+    for week in (4, 5, 12):
+        assert EG.production_margin_engine(week) == EG.margin_engine(), \
+            "the policy may not override the configured engine after week 3"
+
+
+def test_generic_solve_table_is_not_bound_by_the_early_season_policy():
+    """Bakeoffs/backtests ask for an engine on purpose — that must still work."""
+    games = _games()
+    early = EG.solve_table(games, 2024, 2, engine="kalman")
+    assert isinstance(early, K.KalmanTable), \
+        "solve_table must honour an explicit engine even in weeks 0-3"
+    assert isinstance(EG.solve_table(games, 2024, 2, R.RatingParams(),
+                                     engine="ridge"), R.RatingsTable)
+
+
+def test_early_season_table_carries_prior_year_team_strength():
+    """The defect this locks out: ordinary ridge dispatch solves with
+    prev_net=None, silently dropping prior-year team strength from the prior."""
+    games = _games()
+    params = R.RatingParams()
+    R.clear_cache()
+
+    tbl = EG.solve_early_season_ridge_table(games, 2025, 1, params)
+    assert isinstance(tbl, R.RatingsTable)
+
+    # What plain `R.solve_cached` (engine="ridge") would have produced: no
+    # prev_net, so prior_w_prev_rating is zeroed out and the prior collapses.
+    naive = R.solve(games, 2025, 1, params)
+    assert all(v == 0.0 for v in naive.prior.values()), \
+        "fixture check: without prev_net the prior has no signal at all"
+    assert any(v != 0.0 for v in tbl.prior.values()), \
+        "prior-year team strength must survive into the early-season prior"
+
+
+def test_early_season_solve_gets_prev_net_and_never_a_prior_injection(monkeypatch):
+    games = _games()
+    R.clear_cache()
+    calls = []
+    real_solve = R.solve
+
+    def spy(g, season, week, params, prev_net=None, prior=None):
+        calls.append({"season": int(season), "week": int(week),
+                      "prev_net": prev_net, "prior": prior})
+        return real_solve(g, season, week, params, prev_net=prev_net,
+                          prior=prior)
+
+    monkeypatch.setattr(EG.R, "solve", spy)
+    EG.solve_early_season_ridge_table(games, 2025, 1, R.RatingParams())
+
+    prev_call = calls[0]      # previous season's final table, plain ridge
+    assert (prev_call["season"], prev_call["week"]) == (2024, 4), \
+        "prev_net comes from the previous season's final cached table"
+    target = calls[-1]
+    assert (target["season"], target["week"]) == (2025, 1)
+    assert target["prior"] is None, \
+        "production must use R.solve's own preseason_prior branch, not prior="
+    assert target["prev_net"], "prev_net must reach the solve"
+    assert set(target["prev_net"]) <= {"AAA", "BBB", "CCC", "DDD"}, \
+        "prev_net is built from non-veto teams of the prior-year table"
+
+
+def test_early_season_refuses_loudly_without_a_previous_season():
+    games = _games()
+    one_season = games[games["season"] == 2023]
+    with pytest.raises(EG.EarlySeasonPriorError):
+        EG.solve_early_season_ridge_table(one_season, 2023, 3,
+                                          R.RatingParams())
+
+
+def test_production_table_routes_by_week():
+    games = _games()
+    R.clear_cache()
+    early = EG.solve_production_table(games, 2025, 1, R.RatingParams())
+    assert isinstance(early, R.RatingsTable), \
+        "weeks 0-3 are the early-season ridge table regardless of config"
+    late = EG.solve_production_table(games, 2024, 4, R.RatingParams())
+    assert type(late) is type(EG.solve_table(games, 2024, 4, R.RatingParams()))
+
+
+def test_id_coverage_problem_names_the_exact_deviation():
+    assert EG.id_coverage_problem([1, 2, 3], [3, 2, 1]) is None
+    assert "duplicate" in EG.id_coverage_problem([1, 1, 2], [1, 2])
+    assert "missing" in EG.id_coverage_problem([1], [1, 2])
+    assert "extra" in EG.id_coverage_problem([1, 2, 9], [1, 2])
+
+
+def test_forecast_status_is_non_actionable():
+    banned = ("confidence", "bet", "pick", "edge", "value", "recommend",
+              "stake", "unit", "bankroll", "clv", "market", "spread", "total")
+    for week in (0, 1, 3, 4, 10):
+        status = EG.forecast_status(week)
+        assert "paper-only" in status.lower()
+        for word in banned:
+            assert word not in status.lower(), \
+                f"forecast_status must stay non-actionable; found {word!r}"
+    assert "early-season" in EG.forecast_status(1).lower()

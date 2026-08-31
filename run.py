@@ -15,6 +15,20 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# --- LEGACY / UNSUPPORTED --------------------------------------------------- #
+# The inherited NFL value-slate entry point, kept as historical source and
+# refused before it can execute.  The guard runs at MODULE scope, ahead of
+# every heavy import below, so no pricing, bankroll, staking or player-prop
+# code path in this file is ever reached.  Compiling this file still works
+# (py_compile does not execute it); running it does not.
+# See README.md and nflvalue/legacy_guard.py.
+from nflvalue import legacy_guard as _legacy_guard  # noqa: E402
+
+_legacy_guard.refuse(
+    "run.py",
+    capability="the inherited NFL value-slate builder and dashboard "
+               "(bankroll sizing, staking math and player-prop output)")
+
 from nflvalue import config, pipeline  # noqa: E402
 
 

@@ -6,10 +6,10 @@ Cadence is CFB-shaped, not the inherited NFL wed/t90/tuesday
 (`scripts/auto_weekly.py` stays as reference — its NFL job names encode a
 Sun/Mon game week that CFB does not have):
 
-  --job week-open   Tuesday: freshness-gated ingest refresh, warm ratings
+  --job week-open   Tuesday: health-gated ingest refresh, warm ratings
                     refit, incremental honesty report, simulate + render the
                     upcoming week's explainer, notify.
-  --job pregame     Tue-Sat, run as often as scheduled: cheap freshness
+  --job pregame     Tue-Sat, run as often as scheduled: cheap input-health
                     check; re-simulates + re-renders only if the cache moved.
   --job grade       Sat night -> Sunday, idempotent: refresh finals for the
                     current week, update the honesty report, notify.
@@ -24,8 +24,13 @@ Spec furniture, all load-bearing:
                         restarts the week)
   * budget guard        refuses (loud) if the projected calls would push the
                         monthly tally within 50 of the 1,000 cap
-  * degraded, never silent: a failed freshness gate still writes a manifest
-                        (degraded=true) and still notifies, saying so.
+  * FAIL CLOSED: the input-health gate (nflvalue/data_health.py) checks every
+                        input this job's engine actually depends on, and a
+                        blocked capability HALTS the run before simulation.
+                        Nothing is published, the `latest` pointer does not
+                        move, no artifact is overwritten, and the public
+                        status becomes a non-numeric "data unavailable".
+                        Exit status 3 says so distinctly.
 
 Phase-2 note (2026-07-30): the spec's blend + CLV stages are DELIBERATELY
 ABSENT — the Phase-2 gate FAILED on 2021-2023 and on the 2024 holdout (the
@@ -52,9 +57,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from nflvalue import cfb_ot, cfb_sim, explain, freshness, gameline as GL  # noqa: E402
+from nflvalue import cfb_ot, cfb_sim, explain, gameline as GL  # noqa: E402
 from nflvalue import cfb_calendar, engine as EG, ingest, ratings as R  # noqa: E402
 from nflvalue import snapshots as SN  # noqa: E402
+from nflvalue import forecast_contract as FC  # noqa: E402
+from nflvalue import producers as PR  # noqa: E402
+from nflvalue import data_health as DH  # noqa: E402
+from nflvalue import insight as IN  # noqa: E402
+from nflvalue import atomic  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")
@@ -62,6 +72,11 @@ MANIFESTS = os.path.join(DATA, "manifests")
 LOCK_PATH = os.path.join(DATA, ".weekly.lock")
 LOCK_STALE_HOURS = 2.0
 BUDGET_HEADROOM = 50
+
+#: Exit status for a run that stopped because its inputs were not healthy.
+#: Distinct from 1 (a stage died) on purpose: this run did exactly what it
+#: was supposed to do, and the operator needs to tell the two apart.
+EXIT_UNHEALTHY_INPUTS = 3
 SEED = 20260730
 HISTORY_START = 2019
 REFRESH_CALLS = 25
@@ -108,25 +123,57 @@ def utcstamp() -> str:
 # --------------------------------------------------------------------------- #
 # Lock
 # --------------------------------------------------------------------------- #
+def _read_lock() -> tuple:
+    """(held payload, age in hours). Unreadable counts as infinitely old."""
+    try:
+        with open(LOCK_PATH) as fh:
+            held = json.load(fh)
+        age_h = (datetime.now(timezone.utc)
+                 - datetime.fromisoformat(held["utc"])).total_seconds() / 3600
+        return held, age_h
+    except Exception:  # noqa: BLE001 - a lock we cannot read is a stale lock
+        return {}, float("inf")
+
+
 def acquire_lock(job: str) -> bool:
-    if os.path.exists(LOCK_PATH):
-        try:
-            with open(LOCK_PATH) as fh:
-                held = json.load(fh)
-            age_h = (datetime.now(timezone.utc)
-                     - datetime.fromisoformat(held["utc"])).total_seconds() / 3600
-        except Exception:  # noqa: BLE001
-            age_h = float("inf")
-        if age_h < LOCK_STALE_HOURS:
-            print(f"[lock] live lock held by pid={held.get('pid')} "
-                  f"job={held.get('job')} age={age_h:.2f}h — exiting clean")
-            return False
-        print(f"[lock] stale lock ({age_h:.1f}h old) — overriding")
+    """Take the single-writer lock, atomically.
+
+    `os.open(..., O_CREAT | O_EXCL)` is one syscall that both tests for the
+    lock and takes it. The previous exists-then-write had a window between
+    the two in which a second run could see no lock, and both would proceed
+    to publish the same week -- which is precisely the scenario the lock is
+    for, and precisely when two runs fire at once.
+
+    A stale lock is broken by unlinking and retrying the same exclusive
+    create, so if two runs race to take over an abandoned lock, exactly one
+    of them wins and the other exits clean rather than sharing it.
+    """
     os.makedirs(DATA, exist_ok=True)
-    with open(LOCK_PATH, "w") as fh:
-        json.dump({"pid": os.getpid(), "job": job,
-                   "utc": datetime.now(timezone.utc).isoformat()}, fh)
-    return True
+    payload = json.dumps({"pid": os.getpid(), "job": job,
+                          "utc": datetime.now(timezone.utc).isoformat()})
+    for attempt in (0, 1):
+        try:
+            fd = os.open(LOCK_PATH,
+                         os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+        except FileExistsError:
+            held, age_h = _read_lock()
+            if age_h < LOCK_STALE_HOURS:
+                print(f"[lock] live lock held by pid={held.get('pid')} "
+                      f"job={held.get('job')} age={age_h:.2f}h — exiting clean")
+                return False
+            if attempt == 0:
+                print(f"[lock] stale lock ({age_h:.1f}h old) — overriding")
+                try:
+                    os.unlink(LOCK_PATH)
+                except FileNotFoundError:
+                    pass                # another run got there first; retry
+                continue
+            print("[lock] lost the race to break a stale lock — exiting clean")
+            return False
+        with os.fdopen(fd, "w") as fh:
+            fh.write(payload)
+        return True
+    return False
 
 
 def release_lock() -> None:
@@ -255,18 +302,50 @@ def pregame_decision(season: int, week: int, *, games: pd.DataFrame = None,
     return out
 
 
+def assert_schedule_id_coverage(rows: pd.DataFrame, schedule: pd.DataFrame,
+                                where: str) -> None:
+    """The published rows must BE the week's schedule — exactly, once each —
+    with one narrow exception: a row for a FROZEN game (one carrying a
+    `frozen_from_stamp`) is allowed even if that game has since vanished from the
+    schedule entirely. A game that kicked off, froze, and was later dropped
+    by the provider must not permanently wedge every future publish; its
+    historical frozen row still belongs in the artifact (one row per
+    scheduled-or-frozen game), it just isn't in `schedule` any more.
+
+    Checked at the writer and again after freezing/splicing, because those are
+    the two places a row can be duplicated or lost, and a public artifact that
+    quietly omits a game is worse than a run that fails.
+    """
+    columns = getattr(rows, "columns", [])
+    row_ids = rows["game_id"] if "game_id" in columns else []
+    sched_ids = (schedule["id"]
+                 if "id" in getattr(schedule, "columns", []) else [])
+    frozen_ids = (rows.loc[rows["frozen_from_stamp"].notna(), "game_id"]
+                  if "frozen_from_stamp" in columns else [])
+    allowed_ids = set(int(i) for i in sched_ids) | set(int(i) for i in frozen_ids)
+    problem = EG.id_coverage_problem(row_ids, allowed_ids)
+    if problem:
+        raise LoopError(
+            f"{where}: {problem} — refusing to publish a week whose rows are "
+            "not its schedule")
+
+
 def assemble_week_artifact(season: int, week: int, schedule: pd.DataFrame,
-                           simulated: dict, refusals: dict, now: datetime,
+                           rows: pd.DataFrame, now: datetime,
                            data_dir: str = None) -> tuple:
-    """Full-schedule rows for the week, with started games frozen verbatim.
+    """Freeze started games into already-built contract rows.
+
+    `rows` arrives from `forecast_contract.build_artifact` -- there is no
+    second place that decides what a public row looks like. This function only
+    freezes and splices.
 
     Order matters: freeze BEFORE splicing, and freeze only from snapshots taken
     strictly before each game's own kickoff, so a started game's published
     number provably predates that kickoff.
     """
     data_dir = data_dir or DATA
-    rows = week_prediction_rows(season, week, schedule, simulated, refusals)
-    SN.freeze_kicked_off(data_dir, season, week, schedule, now)
+    SN.freeze_kicked_off(data_dir, season, week, schedule, now,
+                         model_family=PR.production_family(week))
     return SN.apply_frozen(rows, SN.load_frozen(data_dir, season, week))
 
 
@@ -313,29 +392,36 @@ def stage_refresh(season: int) -> dict:
             "calls": res.calls + (drv.calls if drv else 0)}
 
 
-def stage_freshness(season: int) -> dict:
-    games = ingest.load_games([season])
-    now = datetime.now(timezone.utc)
-    feeds = [freshness.Feed(
-        name="games",
-        timestamp=datetime.fromtimestamp(os.path.getmtime(
-            os.path.join(DATA, "cfbd", f"games_{season}.parquet")),
-            timezone.utc) if os.path.exists(
-            os.path.join(DATA, "cfbd", f"games_{season}.parquet")) else None,
-        n_records=len(games), schema_ok=True, load_bearing=True)]
-    return freshness.gate(feeds, as_of=now,
-                          staleness_hours={"games": 24 * 8})
+def stage_freshness(season: int, week: int, job: str, *,
+                    now: datetime = None) -> dict:
+    """Dependency-aware input health for THIS job, at THIS week, on THIS engine.
+
+    The version this replaces checked the games file, hardcoded
+    `schema_ok=True`, and returned a `publish` flag the run then ignored. It
+    could not see a missing drives cache, an empty team table, or a benchmark
+    record the explainer was about to quote — and passing it was not required
+    to publish anyway.
+
+    Writes the public status file on every run, healthy or not, so the last
+    thing a reader saw is never staler than the last thing that happened.
+    """
+    now = now or datetime.now(timezone.utc)
+    report = DH.evaluate(DATA, season, week, job,
+                         PR.production_family(week), as_of=now)
+    DH.write_status(DATA, report, published=False)
+    return report.to_dict()
 
 
 def stage_refit(season: int, week: int) -> dict:
     params = R.load_params()
     games = R.game_frame(list(range(HISTORY_START, season + 1)))
-    tbl = EG.solve_table(games, season, week, params)
+    tbl = EG.solve_production_table(games, season, week, params)
     frame = tbl.to_frame()
     ingest._atomic_write_parquet(
         frame, os.path.join(DATA, f"ratings_{season}.parquet"))
     return {"fingerprint": tbl.fingerprint(), "n_teams": len(frame),
-            "n_games_fit": tbl.n_games_fit, "week": week}
+            "n_games_fit": tbl.n_games_fit, "week": week,
+            "engine": EG.production_margin_engine(week)}
 
 
 def stage_honesty(season: int) -> dict:
@@ -352,7 +438,7 @@ def stage_honesty(season: int) -> dict:
         if w < 2:
             continue
         try:
-            tbl = EG.solve_table(games, season, int(w), params)
+            tbl = EG.solve_production_table(games, season, int(w), params)
         except (R.RatingsError, np.linalg.LinAlgError):
             continue
         for g in season_games[season_games["week"] == w].itertuples():
@@ -385,63 +471,96 @@ def stage_honesty(season: int) -> dict:
             "path": os.path.basename(out)}
 
 
-def week_prediction_rows(season: int, week: int, upcoming: pd.DataFrame,
-                         simulated: dict, refusals: dict) -> pd.DataFrame:
-    """Render one public-contract row for every scheduled game.
+def mc_forecasts(simulated: dict, registry: FC.BasisRegistry,
+                 week: int) -> dict:
+    """Simulation summaries -> contract forecasts, coherence enforced.
 
-    The model may honestly refuse a matchup, but that refusal must be visible
-    rather than silently disappearing from the weekly artifact or hub feed.
+    `PredictiveMargin.from_summary` refuses a win probability that does not
+    belong to the (mean, sd) beside it, so the simulator cannot publish three
+    numbers drawn from two distributions. The registry supplies the basis id,
+    and refuses to supply one for a week its registered evidence does not
+    cover.
     """
-    rows = []
-    for game in upcoming.sort_values(["start_date", "id"], kind="mergesort").itertuples():
+    if not simulated:
+        # Nothing to price. Asking the registry for evidence covering a week
+        # this call is not going to price would refuse an artifact that
+        # publishes no numbers at all -- which is a legitimate thing to
+        # publish, and is exactly what the all-kicked-off path does.
+        return {}
+    basis_id = registry.basis_id("kalman_montecarlo", week)
+    forecasts = {}
+    for game_id, sim in simulated.items():
+        forecasts[int(game_id)] = FC.Forecast(
+            predictive=FC.PredictiveMargin.from_summary(
+                mean=sim["mc_margin"], sd=sim["mc_margin_sd"],
+                p_home_win=sim["p_home_win"], basis_id=basis_id,
+                total=sim["mc_total"]),
+            rating_parameter_sd=sim.get("param_sd"))
+    return forecasts
+
+
+def default_refusal(game) -> str:
+    """Why a game the simulator skipped is not being priced."""
+    if bool(game.home_fcs) and bool(game.away_fcs):
+        return FC.DEFAULT_REFUSALS["non_fbs"]
+    if bool(game.home_fcs) or bool(game.away_fcs):
+        return FC.DEFAULT_REFUSALS["cross_division"]
+    return FC.DEFAULT_REFUSALS["unrated"]
+
+
+def simulation_artifact(season: int, week: int, schedule: pd.DataFrame,
+                        simulated: dict, refusals: dict,
+                        provenance: FC.Provenance,
+                        registry: FC.BasisRegistry, *,
+                        degraded: bool = False,
+                        degraded_reason: str = None) -> pd.DataFrame:
+    """The in-season route's rows, in the one public contract."""
+    reasons = dict(refusals)
+    for game in schedule.itertuples():
         game_id = int(game.id)
-        slate, date = cfb_calendar.public_slate(
-            season, week, getattr(game, "start_date"))
-        row = {
-            "season": season,
-            "week": week,
-            "id": game_id,
-            "slate": slate,
-            "date": date,
-            "home": str(game.home_team),
-            "away": str(game.away_team),
-            "neutral": bool(game.neutral_site),
-        }
-        sim = simulated.get(game_id)
-        if sim is not None:
-            row.update({
-                "mc_margin": sim["mc_margin"],
-                "mc_margin_sd": sim["mc_margin_sd"],
-                "mc_total": sim["mc_total"],
-                "p_home_win": sim["p_home_win"],
-                "param_sd": sim["param_sd"],
-                "pred_margin": sim["mc_margin"],
-                "band_pm": sim["mc_margin_sd"],
-                "veto": False,
-                "note": None,
-            })
-        else:
-            note = refusals.get(game_id)
-            if note is None:
-                if bool(game.home_fcs) and bool(game.away_fcs):
-                    note = "Non-FBS matchup: no validated lower-division model"
-                elif bool(game.home_fcs) or bool(game.away_fcs):
-                    note = "FBS-vs-non-FBS: no validated cross-division model"
-                else:
-                    note = "NO RATING: team lacks a validated FBS rating"
-            row.update({
-                "mc_margin": None,
-                "mc_margin_sd": None,
-                "mc_total": None,
-                "p_home_win": None,
-                "param_sd": None,
-                "pred_margin": None,
-                "band_pm": None,
-                "veto": True,
-                "note": note,
-            })
-        rows.append(row)
-    return pd.DataFrame(rows)
+        if game_id in simulated or game_id in reasons:
+            continue
+        reasons[game_id] = default_refusal(game)
+    if degraded:
+        return FC.build_artifact(season, week, schedule, {}, reasons,
+                                 provenance, degraded=True,
+                                 degraded_reason=degraded_reason)
+    try:
+        forecasts = mc_forecasts(simulated, registry, week)
+    except FC.ContractError as exc:
+        # The simulator produced summaries; no validated out-of-sample SD
+        # backs them. Same honest degrade as the ridge route -- one status,
+        # both routes -- rather than a crash or a number this run cannot
+        # stand behind.
+        return FC.build_artifact(
+            season, week, schedule, {}, {}, provenance,
+            degraded=True,
+            degraded_reason=f"UNCERTAINTY UNVALIDATED: {exc}",
+            degraded_status=FC.Status.UNCERTAINTY_UNVALIDATED)
+    return FC.build_artifact(season, week, schedule, forecasts, reasons,
+                             provenance)
+
+
+def provenance_for(season: int, week: int, model_version: str, *,
+                   source_digest: str = None) -> FC.Provenance:
+    """Who produced this week's rows, from what code and config."""
+    return FC.Provenance(
+        model_family=PR.production_family(week),
+        model_version=model_version,
+        generated_at_utc=utcstamp(),
+        source_digest=source_digest,
+        config_hash=config_hash())
+
+
+def digest_and_window(season: int, week: int, schedule: pd.DataFrame,
+                      now: datetime, decision: dict) -> tuple:
+    """(source digest, kickoff window) — computed before the rows, because
+    the rows now carry the digest as provenance."""
+    if decision is None:
+        digest, _ = SN.collect_source_digest(
+            DATA, season, week, schedule, version=loop_version())
+        return digest, SN.kickoff_window(schedule, now)
+    return decision["source_digest"], decision["window"]
 
 
 def stage_simulate(season: int, week: int, *, now: datetime = None,
@@ -464,21 +583,53 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
     schedule = upcoming_all[upcoming_all["week"] == week]
     if schedule.empty:
         return {"n": 0, "note": "no games scheduled in target week"}
+    registry = FC.BasisRegistry.load(DATA)
+    digest, window = digest_and_window(season, week, schedule, now, decision)
+
+    # ROUTE. Weeks 0-3 are priced by the ridge/preseason policy and weeks 4+
+    # by the Kalman simulation -- the registered 2026-08-10 decision, and the
+    # engine's own scope note. Until now that split was achieved by running
+    # two scripts in the right order, which is not a policy, it is a habit:
+    # whichever writer ran last owned the file, and the two wrote different
+    # schemas. The branch lives in code now, and both sides come back with
+    # rows in the one contract.
+    if EG.is_early_season(week):
+        return _publish_early_week(season, week, schedule, games, params,
+                                   registry, now, digest, window,
+                                   degraded, degraded_reason)
+
     # NUMERATOR: only games that are still genuinely pregame may be simulated.
     live = set(simulatable_ids(schedule, now)) & set(
         int(i) for i in schedule.loc[schedule["home_points"].isna(), "id"])
     if not live:
-        rows, n_frozen = assemble_week_artifact(
+        provenance = provenance_for(
+            season, week, model_version="none: nothing left to price",
+            source_digest=digest)
+        built = simulation_artifact(
             season, week, schedule, {},
-            {int(g.id): KICKED_OFF_NOTE for g in schedule.itertuples()}, now)
-        return _publish_week(season, week, rows, None, now, decision,
+            {int(g.id): KICKED_OFF_NOTE for g in schedule.itertuples()},
+            provenance, registry, degraded=degraded,
+            degraded_reason=degraded_reason)
+        rows, n_frozen = assemble_week_artifact(
+            season, week, schedule, built, now)
+        return _publish_week(season, week, rows, None, now, digest, window,
                              degraded, degraded_reason, schedule,
                              n_sim=0, skipped=int(len(schedule)),
-                             n_frozen=n_frozen)
+                             n_frozen=n_frozen, components={})
+    # Pace and OT are bounded to the SAME preregistered walk-forward cutoff
+    # as the rate model below (2026-08-29, Prompt 5A correction): strictly
+    # before this target week, never merely "through this season". Without
+    # the week-level half of that filter, a `--week` backfill run (this
+    # loop's own documented testing/backfill path) could silently train on
+    # same-season drives from weeks that had, by the time of the backfill,
+    # already kicked off or gone final.
     drives = ingest.load_drives(seasons)
-    drives_c, _ = cfb_sim.classify_drives(drives)
+    hist_mask = ((drives["season"] < season)
+                | ((drives["season"] == season) & (drives["week"] < week)))
+    drives_hist = drives[hist_mask]
+    drives_c, _ = cfb_sim.classify_drives(drives_hist)
     drives_c = drives_c[drives_c["start_period"] <= 4]
-    ot = cfb_ot.fit_ot_params(ingest.load_drives(range(2021, season + 1)))
+    ot = cfb_ot.fit_ot_params(drives_hist)
 
     pool = []
     for s in seasons:
@@ -486,8 +637,12 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
             if s == season and w >= week:
                 break
             try:
-                tbl_w = EG.solve_table(games, int(s), int(w), params)
+                tbl_w = EG.solve_production_table(games, int(s), int(w),
+                                                  params)
             except (R.RatingsError, np.linalg.LinAlgError):
+                # Includes EarlySeasonPriorError: the first history season has
+                # no prior year, so its early weeks cannot be labelled the way
+                # production prices them. Skipped, never mislabelled.
                 continue
             gw = games[(games["season"] == s) & (games["week"] == w)]
             dw = drives_c[(drives_c["season"] == s) & (drives_c["week"] == w)]
@@ -496,14 +651,20 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
                 pool.append(lab)
     rates = cfb_sim.DriveRateModel.fit(pd.concat(pool, ignore_index=True))
     pace = cfb_sim.PaceModel.fit(drives_c)
-    tbl = EG.solve_table(games, season, week, params)
+    tbl = EG.solve_production_table(games, season, week, params)
 
     teams = ingest.load_teams([season])
     conf = {str(r.team): str(r.conference) for r in teams.itertuples()}
-    rng = np.random.default_rng(SEED)
     simulated, refusals, exps, skipped = {}, {}, [], 0
-    bt = pd.read_csv(os.path.join(DATA, "backtest_c.csv"))
-    model_mae = float((bt["mc_margin"] - bt["margin"]).abs().mean())
+    # Selected-benchmark-or-nothing. A pre-correction MAE quoted beside a
+    # corrected forecast is a claim the pipeline is not entitled to make.
+    bench_frame, bench_record, bench_notice = EV.benchmark_or_notice(
+        ROOT, EV.ROLE_WK4PLUS)
+    model_mae = (None if bench_frame is None else
+                 float((bench_frame["mc_margin"]
+                        - bench_frame["margin"]).abs().mean()))
+    if bench_frame is None:
+        print(f"[loop] benchmark unavailable: {bench_notice}")
     clv = pd.read_csv(os.path.join(DATA, "clv_log_backtest.csv"))
     clv_slices = clv.groupby("slice")["clv_pts"].agg(["count", "mean"])
     for g in schedule.itertuples():
@@ -528,9 +689,13 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
                 f"NO RATING ({type(exc).__name__}): new-to-FBS or unseen team")
             continue
         psd = cfb_sim.param_margin_sd(tbl, home, away)
+        # Per-game rng, derived only from (seed, game id) — never from
+        # iteration order — so a game's forecast cannot depend on which
+        # other games are in `schedule` or what order they arrive in.
+        game_rng = np.random.default_rng([SEED, game_id, 0])
         sim = cfb_sim.simulate_game(
-            rng, e_h, e_a, rates, pace, ot, n=4000, param_sd=psd,
-            param_rng=(np.random.default_rng([SEED, game_id])
+            game_rng, e_h, e_a, rates, pace, ot, n=4000, param_sd=psd,
+            param_rng=(np.random.default_rng([SEED, game_id, 1])
                        if psd > 0.0 else None))
         simulated[game_id] = {
             "mc_margin": sim["margin_mean"],
@@ -547,8 +712,25 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
             slice_tag=GL.slice_tag(conf.get(home, ""), conf.get(away, ""),
                                    week, bool(g.neutral_site)),
             clv_slices=clv_slices))
+    provenance = provenance_for(season, week,
+                                model_version=tbl.fingerprint(),
+                                source_digest=digest)
+    built = simulation_artifact(season, week, schedule, simulated, refusals,
+                                provenance, registry, degraded=degraded,
+                                degraded_reason=degraded_reason)
+    components = {
+        int(game_id): IN.components_from_table(
+            tbl, home=str(sim_row["home"]), away=str(sim_row["away"]),
+            neutral=bool(sim_row["neutral"]),
+            model_version=tbl.fingerprint(),
+            simulated_margin=float(simulated[game_id]["mc_margin"]))
+        for game_id, sim_row in (
+            (gid, {"home": str(g.home_team), "away": str(g.away_team),
+                   "neutral": bool(g.neutral_site)})
+            for g in schedule.itertuples() for gid in [int(g.id)]
+            if int(g.id) in simulated)}
     artifact_rows, n_frozen = assemble_week_artifact(
-        season, week, schedule, simulated, refusals, now)
+        season, week, schedule, built, now)
 
     html_text = None
     if simulated:
@@ -563,45 +745,115 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
                   "w") as fh:
             fh.write(html_text)
 
-    return _publish_week(season, week, artifact_rows, html_text, now, decision,
-                         degraded, degraded_reason, schedule,
+    return _publish_week(season, week, artifact_rows, html_text, now,
+                         digest, window, degraded, degraded_reason, schedule,
                          n_sim=len(simulated), skipped=skipped,
-                         n_frozen=n_frozen)
+                         n_frozen=n_frozen, components=components)
+
+
+def _publish_early_week(season: int, week: int, schedule: pd.DataFrame,
+                        games: pd.DataFrame, params, registry, now: datetime,
+                        digest: str, window: str, degraded: bool,
+                        degraded_reason: str) -> dict:
+    """Weeks 0-3: the ridge/preseason route, through the shared producer."""
+    table_out = {}
+    built = PR.build_early_week(
+        season, week, games=games, schedule=schedule,
+        generated_at_utc=utcstamp(), data_dir=DATA, params=params,
+        registry=registry, source_digest=digest, config_hash=config_hash(),
+        degraded=degraded, degraded_reason=degraded_reason,
+        table_out=table_out)
+    table = table_out.get("table")
+    components = {}
+    if table is not None:
+        priced = built[built["status"] == FC.Status.PRICED.value]
+        for entry in priced.to_dict("records"):
+            components[int(entry["game_id"])] = IN.components_from_table(
+                table, home=str(entry["home"]), away=str(entry["away"]),
+                neutral=bool(entry["neutral_site"]),
+                model_version=str(entry["model_version"]))
+    rows, n_frozen = assemble_week_artifact(season, week, schedule, built, now)
+    n_priced = int((rows["status"] == FC.Status.PRICED.value).sum())
+    return _publish_week(season, week, rows, None, now, digest, window,
+                         degraded, degraded_reason, schedule,
+                         n_sim=n_priced,
+                         skipped=int(len(rows)) - n_priced,
+                         n_frozen=n_frozen, components=components)
 
 
 def _publish_week(season: int, week: int, rows: pd.DataFrame,
-                  html_text, now: datetime, decision: dict, degraded: bool,
-                  degraded_reason: str, schedule: pd.DataFrame,
-                  *, n_sim: int, skipped: int, n_frozen: int) -> dict:
+                  html_text, now: datetime, digest: str, window: str,
+                  degraded: bool, degraded_reason: str,
+                  schedule: pd.DataFrame,
+                  *, n_sim: int, skipped: int, n_frozen: int,
+                  components: dict = None) -> dict:
     """Immutable snapshot first, then the flat `latest` file the site reads.
 
     The snapshot is the record; the flat artifact is a convenience copy of the
-    newest snapshot and is the only thing ever overwritten.  Written via
-    tmp + os.replace so a crash cannot leave a half-file where the hub reads.
+    newest snapshot and is the only thing ever overwritten.
+
+    Nothing invalid reaches either one: the rows are validated here, again by
+    `write_snapshot`, and again by `write_artifact` on the way to disk. A
+    contract mismatch therefore fails BEFORE any public output exists, which
+    is the property the old pipeline lacked -- it wrote first and the readers
+    each coped differently afterwards.
     """
-    if decision is None:
-        digest, _ = SN.collect_source_digest(
-            DATA, season, week, schedule, version=loop_version())
-        window = SN.kickoff_window(schedule, now)
-    else:
-        digest, window = decision["source_digest"], decision["window"]
+    # Post-assembly, pre-publication: freezing and splicing happen between the
+    # writer and here, so the coverage contract is re-checked against the same
+    # schedule the artifact claims to cover.
+    assert_schedule_id_coverage(rows, schedule, where="_publish_week")
+
+    stamp = utcstamp()
+    body = rows.copy()
+    # The snapshot id is only knowable at publish time; it is provenance, not
+    # forecast, so stamping it here changes no number. Frozen rows keep the
+    # snapshot id they were published under.
+    fresh = body["frozen_from_stamp"].isna()
+    body.loc[fresh, "snapshot_id"] = stamp
+    FC.validate_frame(body, where="_publish_week")
 
     snap = SN.write_snapshot(
-        DATA, season, week, utcstamp(), rows,
+        DATA, season, week, stamp, body,
         source_digest=digest, window=window, degraded=degraded,
         degraded_reason=degraded_reason, taken_at=now,
         explainer_html=html_text)
 
     latest_csv = os.path.join(DATA, f"predictions_{season}_wk{week:02d}.csv")
-    tmp = latest_csv + ".tmp"
-    pd.read_csv(os.path.join(snap["path"], "predictions.csv")).to_csv(
-        tmp, index=False)
-    os.replace(tmp, latest_csv)
+    published = FC.read_artifact(os.path.join(snap["path"], "predictions.csv"))
+    FC.write_artifact(published, latest_csv)
+    insights = _publish_insights(season, week, published, components)
 
     return {"n": n_sim, "skipped": skipped, "n_schedule": len(rows),
             "n_scheduled_games": int(len(schedule)), "n_frozen": n_frozen,
             "snapshot": snap["stamp"], "window": window,
-            "source_digest": digest, "degraded": bool(degraded)}
+            "source_digest": digest, "degraded": bool(degraded),
+            "schema_version": FC.SCHEMA_VERSION,
+            "contract": FC.summarise(body),
+            "insights": insights}
+
+
+def _publish_insights(season: int, week: int, published: pd.DataFrame,
+                      components: dict = None) -> dict:
+    """The four-section card per game, written beside the artifact.
+
+    Built from the PUBLISHED rows, so a card cannot disagree with the
+    artifact it describes, and from the same solved table that priced the
+    week, so the "why" is the reasoning that actually produced the number.
+    Nothing here reads a clock: every timestamp on a card comes from the row.
+    """
+    data_as_of = None
+    games_cache = os.path.join(DATA, "cfbd", f"games_{season}.parquet")
+    if os.path.exists(games_cache):
+        data_as_of = datetime.fromtimestamp(
+            os.path.getmtime(games_cache), timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%SZ")
+    payload = IN.build_week(published.to_dict("records"),
+                            components_by_game=components or {},
+                            data_as_of_utc=data_as_of)
+    path = os.path.join(DATA, f"insights_{season}_wk{week:02d}.json")
+    atomic.write_json(path, payload)
+    return {"path": os.path.basename(path), "n_cards": payload["n_cards"],
+            "by_status": payload["by_status"]}
 
 
 def stage_recap(season: int, week: int) -> dict:
@@ -632,11 +884,18 @@ def stage_clv_capture(season: int, week: int) -> dict:
     pub_path = os.path.join(DATA, f"predictions_{season}_wk{target:02d}.csv")
     if target < 1 or not os.path.exists(pub_path):
         return {"n": 0, "note": "no published projections for completed week"}
-    pub = pd.read_csv(pub_path)
+    # Validated read. A CLV log built from an artifact whose columns cannot be
+    # interpreted unambiguously is research raw material that quietly means
+    # something other than it says.
+    pub = FC.read_artifact(pub_path)
+    priced = FC.forecast_bearing(pub)
+    if priced.empty:
+        return {"n": 0, "note": "no forecast-bearing rows in the published week"}
     games = R.game_frame([season])
     lines = ingest.load_lines([season])
-    wk_lines = lines[lines["game_id"].isin(set(pub["id"]))]
-    signal = dict(zip(pub["id"].astype(int), pub["mc_margin"]))
+    wk_lines = lines[lines["game_id"].isin(set(pub["game_id"].astype(int)))]
+    signal = dict(zip(priced["game_id"].astype(int),
+                      priced["projected_home_margin"]))
     log = GL.build_clv_log(games, wk_lines, signal, min_edge_pts=2.0)
     if log.empty:
         return {"n": 0, "note": "no open+close candidates this week"}
@@ -651,6 +910,7 @@ def stage_clv_capture(season: int, week: int) -> dict:
     else:
         log.to_csv(out, index=False)
     return {"n": int(len(log)), "week_captured": target,
+            "model_families": sorted(set(priced["model_family"])),
             "mean_clv": (None if log.empty
                          else round(float(log["clv_pts"].mean()), 3))}
 
@@ -682,6 +942,37 @@ def notify(manifest: dict) -> dict:
 # --------------------------------------------------------------------------- #
 # Driver
 # --------------------------------------------------------------------------- #
+def _halt_unhealthy(manifest: dict, stages, stage: str, health: dict,
+                    season: int, week: int, job: str, finish) -> int:
+    """Stop the run before anything can be published. Say exactly why.
+
+    Nothing downstream of here writes: no snapshot, no advance of the `latest`
+    pointer, no rewrite of the published artifact. The only output is the
+    manifest, the alert, and a public status that carries no numbers at all —
+    which is the honest thing to show when the inputs behind the numbers did
+    not check out.
+    """
+    reasons = health.get("reasons") or ["inputs did not pass the health check"]
+    manifest["degraded"] = True
+    manifest["halted"] = True
+    manifest["halt_reason"] = "; ".join(reasons)[:1000]
+    manifest["blocked_capabilities"] = health.get("blocked_capabilities", [])
+    manifest["stages"][stage] = {"ok": False, **health}
+    remaining = list(stages)[list(stages).index(stage) + 1:]
+    for later in remaining:
+        manifest["stages"][later] = {
+            "ok": False, "skipped": True,
+            "reason": ("halted: inputs unhealthy — nothing was published, "
+                       "the latest pointer did not move, and no artifact was "
+                       "overwritten")}
+    notify(manifest)
+    print(f"[loop] {season} wk{week} {job}: HALTED — "
+          f"{manifest['halt_reason']}", file=sys.stderr)
+    print(f"[loop] public status: {DH.STATUS_UNAVAILABLE} "
+          f"(data/{DH.PUBLIC_STATUS_FILE})", file=sys.stderr)
+    return finish(EXIT_UNHEALTHY_INPUTS)
+
+
 def run(job: str, force_week: int = None) -> int:
     season, week, in_season = current_season_week()
     if force_week:
@@ -730,11 +1021,19 @@ def run(job: str, force_week: int = None) -> int:
             try:
                 if st == "refresh":
                     out = stage_refresh(season)
-                    manifest["degraded"] |= out.get("stale", False)
+                    # A stale refresh is recorded, not acted on: whether the
+                    # CACHE is usable is the health gate's call, and a failed
+                    # CFBD call over a cache that is still inside its
+                    # staleness window is not a reason to withhold anything.
+                    manifest["refresh_stale"] = bool(out.get("stale", False))
                 elif st == "freshness":
-                    out = stage_freshness(season)
-                    if not out.get("publish", False):
-                        manifest["degraded"] = True
+                    out = stage_freshness(season, week, job)
+                    manifest["input_health"] = out
+                    manifest["suppressed_insights"] = out.get(
+                        "optional_unavailable", [])
+                    if not out.get("healthy", False):
+                        return _halt_unhealthy(manifest, stages, st, out,
+                                               season, week, job, finish)
                 elif st == "refit":
                     out = stage_refit(season, week)
                 elif st == "honesty":
@@ -745,8 +1044,7 @@ def run(job: str, force_week: int = None) -> int:
                     out = stage_clv_capture(season, week)
                 elif st == "simulate":
                     if job == "pregame":
-                        decision = pregame_decision(
-                            season, week, degraded=manifest["degraded"])
+                        decision = pregame_decision(season, week)
                         manifest["decision"] = {
                             k: decision.get(k) for k in
                             ("run", "reason", "window", "source_digest",
@@ -756,11 +1054,11 @@ def run(job: str, force_week: int = None) -> int:
                                 "ok": True, "skipped": True,
                                 "reason": decision["reason"]}
                             continue
-                    out = stage_simulate(
-                        season, week, decision=decision,
-                        degraded=manifest["degraded"],
-                        degraded_reason=("freshness gate did not pass"
-                                         if manifest["degraded"] else None))
+                    # No `degraded=` from here any more. A run whose inputs
+                    # are unhealthy has already halted above without touching
+                    # the store; a run that reaches this point has inputs that
+                    # passed, so publishing numbers is honest.
+                    out = stage_simulate(season, week, decision=decision)
                 else:
                     out = notify(manifest)
                 manifest["stages"][st] = {"ok": True, **out}
@@ -772,6 +1070,11 @@ def run(job: str, force_week: int = None) -> int:
                 notify(manifest)
                 print(f"[loop] stage {st} FAILED: {exc}", file=sys.stderr)
                 return finish(1)
+        simulate = manifest["stages"].get("simulate") or {}
+        DH.mark_published(
+            DATA, published=bool(simulate.get("ok")
+                                 and not simulate.get("skipped")
+                                 and simulate.get("n_schedule")))
         return finish(0)
     finally:
         release_lock()

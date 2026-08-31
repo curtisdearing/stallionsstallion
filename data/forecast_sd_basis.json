@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-08-30T17:21:42+00:00",
+  "prereg": "2026-08-30T17:20Z",
+  "bases": [
+    {
+      "basis_id": "early_ridge_wk1_3_2021_2025",
+      "model_family": "ridge_preseason_prior",
+      "covers_weeks": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "sd_source": "pooled_out_of_sample_residual",
+      "forecast_margin_sd": 16.8982,
+      "usable": true,
+      "n": 724,
+      "mean_residual": -0.935,
+      "mae": 13.5665,
+      "window": "seasons 2021-2025, CFBD weeks 1-3, FBS-vs-FBS, walk-forward, production early-season ridge + preseason_prior",
+      "source": "data/backtest_early.csv",
+      "per_week": {
+        "1": {
+          "n": 237,
+          "sd": 17.0457,
+          "mean": -1.9224,
+          "mae": 13.5353
+        },
+        "2": {
+          "n": 233,
+          "sd": 16.0234,
+          "mean": -1.0395,
+          "mae": 12.8982
+        },
+        "3": {
+          "n": 254,
+          "sd": 17.5381,
+          "mean": 0.0823,
+          "mae": 14.2088
+        }
+      },
+      "per_season": {
+        "2021": {
+          "n": 147,
+          "sd": 16.8174,
+          "mean": -1.0219,
+          "mae": 13.6594
+        },
+        "2022": {
+          "n": 149,
+          "sd": 16.1552,
+          "mean": -0.8772,
+          "mae": 13.215
+        },
+        "2023": {
+          "n": 149,
+          "sd": 16.0093,
+          "mean": -1.4365,
+          "mae": 12.9178
+        },
+        "2024": {
+          "n": 138,
+          "sd": 18.2101,
+          "mean": 0.5612,
+          "mae": 14.5777
+        },
+        "2025": {
+          "n": 141,
+          "sd": 17.466,
+          "mean": -1.8396,
+          "mae": 13.5371
+        }
+      },
+      "refusals": {
+        "unratable": 11,
+        "unsolvable_weeks": []
+      }
+    },
+    {
+      "basis_id": "sim_kalman_wk4_plus",
+      "model_family": "kalman_montecarlo",
+      "covers_weeks": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "sd_source": "per_game_predictive_simulation",
+      "forecast_margin_sd": null,
+      "usable": true,
+      "note": "The simulation states its own predictive margin SD per game; there is no pooled constant to publish. The window below is the registered evidence that the simulation is calibrated, not the SD itself.",
+      "window": "backtest_c_kalman: seasons 2021-2023, weeks 4-15, n=1766; confirmed on the 2024 holdout, n=612",
+      "source": "data/backtest_c_kalman.csv"
+    }
+  ],
+  "anchor_week4_15": {
+    "source": "data/backtest_b.csv",
+    "window": "seasons 2021-2023, weeks 4-15, walk-forward ridge",
+    "n": 1765,
+    "sd": 16.6622
+  },
+  "findings": []
+}

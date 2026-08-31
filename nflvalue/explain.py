@@ -27,6 +27,12 @@ Honesty requirements built in rather than bolted on:
   passed; a test renders a full real week and asserts non-emptiness anyway.
 * F7 — paper-mode banner is ON and cannot be disabled: `paper_mode_banner`
   demands a slice-specific kill-check GO object and verifies it; none exists.
+* F9 — the pregame-context panel (`nflvalue.context`) is OPTIONAL and
+  purely additive: pass `context=` to `build_explanation` and
+  `contexts=` to `render_week_html` and a panel appears; omit them and
+  this module's output is byte-identical to what it produced before the
+  hook existed, which a test asserts. The context package cannot import
+  the modelling modules, so a panel value still cannot move a number.
 """
 
 from __future__ import annotations
@@ -216,7 +222,7 @@ def plain_language(row: Dict, home: str, away: str) -> str:
 def why_not_reasons(*, tbl, home: str, away: str, week: int,
                     mc_margin: float, mc_sd: float,
                     market: Optional[float],
-                    model_mae: float,
+                    model_mae: Optional[float],
                     slice_tag: str,
                     clv_slices: Optional[pd.DataFrame] = None) -> List[str]:
     """The case against acting. Structurally never empty while gate 7 is
@@ -242,9 +248,18 @@ def why_not_reasons(*, tbl, home: str, away: str, week: int,
         reasons.append(f"Wide rating band (±{band:.1f} pts on the shakier "
                        "side) — a wide band is a reason to pass, not a "
                        "footnote.")
+    if model_mae is None:
+        # No benchmark is currently selected for this route, so the model's
+        # own out-of-sample error is not a number this build is entitled to
+        # quote. Say that, rather than reaching for the pre-correction figure
+        # -- an error bar from a superseded method is worse than none.
+        reasons.append(
+            "The model's own out-of-sample error is currently unquotable: "
+            "the benchmark behind it is being re-derived under the corrected "
+            "walk-forward method, so no error bar is claimed here.")
     if market is not None and not np.isnan(market):
         gap = abs(mc_margin - market)
-        if gap < model_mae:
+        if model_mae is not None and gap < model_mae:
             reasons.append(
                 f"Model-market gap ({gap:.1f} pts) is smaller than the "
                 f"model's own out-of-sample error ({model_mae:.1f} MAE) — "
@@ -277,8 +292,9 @@ def why_not_reasons(*, tbl, home: str, away: str, week: int,
 # --------------------------------------------------------------------------- #
 def build_explanation(*, tbl, game: Dict, sim: Dict,
                       market: Optional[float], market_total: Optional[float],
-                      model_mae: float, slice_tag: str,
-                      clv_slices: Optional[pd.DataFrame] = None) -> Dict:
+                      model_mae: Optional[float], slice_tag: str,
+                      clv_slices: Optional[pd.DataFrame] = None,
+                      context=None) -> Dict:
     home, away = game["home_team"], game["away_team"]
     neutral = bool(game.get("neutral_site", False))
     rows = decompose_margin(tbl, home, away, neutral,
@@ -321,6 +337,10 @@ def build_explanation(*, tbl, game: Dict, sim: Dict,
             market=market, model_mae=model_mae, slice_tag=slice_tag,
             clv_slices=clv_slices),
     }
+    # F9 — display-only context, attached AFTER everything above is final.
+    # `None` keeps the payload identical to the pre-hook shape.
+    if context is not None:
+        exp["context"] = context.to_dict()
     return exp
 
 
@@ -368,11 +388,17 @@ def _fmt(x, nd=1):
 
 
 def render_week_html(explanations: List[Dict], *, clv_slices: pd.DataFrame,
-                     title: str, generated_note: str) -> str:
+                     title: str, generated_note: str,
+                     contexts: Optional[Dict[int, object]] = None) -> str:
     """One self-contained HTML page for a week. No server, no external libs."""
+    contexts = contexts or {}
+    css = _CSS
+    if contexts:
+        from .context.panel import CSS as _CTX_CSS   # local: keeps the
+        css = _CSS + _CTX_CSS                        # no-context path untouched
     parts = [
         "<!doctype html><meta charset='utf-8'>",
-        f"<title>{html.escape(title)}</title><style>{_CSS}</style>",
+        f"<title>{html.escape(title)}</title><style>{css}</style>",
         f"<div class='banner'>{html.escape(paper_mode_banner())}</div>",
         "<div class='wrap'>",
         f"<h1>{html.escape(title)}</h1>",
@@ -447,7 +473,16 @@ def render_week_html(explanations: List[Dict], *, clv_slices: pd.DataFrame,
         for r in e["why_not"]:
             parts.append(f"<li>{html.escape(r)}</li>")
         parts.append("</ul></div>")
-        parts.append("</div></div></div>")
+        parts.append("</div></div>")
+        ctx = contexts.get(e["game_id"])
+        if ctx is not None:
+            from .context.panel import render_context_panel
+            # Sentinels make the additive guarantee mechanically checkable:
+            # strip between them and the page is the pre-hook page.
+            parts.append("<!--ctx:start-->")
+            parts.append(render_context_panel(ctx))
+            parts.append("<!--ctx:end-->")
+        parts.append("</div>")
 
     parts.append(f"<p class='small'>{html.escape(GAMBLING_HELP)} — if this "
                  "stops feeling like the modeling exercise it is, notice "

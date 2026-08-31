@@ -14,6 +14,17 @@
 #  * runaway API spend                          -> loop's budget guard hard-refuses
 #  * offseason                                  -> clean exit 0, manifest says so
 #  * silent failure                             -> exit code + dated log + (optional) Discord on fail
+#  * unhealthy inputs                           -> loop halts BEFORE publishing, exit 3
+#
+# THIS RUNNER NEVER PUBLISHES. It builds local artifacts and reports whether
+# they are ready. It runs no `git add`, no `git commit` and no `git push` --
+# it did, and the push was unscoped (`git push origin master`), so a run could
+# publish every unpushed commit on the branch as a side effect of grading a
+# week. Publishing is now one explicit human command:
+#
+#     ./scripts/publish_site.sh
+#
+# which shows what would go out and requires confirmation.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -66,29 +77,27 @@ set -e
 echo "[runner] $JOB finished with exit $CODE" | tee -a "$LOG"
 
 # After a successful grade pass, regenerate the public site from fresh data.
+# A build failure is a FAILED RUN. It used to be logged and swallowed, so the
+# runner reported success while the site and the hub feed silently kept
+# serving the previous week's numbers -- the operator had no signal at all.
 if [ "$JOB" = "grade" ] && [ "$CODE" -eq 0 ]; then
-  "$VENV/bin/python3" scripts/build_site.py >>"$LOG" 2>&1 || \
-    echo "[runner] site rebuild failed (loop itself succeeded)" | tee -a "$LOG"
-  "$VENV/bin/python3" scripts/build_hub_feed.py >>"$LOG" 2>&1 || \
-    echo "[runner] hub feed rebuild failed (site itself succeeded)" | tee -a "$LOG"
-
-  # Publish: the Pages workflow deploys the COMMITTED data/site only, so an
-  # unpushed rebuild is invisible to the public site. Commit+push exactly
-  # that path; tolerate failure (publishing must never fail the grade job).
-  # Disable with STALLIONS_NO_PUBLISH=1.
-  if [ -z "${STALLIONS_NO_PUBLISH:-}" ]; then
-    if git -C "$REPO" diff --quiet -- data/site && \
-       [ -z "$(git -C "$REPO" ls-files --others --exclude-standard data/site)" ]; then
-      echo "[runner] site unchanged; nothing to publish" | tee -a "$LOG"
-    else
-      ( git -C "$REPO" add data/site && \
-        git -C "$REPO" commit -m "weekly: publish site + hub feed ($STAMP)" -- data/site && \
-        git -C "$REPO" push origin master ) >>"$LOG" 2>&1 && \
-        echo "[runner] site published (Pages deploy will pick it up)" | tee -a "$LOG" || \
-        echo "[runner] site PUBLISH FAILED — data/site committed-or-dirty locally; push manually" | tee -a "$LOG"
-    fi
+  # build_site.py builds the site AND the hub feed, and now exits non-zero if
+  # either fails, so one call covers both and attributes the failure in the log.
+  if ! "$VENV/bin/python3" scripts/build_site.py >>"$LOG" 2>&1; then
+    echo "[runner] SITE/HUB BUILD FAILED — local artifacts are not ready to publish" | tee -a "$LOG"
+    CODE=4
+  else
+    echo "[runner] local site + hub feed rebuilt; READY TO PUBLISH" | tee -a "$LOG"
+    echo "[runner] publish with: ./scripts/publish_site.sh   (nothing was pushed)" | tee -a "$LOG"
   fi
 fi
+
+case "$CODE" in
+  0) echo "[runner] $JOB OK" | tee -a "$LOG" ;;
+  3) echo "[runner] $JOB HALTED: inputs failed their health check; nothing was published" | tee -a "$LOG" ;;
+  4) echo "[runner] $JOB UNSUCCESSFUL: local artifact build failed" | tee -a "$LOG" ;;
+  *) echo "[runner] $JOB FAILED (exit $CODE)" | tee -a "$LOG" ;;
+esac
 
 # Keep the last 60 logs; never let the log dir grow unbounded.
 ls -t "$LOG_DIR" | tail -n +61 | while read -r f; do rm -f "$LOG_DIR/$f"; done

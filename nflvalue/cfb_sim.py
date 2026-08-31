@@ -39,7 +39,11 @@ actually occur, which is exactly the composition the simulator must emit.
 Walk-forward discipline: `walk_forward_backtest` fits the rate model at week
 W from drives strictly before W (labelled with each drive's OWN-WEEK rating
 table, never a later one), predicts week W, and only then labels week W's
-drives and adds them to the training pool. `tests/test_leakage.py` poisons
+drives and adds them to the training pool. PaceModel and OT params obey the
+SAME cutoff (2026-08-29, Prompt 5A correction — they used to be fit once, up
+front, over every season pooled together): for a target game in (season S,
+week W), every input is restricted to `season < S OR (season == S AND week <
+W)`, at week granularity, never season-only. `tests/test_leakage.py` poisons
 this loop; keep it that way.
 
 Full distributions are the output — margin and total arrays, not point
@@ -55,7 +59,7 @@ import numpy as np
 import pandas as pd
 
 from . import ratings as R
-from .cfb_ot import OTParams, simulate_ot
+from .cfb_ot import OTFitError, OTParams, fit_ot_params, simulate_ot
 
 #: Joint drive outcomes: (offense_points, defense_points). Every cell was
 #: observed in the 2019-2025 cache; anything else (~0.7% of drives, mostly
@@ -328,26 +332,70 @@ def simulate_game(rng, e_home: float, e_away: float, rates: DriveRateModel,
 # --------------------------------------------------------------------------- #
 # Walk-forward backtest driver (gate 3)
 # --------------------------------------------------------------------------- #
+#: The row schema `walk_forward_backtest` produces, declared so an empty
+#: result is still a typed, readable artifact. A season the strict cutoff
+#: excludes entirely returns zero rows -- which under the corrected pace/OT
+#: fitting is not hypothetical -- and a columnless CSV is unreadable rather
+#: than merely empty.
+BACKTEST_COLUMNS = (
+    "season", "week", "id", "home", "away", "pred_b", "mc_margin",
+    "mc_margin_sd", "mc_total", "mc_total_sd", "p_home_win", "p_ot",
+    "margin", "total", "n_train_drives", "param_sd",
+)
+
+
+def _strictly_before(df: pd.DataFrame, season: int, week: int) -> pd.DataFrame:
+    """Rows with (season, week) < (season, week) of the target, at WEEK
+    granularity. The one predicate every pace/OT/rate input is filtered
+    through — season-only filtering is exactly the leak this closes."""
+    return df[(df["season"] < season)
+             | ((df["season"] == season) & (df["week"] < week))]
+
+
 def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
-                          params: "R.RatingParams", ot: OTParams,
-                          eval_seasons: Iterable[int],
+                          params: "R.RatingParams",
+                          ot: Optional[OTParams] = None,
+                          eval_seasons: Iterable[int] = (),
                           burn_in_seasons: Iterable[int] = (),
                           first_week: int = 4, n_sims: int = 4000,
                           min_train_drives: int = 5000,
                           n_bins: int = 8, min_bin_n: int = 400,
                           seed: int = 20260730,
                           progress=None,
-                          engine: Optional[str] = None) -> pd.DataFrame:
-    """Walk every week in chronological order; fit rates on the past only.
+                          engine: Optional[str] = None,
+                          on_skip=None) -> pd.DataFrame:
+    """Walk every week in chronological order; fit rates, pace and OT on the
+    past only.
 
-    For each eval week W: fit DriveRateModel on all drives labelled so far
-    (all strictly before W), simulate W's FBS-vs-FBS games, THEN label W's
-    drives with W's own table and add them to the pool. Burn-in seasons are
-    walked for labelling only. Returns one row per simulated game.
+    For each eval week W in season S: fit DriveRateModel on all drives
+    labelled so far (all strictly before W), fit PaceModel and OT params on
+    all drives with `season < S OR (season == S AND week < W)` (the
+    preregistered cutoff, week granularity, never season-only), simulate W's
+    FBS-vs-FBS games, THEN label W's drives with W's own table and add them
+    to the pools. Burn-in seasons are walked for labelling only.
+
+    `ot`, if given, is used AS-IS for every game (legacy/fixed mode — the
+    caller is asserting it was already fit safely, e.g. a synthetic test
+    object). Leave it `None` for a real backtest so OT params are fit
+    walk-forward like everything else, from `drives` directly (OT
+    possessions live at start_period >= 5, which the `drives_c` regulation
+    frame below has already dropped). A week whose PaceModel/OT cannot yet
+    be fit (not enough pre-cutoff history — inevitable near the start of the
+    2021+ OT-rules era) is skipped, never guessed. Returns one row per
+    simulated game.
+
+    `on_skip(kind, season, week, game_id, reason)` is an optional observer,
+    called for every week or game the walk declines to simulate. It changes
+    no number; it exists so a run can ACCOUNT for its exclusions from inside
+    the real code path rather than by a caller re-deriving the predicates and
+    hoping the two stay in step. A benchmark that quietly drops most of its
+    window is a different claim from one that covers it.
     """
+    def _skip(kind, season, week, game_id=None, reason=""):
+        if on_skip is not None:
+            on_skip(kind, int(season), int(week), game_id, reason)
     drives_c, _ = classify_drives(drives)
     drives_c = drives_c[drives_c["start_period"] <= 4]
-    pace = PaceModel.fit(drives_c)
 
     all_seasons = sorted(set(int(s) for s in burn_in_seasons)
                          | set(int(s) for s in eval_seasons))
@@ -355,7 +403,6 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
     pool: List[pd.DataFrame] = []
     pool_n = 0
     rows = []
-    rng = np.random.default_rng(seed)
 
     for season in all_seasons:
         weeks = sorted(int(w) for w in
@@ -364,29 +411,60 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
             try:
                 from . import engine as EG
                 tbl = EG.solve_table(games, season, w, params, engine=engine)
-            except (R.RatingsError, np.linalg.LinAlgError):
+            except (R.RatingsError, np.linalg.LinAlgError) as exc:
+                if season in eval_set and w >= first_week:
+                    _skip("week_unratable", season, w,
+                          reason=f"{type(exc).__name__}: {exc}")
                 continue
             gw = games[(games["season"] == season) & (games["week"] == w)]
             dw = drives_c[(drives_c["season"] == season)
                           & (drives_c["week"] == w)]
             if (season in eval_set and w >= first_week
+                    and pool_n < min_train_drives):
+                _skip("week_insufficient_train_drives", season, w,
+                      reason=f"pool has {pool_n} labelled drives, below the "
+                             f"{min_train_drives} minimum")
+            if (season in eval_set and w >= first_week
                     and pool_n >= min_train_drives):
                 train = pd.concat(pool, ignore_index=True)
                 rates = DriveRateModel.fit(train, n_bins=n_bins,
                                            min_bin_n=min_bin_n)
+                try:
+                    pace = PaceModel.fit(_strictly_before(drives_c, season, w))
+                    ot_wk = (ot if ot is not None else
+                            fit_ot_params(_strictly_before(drives, season, w)))
+                except (SimError, OTFitError) as exc:
+                    _skip("week_pace_or_ot_unfittable", season, w,
+                          reason=f"{type(exc).__name__}: {exc}")
+                    labeled = label_week_drives(dw, gw, tbl)
+                    if len(labeled):
+                        pool.append(labeled)
+                        pool_n += len(labeled)
+                    if progress is not None:
+                        progress(season, w, pool_n, len(rows))
+                    continue
                 for g in gw.itertuples():
                     if not (g.home_fbs and g.away_fbs):
+                        _skip("game_not_fbs_v_fbs", season, w, int(g.id),
+                              "outside the validated division")
                         continue
                     try:
                         e_h, e_a = side_edges(tbl, g.home_team, g.away_team,
                                               bool(g.neutral_site))
-                    except R.DisconnectedTeamError:
+                    except R.DisconnectedTeamError as exc:
+                        _skip("game_unrated", season, w, int(g.id),
+                              f"{type(exc).__name__}: {exc}")
                         continue
                     psd = param_margin_sd(tbl, g.home_team, g.away_team)
+                    # Per-game rng, derived only from (seed, game id) — never
+                    # from loop position — so a game's simulated distribution
+                    # cannot depend on the order or presence of any other
+                    # row in `games`/`drives`, related or not.
+                    game_rng = np.random.default_rng([seed, int(g.id), 0])
                     sim = simulate_game(
-                        rng, e_h, e_a, rates, pace, ot, n=n_sims,
+                        game_rng, e_h, e_a, rates, pace, ot_wk, n=n_sims,
                         param_sd=psd,
-                        param_rng=(np.random.default_rng([seed, int(g.id)])
+                        param_rng=(np.random.default_rng([seed, int(g.id), 1])
                                    if psd > 0.0 else None))
                     rows.append({
                         "season": season, "week": w, "id": int(g.id),
@@ -410,4 +488,4 @@ def walk_forward_backtest(games: pd.DataFrame, drives: pd.DataFrame,
                 pool_n += len(labeled)
             if progress is not None:
                 progress(season, w, pool_n, len(rows))
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows, columns=list(BACKTEST_COLUMNS))
