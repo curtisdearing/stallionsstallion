@@ -1,0 +1,21 @@
+{
+  "season": 2026,
+  "week": 1,
+  "built_at_utc": "2026-09-02T01:02:05Z",
+  "games": 43,
+  "min_edge": 1.5,
+  "tiers": {
+    "strong disagreement": 17,
+    "play": 10,
+    "lean": 9,
+    "no disagreement": 7
+  },
+  "status": "UNVALIDATED \u2014 leans for grading, not recommendations",
+  "scale_diagnostic": {
+    "model_vs_market_slope": 0.806629753620902,
+    "model_vs_market_intercept": 0.9230284764458788,
+    "underdog_leans": 27,
+    "favorite_leans": 16,
+    "note": "slope below 1.0 means the model is compressed relative to the market and will systematically lean underdog on large spreads; the *_scale_adj columns are the diagnostic alternative, graded in parallel, never substituted"
+  }
+}
