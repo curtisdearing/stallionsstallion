@@ -262,19 +262,27 @@ def test_card_caution_is_the_cross_division_one_even_in_an_early_week():
 # --------------------------------------------------------------------------- #
 # Negative control on the real published week
 # --------------------------------------------------------------------------- #
+#: The last week-1 artifact published BEFORE the cross-division route
+#: existed: 43 priced FBS-vs-FBS rows, 48 cross-division refusals. It is an
+#: immutable, tracked snapshot, so the control does not move when the live
+#: artifact is regenerated with the route in place.
+PRE_ROUTE_SNAPSHOT = (ROOT / "data" / "snapshots" / "2026_wk01"
+                      / "20260902T150740Z" / "predictions.csv")
+
+
 def _published_wk1():
-    path = ROOT / "data" / "predictions_2026_wk01.csv"
-    if not path.exists():
-        pytest.skip("no published week-1 artifact in this checkout")
-    return FC.read_artifact(str(path))
+    if not PRE_ROUTE_SNAPSHOT.exists():
+        pytest.skip("no pre-route week-1 snapshot in this checkout")
+    return FC.read_artifact(str(PRE_ROUTE_SNAPSHOT))
 
 
 def test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced():
     """Rebuild 2026 week 1 through the production early route with the REAL
-    registry. Every FBS-vs-FBS number the published artifact carries must
+    registry. Every FBS-vs-FBS number the pre-route snapshot carries must
     come back identical -- the route added a set of rows, it did not move
-    one. And every row the published artifact refused as cross-division
-    must now be priced under the registered basis, naming its family."""
+    one. And every row that snapshot refused as cross-division must now be
+    priced under the registered basis, naming its family (bar a new-to-FBS
+    side with no rating, refused as such)."""
     from nflvalue import ingest
     published = _published_wk1()
     games = R.game_frame(list(range(2019, 2027)))
