@@ -12,6 +12,19 @@ macOS's native scheduler so the 2026 season runs itself for free.
 | `pregame` | Fri 16:00 | freshness check; re-simulate only if the cache moved |
 | `grade` | Sun 09:00 | pull finals, honesty report, **weekly scoreboard recap + hypothesis ledger**, **close-free CLV capture**, rebuild the site + hub feed **locally** |
 
+**Which week `grade` grades.** The loop's week is the lowest week with a
+kickoff still in the future, and the grade job recaps and captures CLV for the
+week *before* that one. A week ending in a Monday game is therefore still
+current on the Sunday before it, and that Sunday's run grades the week before
+— quietly. What that costs depends on the week: in week 1 the target is week
+0 and nothing is graded; in any later week the target is a week already
+recapped the previous Sunday, so the run re-grades it, reports a plausible
+non-zero n, and the week that just finished waits another seven days. Every
+recap and CLV stage return names its `target_week` in the manifest, so check
+there rather than inferring from n. To grade week N by hand, run
+`--job grade --week N+1`: `--week` sets the week the loop is in, not the week
+to grade. The refresh stage pulls finals either way.
+
 Every job starts with a dependency-aware **input health check**
 (`nflvalue/data_health.py`) and **halts before publishing anything** if the
 inputs its engine actually depends on are missing, malformed, empty, stale,
@@ -184,6 +197,9 @@ public surface silently kept serving the previous week.
 
 **Reading the record**
 
+(These paths exist once a run on this Mac has written a store for the week;
+see the note below on the current state of `data/snapshots/`.)
+
 ```bash
 ls data/snapshots/2026_wk01/                 # every snapshot for the week
 cat data/snapshots/2026_wk01/latest.json     # pointer to the newest
@@ -191,12 +207,18 @@ cat data/snapshots/2026_wk01/frozen.json     # per-game final pregame rows
 cat data/pipeline_health.json                # last input-health status
 ```
 
-**The snapshot store is tracked in git.** It is the immutable pre-kickoff
-record and the reason a frozen row can be proved after the fact; a record that
-lives on one Mac only cannot be audited by anyone. `ops/LOAD_ME.md` carries the
-full policy — including what is deliberately excluded (the rendered
-`explainer.html`, regenerable from `predictions.csv`) and why nothing in the
-store is secret-bearing.
+**The snapshot store is tracked in git** — that is the policy, and
+`ops/LOAD_ME.md` carries it in full, including what is deliberately excluded
+(the rendered `explainer.html`, regenerable from `predictions.csv`) and why
+nothing in the store is secret-bearing. It is the immutable pre-kickoff record
+and the reason a frozen row can be proved after the fact; a record that lives
+on one Mac only cannot be audited by anyone.
+
+**Nothing is tracked under it yet, and week 1's store is missing** (checked
+2026-09-02). `data/snapshots/2026_wk01/` does not exist on this Mac even
+though the committed week-1 artifact names `snapshot_id 20260902T005703Z`, so
+that week's published rows cannot currently be verified against the snapshot
+they cite. `ops/LOAD_ME.md` records the exact state and what is Curtis's call.
 
 **Integrity is fail-closed.** Corrupt or missing snapshot metadata raises
 `SnapshotIntegrityError` instead of reading as "no snapshot": an unreadable

@@ -25,12 +25,21 @@ reason rather than filled in.
 ```
 python3 scripts/weekly_loop.py --job week-open   # Tue: ingest refresh, refit, simulate, render
 python3 scripts/weekly_loop.py --job pregame     # Tue-Sat: re-simulate only if the cache moved
-python3 scripts/weekly_loop.py --job grade       # Sat night -> Sun: finals, honesty report
+python3 scripts/weekly_loop.py --job grade       # Sun: finals, honesty report, recap + CLV for the week before
 ```
 
+`--week N` forces the week the loop is in. `week-open` and `pregame` price
+week N; `grade` recaps and captures CLV for week N-1, and its manifest names
+that week as `target_week`. Without `--week`, the loop's week is the lowest
+week with a kickoff still in the future — so a week that ends with a Monday
+game is still "current" on the Sunday before it, and that Sunday's unforced
+grade run targets the week before. In week 1 that means grading nothing; in a
+later week it means re-grading the previous week and deferring the one that
+just finished. Grade such a week by hand with `--job grade --week N+1`.
+
 `scripts/run_weekly.sh` wraps these jobs for scheduled local runs; it adds no
-forecasting logic of its own. Nothing else in this repository is a supported
-way to produce a forecast.
+forecasting logic of its own and runs no git command. Nothing else in this
+repository is a supported way to produce a forecast.
 
 ### Engine policy
 
@@ -54,9 +63,14 @@ keep that visible on the face of each row.
 
 ### Data
 
-Cached only, under `data/`. The weekly loop is freshness-gated and
-budget-guarded (monthly CFBD call cap); a failed freshness gate still writes a
-manifest marked `degraded=true` and still reports, rather than going quiet.
+Cached only, under `data/`. The weekly loop is budget-guarded (monthly CFBD
+call cap) and every job starts with a dependency-aware input health check
+(`nflvalue/data_health.py`). A failed check halts the run before anything is
+published: exit 3, a manifest with `halted: true` and the reason, and a
+non-numeric `data/pipeline_health.json`. The `latest` pointer does not move
+and the published artifact is not overwritten. Publishing is manual
+(`scripts/publish_site.sh`). Details in `RUNBOOK_WEEKLY.md` and
+`ops/LOAD_ME.md`.
 
 ---
 

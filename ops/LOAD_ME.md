@@ -176,6 +176,33 @@ hash — never the config it hashes. The CFBD key and any webhook live in
 secret-bearing, and nothing in it is CFBD source data: the rows are derived
 analysis, consistent with the recorded terms position.
 
+**What is on this Mac right now does not match that policy** (checked
+2026-09-02T02:09Z; `git ls-files data/snapshots` returns nothing).
+
+- Nothing under `data/snapshots/` is tracked. The policy above is the intent;
+  no snapshot has been committed under it yet.
+- There is no `data/snapshots/2026_wk01/` directory at all, so no `latest.json`
+  and no `frozen.json` for the published week. The committed artifact
+  `data/predictions_2026_wk01.csv` carries `snapshot_id 20260902T005703Z` on
+  all 455 rows — a stamp with no store behind it here, because the run that
+  produced it executed in a sandbox whose store was never brought back. Until
+  that store is recovered or the week is re-run on this Mac, the published
+  rows cannot be verified against the snapshot they name, and
+  `SN.list_snapshots('data', 2026, 1)` returns nothing.
+- What is in `data/snapshots/` is four loose files written between
+  2026-08-28T05:07Z and 06:16Z, in the pre-store layout: `pregame_2026-08-29_20260828T050735Z.json`
+  (`stallionsstallion.pregame_snapshot.v1` — 74 games for the 08-29 slate, 6
+  forecast, 68 refused, plus a whole-week 408/49/359 count), its
+  `.provenance-addendum.json` (records that the snapshot's `git_sha d3bd4e9`
+  was superseded by the committed `2d491c2`, without rewriting the immutable
+  file), the human packet `stallionsstallion_2026-08-29_forecast_packet.md`,
+  and `context_panel_2026-08-29.html`. They predate the
+  `{season}_wk{NN}/{stamp}/` layout the policy describes and are not read by
+  `nflvalue/snapshots.py`. They are an archival record of the 08-29 slate, not
+  a store this code can load. **Nothing here moves, renames or deletes them** —
+  whether they are committed as-is, or moved into the store layout, is
+  Curtis's decision.
+
 ## Inspecting a week without running anything
 
 ```bash

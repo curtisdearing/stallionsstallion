@@ -15,9 +15,24 @@ python3 scripts/weekly_loop.py --job pregame --week N   # produce the forecast
 python3 scripts/build_board.py  --season 2026 --week N  # join the market
 python3 scripts/board_ledger.py --record --season 2026 --week N   # freeze the leans
 # ... games are played ...
-python3 scripts/weekly_loop.py --job grade  --week N    # pull finals
-python3 scripts/board_ledger.py --grade --season 2026   # score the record
+python3 scripts/weekly_loop.py --job grade --week $((N+1))  # pull finals, recap week N
+python3 scripts/board_ledger.py --grade --season 2026       # score the record
 ```
+
+`--week` on the grade job is the week the loop is **in**, and the recap and
+CLV stages target the week before it — so grading week N means
+`--job grade --week N+1`. Getting this wrong is silent, and silent in two
+different ways: `--week 1` targets week 0 and grades nothing, while
+`--week N` for any later N re-grades week N-1, reports a plausible non-zero
+n, and leaves week N ungraded. Check `target_week` in the manifest to see
+which week a run actually graded.
+
+`board_ledger.py --grade` does not share that offset. It takes a season, not
+a week, and grades every ledger row whose game has a final score — the count
+it prints as "pending" is the rows it skipped. It re-scores every already
+graded row each time and rewrites `data/board_ledger_graded.csv` whole, so
+running it twice is safe. The refresh stage of any grade run pulls finals
+regardless of which week it recaps.
 
 `--record` must run **before kickoff**. It skips games that have already
 started, and once a game is in the ledger its line and its lean are frozen: a
