@@ -1,0 +1,22 @@
+{
+  "by_status": {
+    "degraded": 0,
+    "frozen": 0,
+    "priced": 43,
+    "refused": 412,
+    "uncertainty_unvalidated": 0
+  },
+  "degraded": false,
+  "degraded_reason": null,
+  "n_priced": 43,
+  "n_rows": 455,
+  "paper_only": true,
+  "schema_version": 2,
+  "season": 2026,
+  "sha256": "e98ba11a6ca0eb738f4c1aacb3c71c91090a372a7cfd09e08b04d42ee04b2187",
+  "source_digest": "a0a82a483f40520f",
+  "stamp": "20260902T150740Z",
+  "taken_at": "2026-09-02T15:07:40.086966+00:00",
+  "week": 1,
+  "window": "2026-09-03T21:00:00Z"
+}
