@@ -65,6 +65,7 @@ from nflvalue import producers as PR  # noqa: E402
 from nflvalue import data_health as DH  # noqa: E402
 from nflvalue import insight as IN  # noqa: E402
 from nflvalue import atomic  # noqa: E402
+from nflvalue import evidence as EV  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data")

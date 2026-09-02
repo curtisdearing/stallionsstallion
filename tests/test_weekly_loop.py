@@ -40,6 +40,11 @@ SS = _load("state_store")
 # exact class of drift schema version 2 exists to stop.
 FC = WL.FC
 PR = WL.PR
+# Imported directly from the package, never via `WL.EV`: the bug under test
+# is that `weekly_loop.py` calls `EV.benchmark_or_notice` without importing
+# `nflvalue.evidence` as `EV` at all, so `WL.EV` must NOT be made to exist by
+# this test file -- that would paper over the very NameError being caught.
+from nflvalue import evidence as EV  # noqa: E402
 
 
 @pytest.fixture()
@@ -523,6 +528,69 @@ def test_stage_simulate_denominator_is_the_whole_week_schedule(sandbox, monkeypa
         "nothing was forecastable, so every row is an explicit refusal"
     assert written["refusal_reason"].notna().all(), \
         "a refusal that does not say why is not a refusal"
+
+
+class _ReachedEVBenchmark(Exception):
+    """Marker: execution reached `EV.benchmark_or_notice`. Not a real error."""
+
+
+def test_stage_simulate_week4plus_calls_the_ev_benchmark_lookup(sandbox,
+                                                                monkeypatch):
+    """Regression for a missing import.
+
+    `stage_simulate`'s week>=4 path calls `EV.benchmark_or_notice(...)`
+    (`nflvalue.evidence`) once at least one game is still genuinely pregame --
+    the exact branch `test_stage_simulate_denominator_is_the_whole_week_schedule`
+    skips on purpose by using an all-kicked-off schedule. Without
+    `from nflvalue import evidence as EV` at module scope in
+    `scripts/weekly_loop.py`, `EV` is an unbound name at exactly this call,
+    invisible to every test that only exercises the all-kicked-off shortcut.
+
+    Everything between the live-game filter and the EV call is monkeypatched
+    to a cheap stand-in: this test is about reachability and the exact call
+    made, not about producing a real forecast.
+    """
+    future = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
+    games = _sched(future, week=6)
+    monkeypatch.setattr(WL.ingest, "load_games", lambda s: games)
+    monkeypatch.setattr(WL.R, "load_params", lambda: {})
+    # A one-row "history" frame gives the rate-pooling loop one iteration to
+    # fill `pool` with -- an empty pool makes `pd.concat` raise before the
+    # code under test is ever reached, which would be testing the fixture,
+    # not the bug.
+    monkeypatch.setattr(WL.R, "game_frame",
+                        lambda s: pd.DataFrame([{"season": 2026, "week": 5}]))
+    monkeypatch.setattr(WL.ingest, "load_drives", lambda s: pd.DataFrame(
+        columns=["season", "week", "offense", "defense", "start_period"]))
+    monkeypatch.setattr(
+        WL.cfb_sim, "classify_drives",
+        lambda drives: (pd.DataFrame(columns=["season", "week",
+                                              "start_period"]), None))
+    monkeypatch.setattr(WL.cfb_ot, "fit_ot_params", lambda drives: object())
+    monkeypatch.setattr(WL.EG, "solve_production_table",
+                        lambda *a, **k: object())
+    monkeypatch.setattr(WL.cfb_sim, "label_week_drives",
+                        lambda *a, **k: pd.DataFrame({"x": [1]}))
+    monkeypatch.setattr(WL.cfb_sim.DriveRateModel, "fit", lambda df: "rates")
+    monkeypatch.setattr(WL.cfb_sim.PaceModel, "fit", lambda drives: "pace")
+    monkeypatch.setattr(WL.ingest, "load_teams",
+                        lambda s: pd.DataFrame(columns=["team", "conference"]))
+
+    calls = []
+
+    def _spy(root, role):
+        calls.append((root, role))
+        raise _ReachedEVBenchmark()
+
+    monkeypatch.setattr(EV, "benchmark_or_notice", _spy)
+
+    now = datetime.now(timezone.utc) + timedelta(hours=1)
+    with pytest.raises(_ReachedEVBenchmark):
+        WL.stage_simulate(2026, 6, now=now)
+
+    assert calls == [(WL.ROOT, EV.ROLE_WK4PLUS)], (
+        "EV.benchmark_or_notice must be called exactly once, with the repo "
+        "root and the week>=4 benchmark role")
 
 
 # --------------------------------------------------------------------------- #
