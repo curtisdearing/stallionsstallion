@@ -860,16 +860,24 @@ def _publish_insights(season: int, week: int, published: pd.DataFrame,
 def stage_recap(season: int, week: int) -> dict:
     """Weekly scoreboard (WEEKLY_SCOREBOARD_SPEC): grade the PUBLISHED
     projections for the most recently completed week; append/revisit the
-    hypothesis ledger. Read-only w.r.t. the model by construction."""
+    hypothesis ledger. Read-only w.r.t. the model by construction.
+
+    `week` is the week the loop is IN; the recap targets `week - 1`.  Every
+    return names that target (`target_week`) so a zero-row recap in the
+    manifest says which week it graded — `current_season_week()` keeps a
+    week current until its last game is played, so a Sunday grade run before
+    a Monday game targets the week before the one that just finished.
+    """
     from nflvalue import scoreboard
     target = week - 1
     if target < 1:
-        return {"n": 0, "note": "no completed week to recap yet"}
+        return {"n": 0, "target_week": target,
+                "note": "no completed week to recap yet"}
     try:
         r = scoreboard.build_recap(season, target)
     except scoreboard.ScoreboardError as exc:
-        return {"n": 0, "note": str(exc)[:200]}
-    return {"n": r["n_graded"], "week_recapped": target,
+        return {"n": 0, "target_week": target, "note": str(exc)[:200]}
+    return {"n": r["n_graded"], "target_week": target, "week_recapped": target,
             "model_mae": r["model_mae"], "market_mae": r["market_mae"],
             "ledger_new": r["ledger_new"],
             "path": f"recaps/{season}_wk{target:02d}.md"}
@@ -884,14 +892,16 @@ def stage_clv_capture(season: int, week: int) -> dict:
     target = week - 1
     pub_path = os.path.join(DATA, f"predictions_{season}_wk{target:02d}.csv")
     if target < 1 or not os.path.exists(pub_path):
-        return {"n": 0, "note": "no published projections for completed week"}
+        return {"n": 0, "target_week": target,
+                "note": "no published projections for completed week"}
     # Validated read. A CLV log built from an artifact whose columns cannot be
     # interpreted unambiguously is research raw material that quietly means
     # something other than it says.
     pub = FC.read_artifact(pub_path)
     priced = FC.forecast_bearing(pub)
     if priced.empty:
-        return {"n": 0, "note": "no forecast-bearing rows in the published week"}
+        return {"n": 0, "target_week": target,
+                "note": "no forecast-bearing rows in the published week"}
     games = R.game_frame([season])
     lines = ingest.load_lines([season])
     wk_lines = lines[lines["game_id"].isin(set(pub["game_id"].astype(int)))]
@@ -899,7 +909,8 @@ def stage_clv_capture(season: int, week: int) -> dict:
                       priced["projected_home_margin"]))
     log = GL.build_clv_log(games, wk_lines, signal, min_edge_pts=2.0)
     if log.empty:
-        return {"n": 0, "note": "no open+close candidates this week"}
+        return {"n": 0, "target_week": target,
+                "note": "no open+close candidates this week"}
     out = os.path.join(DATA, f"clv_live_{season}.csv")
     if os.path.exists(out):
         prev = pd.read_csv(out)
@@ -910,7 +921,7 @@ def stage_clv_capture(season: int, week: int) -> dict:
             log.to_csv(out, mode="a", header=False, index=False)
     else:
         log.to_csv(out, index=False)
-    return {"n": int(len(log)), "week_captured": target,
+    return {"n": int(len(log)), "target_week": target, "week_captured": target,
             "model_families": sorted(set(priced["model_family"])),
             "mean_clv": (None if log.empty
                          else round(float(log["clv_pts"].mean()), 3))}
@@ -1086,7 +1097,10 @@ def main() -> int:
     ap.add_argument("--job", choices=("week-open", "pregame", "grade"),
                     required=True)
     ap.add_argument("--week", type=int, default=None,
-                    help="force a target week (testing/backfill)")
+                    help=("force the week the loop is IN (testing/backfill). "
+                          "week-open and pregame price this week; grade "
+                          "recaps and captures CLV for week-1, so "
+                          "`--job grade --week N` grades week N-1"))
     return run(ap.parse_args().job, force_week=ap.parse_args().week)
 
 
