@@ -88,6 +88,13 @@ window with no double-counting (sentinels + the lock handle it).
 - `data/clv_live_{season}.csv` — the live paper CLV log growing weekly
 - `data/site/index.html` — the website, regenerated with fresh numbers
 - `data/logs/` — dated logs, auto-pruned to the last 60
+- `../picks/{season}_wk{NN}_every_fbs_game.md` (+ `.csv`) — the vault's
+  every-FBS-game page: projected winner, win probability, 80% / 95%
+  predictive intervals, rationale, caution. Rendered read-only from the
+  artifact and the cards by `scripts/render_picks.py --auto` after every
+  successful `pregame` / `week-open`; a private note, never published.
+  Re-render by hand with `python3 scripts/render_picks.py --season S --week W`
+  (needs `data/insights_S_wkNN.json`; `scripts/render_insights.py` makes it).
 
 ## What "it broke" looks like, and what to do
 

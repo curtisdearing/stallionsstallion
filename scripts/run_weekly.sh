@@ -92,6 +92,18 @@ if [ "$JOB" = "grade" ] && [ "$CODE" -eq 0 ]; then
   fi
 fi
 
+# After a successful forecast pass, refresh the vault's every-FBS-game page
+# (picks/<season>_wk<NN>_every_fbs_game.md, outside the repo). It is a
+# read-only render of the artifact and the cards -- nothing is recomputed --
+# and it is a private note, so a failure here is logged, not a failed run.
+if { [ "$JOB" = "pregame" ] || [ "$JOB" = "week-open" ]; } && [ "$CODE" -eq 0 ]; then
+  if "$VENV/bin/python3" scripts/render_picks.py --auto >>"$LOG" 2>&1; then
+    echo "[runner] vault picks page refreshed" | tee -a "$LOG"
+  else
+    echo "[runner] vault picks page NOT refreshed (see log); the run itself is unaffected" | tee -a "$LOG"
+  fi
+fi
+
 case "$CODE" in
   0) echo "[runner] $JOB OK" | tee -a "$LOG" ;;
   3) echo "[runner] $JOB HALTED: inputs failed their health check; nothing was published" | tee -a "$LOG" ;;

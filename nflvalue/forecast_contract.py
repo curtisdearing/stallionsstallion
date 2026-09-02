@@ -119,6 +119,17 @@ FAMILIES: Dict[str, ModelFamily] = {
         description=("Weeks 4+. Kalman ratings driving the drive-level Monte "
                      "Carlo; margin, SD, win probability and total all read "
                      "off the same simulated sample.")),
+    "ridge_cross_division": ModelFamily(
+        "ridge_cross_division", supports_totals=False,
+        description=("Any week, FBS-vs-FCS only. The ridge table's FBS "
+                     "rating against the pooled __FCS__ pseudo-team's own "
+                     "fitted coefficients; SD from the registered "
+                     "cross-division out-of-sample residuals "
+                     "(scripts/backtest_cross_division.py). Runs no "
+                     "simulation, so it projects no total. Rows carrying "
+                     "this family sit inside an artifact whose provenance "
+                     "names the week's main route; the per-row family says "
+                     "which model actually made the number.")),
 }
 
 # --------------------------------------------------------------------------- #
@@ -295,10 +306,31 @@ class PredictiveMargin:
 
 @dataclass(frozen=True)
 class Forecast:
-    """What a producer supplies for one priced game."""
+    """What a producer supplies for one priced game.
+
+    `model_family` / `model_version` are per-row overrides for a game that
+    the artifact's main route did not price -- the cross-division ridge row
+    inside a Kalman week, say. Left None, the row inherits the artifact's
+    provenance. An override must name a registered family; the validator
+    then judges the row (totals, basis) by the family the ROW names, so a
+    ridge row cannot borrow the simulation's permission to publish a total.
+    """
 
     predictive: PredictiveMargin
     rating_parameter_sd: Optional[float] = None
+    model_family: Optional[str] = None
+    model_version: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if (self.model_family is None) != (self.model_version is None):
+            raise ContractError(
+                "a per-row family override must carry BOTH model_family and "
+                "model_version: a family without the fitted model that "
+                "produced the number, or the reverse, is half a provenance")
+        if self.model_family is not None and self.model_family not in FAMILIES:
+            raise ContractError(
+                f"unknown per-row model_family {self.model_family!r}; known "
+                f"families are {sorted(FAMILIES)}")
 
 
 @dataclass(frozen=True)
@@ -470,9 +502,14 @@ def build_artifact(season: int, week: int, schedule: pd.DataFrame,
         forecast = None if degraded else forecasts.get(game_id)
         if forecast is not None:
             predictive = forecast.predictive
-            if predictive.total is not None and not family.supports_totals:
+            row_family = family
+            if forecast.model_family is not None:
+                row_family = FAMILIES[forecast.model_family]
+                row["model_family"] = forecast.model_family
+                row["model_version"] = forecast.model_version
+            if predictive.total is not None and not row_family.supports_totals:
                 raise ContractError(
-                    f"model_family {family.name!r} runs no simulation and "
+                    f"model_family {row_family.name!r} runs no simulation and "
                     "cannot project a total, but a total was supplied for "
                     f"game {game_id}")
             row.update({

@@ -105,6 +105,103 @@
       "note": "The simulation states its own predictive margin SD per game; there is no pooled constant to publish. The window below is the registered evidence that the simulation is calibrated, not the SD itself.",
       "window": "backtest_c_kalman: seasons 2021-2023, weeks 4-15, n=1766; confirmed on the 2024 holdout, n=612",
       "source": "data/backtest_c_kalman.csv"
+    },
+    {
+      "basis_id": "cross_division_ridge_wk1_15_2021_2025",
+      "model_family": "ridge_cross_division",
+      "covers_weeks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "sd_source": "pooled_out_of_sample_residual",
+      "forecast_margin_sd": 17.8957,
+      "usable": true,
+      "prereg": "2026-09-02T23:25Z",
+      "n": 599,
+      "mean_residual": -4.6397,
+      "mae": 15.0161,
+      "window": "seasons 2021-2025, every CFBD week with a final margin, exactly one FBS side, walk-forward; early-season ridge (wk0-3) / in-season ridge (wk4+) against the pooled __FCS__ pseudo-team",
+      "source": "data/backtest_cross_division.csv",
+      "fbs_vs_fbs_early_sd_for_comparison": 16.8982,
+      "per_group": {
+        "weeks_1_3": {
+          "n": 498,
+          "sd": 18.1952,
+          "mean": -4.7094,
+          "mae": 15.3886
+        },
+        "weeks_4_plus": {
+          "n": 101,
+          "sd": 16.4193,
+          "mean": -4.2959,
+          "mae": 13.1799
+        }
+      },
+      "per_season": {
+        "2021": {
+          "n": 117,
+          "sd": 19.1421,
+          "mean": -4.5994,
+          "mae": 16.4761
+        },
+        "2022": {
+          "n": 119,
+          "sd": 19.4856,
+          "mean": -5.079,
+          "mae": 16.4244
+        },
+        "2023": {
+          "n": 117,
+          "sd": 17.3084,
+          "mean": -2.9892,
+          "mae": 14.1233
+        },
+        "2024": {
+          "n": 121,
+          "sd": 17.325,
+          "mean": -4.7064,
+          "mae": 14.2891
+        },
+        "2025": {
+          "n": 125,
+          "sd": 16.299,
+          "mean": -5.7396,
+          "mae": 13.8485
+        }
+      },
+      "descriptives": {
+        "fbs_win_rate_observed": 0.9432,
+        "fbs_win_rate_implied_mean": 0.8935,
+        "brier_fbs_win": 0.0529,
+        "note": "reported, not gating; p implied from Phi(pred/sd)"
+      },
+      "refusals": {
+        "unratable": 3,
+        "unsolvable_weeks": []
+      },
+      "findings": [
+        "BIAS: mean residual -4.6397 exceeds 3.0 pts (positive = the projection favours the home side by more than the result did). RECORDED; NOT corrected -- a correction would be an unregistered tunable. Surfaced to readers as the card caution."
+      ],
+      "note": "Pooled FCS opposition: every FCS opponent is projected as the one fitted pseudo-team, so the SD carries FCS heterogeneity on top of forecast error. Nothing is corrected for the recorded bias."
     }
   ],
   "anchor_week4_15": {
@@ -113,5 +210,12 @@
     "n": 1765,
     "sd": 16.6622
   },
-  "findings": []
+  "findings": [],
+  "merged": [
+    {
+      "basis_id": "cross_division_ridge_wk1_15_2021_2025",
+      "merged_at_utc": "2026-09-02T23:30:58+00:00",
+      "by": "scripts/backtest_cross_division.py"
+    }
+  ]
 }

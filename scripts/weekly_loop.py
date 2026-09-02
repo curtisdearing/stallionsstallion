@@ -62,6 +62,7 @@ from nflvalue import cfb_calendar, engine as EG, ingest, ratings as R  # noqa: E
 from nflvalue import snapshots as SN  # noqa: E402
 from nflvalue import forecast_contract as FC  # noqa: E402
 from nflvalue import producers as PR  # noqa: E402
+from nflvalue import cross_division as XD  # noqa: E402
 from nflvalue import data_health as DH  # noqa: E402
 from nflvalue import insight as IN  # noqa: E402
 from nflvalue import atomic  # noqa: E402
@@ -582,12 +583,19 @@ def simulation_artifact(season: int, week: int, schedule: pd.DataFrame,
                         provenance: FC.Provenance,
                         registry: FC.BasisRegistry, *,
                         degraded: bool = False,
-                        degraded_reason: str = None) -> pd.DataFrame:
-    """The in-season route's rows, in the one public contract."""
+                        degraded_reason: str = None,
+                        extra_forecasts: dict = None) -> pd.DataFrame:
+    """The in-season route's rows, in the one public contract.
+
+    `extra_forecasts` are contract forecasts the simulation did not make --
+    the cross-division ridge rows, each carrying its own per-row family --
+    merged after the simulated ones, never over them.
+    """
+    extra = dict(extra_forecasts or {})
     reasons = dict(refusals)
     for game in schedule.itertuples():
         game_id = int(game.id)
-        if game_id in simulated or game_id in reasons:
+        if game_id in simulated or game_id in reasons or game_id in extra:
             continue
         reasons[game_id] = default_refusal(game)
     if degraded:
@@ -596,6 +604,8 @@ def simulation_artifact(season: int, week: int, schedule: pd.DataFrame,
                                  degraded_reason=degraded_reason)
     try:
         forecasts = mc_forecasts(simulated, registry, week)
+        forecasts = {**{k: v for k, v in extra.items() if k not in forecasts},
+                     **forecasts}
     except FC.ContractError as exc:
         # The simulator produced summaries; no validated out-of-sample SD
         # backs them. Same honest degrade as the ridge route -- one status,
@@ -784,20 +794,24 @@ def stage_simulate(season: int, week: int, *, now: datetime = None,
     provenance = provenance_for(season, week,
                                 model_version=tbl.fingerprint(),
                                 source_digest=digest)
+    # FBS-vs-FCS games: never simulated (the Kalman pools FCS too, but no
+    # simulation of it is validated); priced from the cross-division ridge
+    # table under the registered cross-division basis, still-pregame games
+    # only, each row naming its own family. Without a usable basis the
+    # standing refusal comes back, exactly as before.
+    xd_table = XD.solve_table(games, season, week, params)
+    xd_forecasts, xd_refusals = PR.cross_division_forecasts(
+        xd_table, schedule, registry, week, fbs=PR.fbs_teams(season),
+        only_ids=set(live))
+    refusals = {**xd_refusals, **refusals}
     built = simulation_artifact(season, week, schedule, simulated, refusals,
                                 provenance, registry, degraded=degraded,
-                                degraded_reason=degraded_reason)
-    components = {
-        int(game_id): IN.components_from_table(
-            tbl, home=str(sim_row["home"]), away=str(sim_row["away"]),
-            neutral=bool(sim_row["neutral"]),
-            model_version=tbl.fingerprint(),
-            simulated_margin=float(simulated[game_id]["mc_margin"]))
-        for game_id, sim_row in (
-            (gid, {"home": str(g.home_team), "away": str(g.away_team),
-                   "neutral": bool(g.neutral_site)})
-            for g in schedule.itertuples() for gid in [int(g.id)]
-            if int(g.id) in simulated)}
+                                degraded_reason=degraded_reason,
+                                extra_forecasts=xd_forecasts)
+    skipped -= len(xd_forecasts)
+    components = IN.components_for_rows(
+        built[built["status"] == FC.Status.PRICED.value], tbl, xd_table,
+        fbs=PR.fbs_teams(season), simulated=simulated)
     artifact_rows, n_frozen = assemble_week_artifact(
         season, week, schedule, built, now)
 
@@ -836,11 +850,8 @@ def _publish_early_week(season: int, week: int, schedule: pd.DataFrame,
     components = {}
     if table is not None:
         priced = built[built["status"] == FC.Status.PRICED.value]
-        for entry in priced.to_dict("records"):
-            components[int(entry["game_id"])] = IN.components_from_table(
-                table, home=str(entry["home"]), away=str(entry["away"]),
-                neutral=bool(entry["neutral_site"]),
-                model_version=str(entry["model_version"]))
+        components = IN.components_for_rows(
+            priced, table, table, fbs=PR.fbs_teams(season))
     rows, n_frozen = assemble_week_artifact(season, week, schedule, built, now)
     n_priced = int((rows["status"] == FC.Status.PRICED.value).sum())
     return _publish_week(season, week, rows, None, now, digest, window,

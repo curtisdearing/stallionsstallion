@@ -343,6 +343,67 @@ def components_from_table(tbl, *, home: str, away: str, neutral: bool,
     return out
 
 
+def components_cross_division(tbl, *, home: str, away: str, neutral: bool,
+                              fbs_is_home: bool, model_version: str
+                              ) -> List[WhyComponent]:
+    """The why-components of an FBS-vs-FCS projection.
+
+    Same two rows as the ridge card -- rating differential (team deviation
+    plus conference term, folded) and home field -- but the FCS side is the
+    pooled `__FCS__` pseudo-team, because that is what the number was made
+    from. The label says so: a reader must not be led to believe the
+    opponent was rated as itself. The sum closes exactly on
+    `cross_division.predict_margin`, which is the check `build_why` runs.
+    """
+    from . import ratings as R
+    fbs_team = home if fbs_is_home else away
+    h, a = (fbs_team, R.FCS_TEAM) if fbs_is_home else (R.FCS_TEAM, fbs_team)
+    team = ((tbl.off_dev.get(h, 0.0) + tbl.def_dev.get(a, 0.0))
+            - (tbl.off_dev.get(a, 0.0) + tbl.def_dev.get(h, 0.0)))
+    hc, ac = tbl.team_conf.get(h, ""), tbl.team_conf.get(a, "")
+    conf = ((tbl.conf_off.get(hc, 0.0) + tbl.conf_def.get(ac, 0.0))
+            - (tbl.conf_off.get(ac, 0.0) + tbl.conf_def.get(hc, 0.0)))
+    out = [WhyComponent(key=RATING_KEY,
+                        label=_LABELS[RATING_KEY] + " (FCS side: pooled FCS pseudo-team)",
+                        points=team + conf, source=model_version)]
+    if not neutral:
+        out.append(WhyComponent(key=HOME_FIELD_KEY,
+                                label=_LABELS[HOME_FIELD_KEY],
+                                points=tbl.hfa(h, neutral),
+                                source=model_version))
+    return out
+
+
+def components_for_rows(priced, table, xd_table, *, fbs,
+                        simulated: Optional[Mapping[int, Mapping]] = None
+                        ) -> Dict[int, List[WhyComponent]]:
+    """Why-components per priced row, from the table that priced THAT row.
+
+    A `ridge_cross_division` row is decomposed against the pooled FCS
+    pseudo-team on `xd_table`; every other row on the week's main `table`
+    (with the simulation adjustment when a simulation made the number).
+    `fbs` is the season's FBS set, the same one the producer classified by.
+    """
+    out: Dict[int, List[WhyComponent]] = {}
+    for entry in priced.to_dict("records"):
+        game_id = int(entry["game_id"])
+        home, away = str(entry["home"]), str(entry["away"])
+        neutral = bool(entry["neutral_site"])
+        if str(entry["model_family"]) == "ridge_cross_division":
+            out[game_id] = components_cross_division(
+                xd_table, home=home, away=away, neutral=neutral,
+                fbs_is_home=home in fbs,
+                model_version=str(entry["model_version"]))
+            continue
+        sim = None if not simulated else simulated.get(game_id)
+        out[game_id] = components_from_table(
+            table, home=home, away=away, neutral=neutral,
+            model_version=str(entry["model_version"]),
+            simulated_margin=(None if sim is None
+                              else float(sim["mc_margin"])))
+    return out
+
+
 # --------------------------------------------------------------------------- #
 # Section 3 — provenance
 # --------------------------------------------------------------------------- #
@@ -390,6 +451,11 @@ CAUTIONS = {
     "frozen_pre_kickoff": (
         "Frozen before kickoff and republished unchanged. The reasoning "
         "behind it is not recomputed after kickoff, so no breakdown is shown."),
+    "cross_division_pooled": (
+        "Cross-division: the FCS opponent is projected as the pooled FCS "
+        "pseudo-team, not as itself. Out of sample the FBS side has beaten "
+        "this projection on average; that bias is registered in the basis "
+        "manifest and deliberately not corrected here."),
     "early_season_prior": (
         "Early season: the preseason prior still dominates the rating, and "
         "the registered out-of-sample window for these weeks is small."),
@@ -435,6 +501,12 @@ def build_caution(row: Mapping[str, Any]) -> Dict[str, Any]:
     if status == FC.Status.FROZEN.value:
         return {"code": "frozen_pre_kickoff",
                 "text": CAUTIONS["frozen_pre_kickoff"]}
+
+    if str(row.get("model_family")) == "ridge_cross_division":
+        # Above the early-season note on purpose: the pooled-opponent caveat
+        # is the one specific to THIS number, whatever week it is.
+        return {"code": "cross_division_pooled",
+                "text": CAUTIONS["cross_division_pooled"]}
 
     week = int(row.get("week", 0))
     from . import engine as EG

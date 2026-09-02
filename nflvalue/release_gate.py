@@ -59,6 +59,9 @@ REQUIRED_TRACKED_PATHS: Tuple[str, ...] = (
     # nobody can audit.
     "data/forecast_sd_basis.json",
     "data/backtest_early.csv",
+    # Same rule for the cross-division basis the manifest now carries.
+    "data/backtest_cross_division.csv",
+    "nflvalue/cross_division.py",
     "tests/test_cfb_calendar.py",
     "tests/test_clean_checkout_importability.py",
     "tests/test_legacy_entry_points_fail_closed.py",

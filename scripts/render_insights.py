@@ -28,6 +28,8 @@ import pandas as pd  # noqa: E402
 from nflvalue import atomic, engine as EG  # noqa: E402
 from nflvalue import forecast_contract as FC  # noqa: E402
 from nflvalue import insight as IN  # noqa: E402
+from nflvalue import producers as PR  # noqa: E402
+from nflvalue import cross_division as XD  # noqa: E402
 from nflvalue import ratings as R  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,22 +68,28 @@ def components_for(rows: pd.DataFrame, season: int, week: int) -> dict:
     params = R.load_params()
     games = R.game_frame(list(range(HISTORY_START, season + 1)))
     table = EG.solve_production_table(games, season, week, params)
-    family = FC.FAMILIES[str(priced.iloc[0]["model_family"])]
-    out = {}
-    for row in priced.to_dict("records"):
-        simulated = (float(row["projected_home_margin"])
-                     if family.supports_totals else None)
-        try:
-            out[int(row["game_id"])] = IN.components_from_table(
-                table, home=str(row["home"]), away=str(row["away"]),
-                neutral=bool(row["neutral_site"]),
-                model_version=str(row["model_version"]),
-                simulated_margin=simulated)
-        except Exception as exc:  # noqa: BLE001
-            raise SystemExit(
-                f"game {row['game_id']}: could not rebuild the rating "
-                f"decomposition ({type(exc).__name__}: {exc}). Refusing to "
-                "publish a card that cannot say why.")
+    xd_table = (table if EG.is_early_season(week)
+                else XD.solve_table(games, season, week, params))
+    # The week's main route is whichever family is not the per-row
+    # cross-division override; a simulating main route re-reads its own
+    # published margin as the simulation adjustment's target.
+    main = sorted(set(priced["model_family"].astype(str))
+                  - {PR.CROSS_DIVISION_FAMILY})
+    simulated = None
+    if main and FC.FAMILIES[main[0]].supports_totals:
+        simulated = {int(r["game_id"]):
+                     {"mc_margin": float(r["projected_home_margin"])}
+                     for r in priced.to_dict("records")
+                     if str(r["model_family"]) == main[0]}
+    try:
+        out = IN.components_for_rows(priced, table, xd_table,
+                                     fbs=PR.fbs_teams(season),
+                                     simulated=simulated)
+    except Exception as exc:  # noqa: BLE001
+        raise SystemExit(
+            f"could not rebuild a rating decomposition "
+            f"({type(exc).__name__}: {exc}). Refusing to publish a card "
+            "that cannot say why.")
     return out
 
 

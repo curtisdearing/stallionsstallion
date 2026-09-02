@@ -47,7 +47,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 from nflvalue import data_health as DH  # noqa: E402
-from nflvalue import forecast_contract as FC  # noqa: E402
+from nflvalue import forecast_contract as FC
+from nflvalue import producers as PR  # noqa: E402
 
 DISCLAIMER = ("Paper-only research: nothing here is a bet recommendation. "
               "The kill-check (gate 7) has not returned GO for any slice.")
@@ -133,13 +134,20 @@ def _load_games(path):
 def _family_from_rows(games):
     """The model family the ROWS agree on, or `unresolved`. Never a bare claim.
 
-    A week may legitimately be priced by one family only; a feed that found
-    two would be describing an artifact assembled from two runs, which the
-    contract does not permit and this feed will not paper over.
+    A week is priced by one main route. Since 2026-09-02 a row may carry the
+    per-row `ridge_cross_division` override (an FBS-vs-FCS game priced inside
+    the main route's artifact, from the same run); that override names the
+    row's own producer and is not a second route, so it is set aside here.
+    Two MAIN families would describe an artifact assembled from two runs,
+    which the contract does not permit and this feed will not paper over.
     """
     named = [g.get("model_family") for g in games]
-    if named and all(name in FC.FAMILIES for name in named) \
-            and len(set(named)) == 1:
+    if not named or not all(name in FC.FAMILIES for name in named):
+        return UNRESOLVED_FAMILY
+    main = set(named) - {PR.CROSS_DIVISION_FAMILY}
+    if len(main) == 1:
+        return main.pop()
+    if not main and len(set(named)) == 1:
         return named[0]
     return UNRESOLVED_FAMILY
 

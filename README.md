@@ -54,6 +54,17 @@ One dispatch point decides which model prices a published week:
 `ridge` stays fully wired as the drift-comparison baseline; flipping the
 `margin_engine` config key back is the entire rollback story.
 
+**FBS-vs-FCS games (any week)** are priced by a third, per-row family,
+`ridge_cross_division` (`nflvalue/cross_division.py`): the ridge table's FBS
+rating against the pooled `__FCS__` pseudo-team's own fitted coefficients,
+with the SD from a pre-registered walk-forward basis
+(`scripts/backtest_cross_division.py`, 2026-09-02: n=599, pooled SD 17.90,
+recorded and **uncorrected** bias of −4.6 points — the FBS side has beaten
+the projection by that much on average). The row's `model_family` names it;
+the artifact's provenance still names the week's main route. Without a
+usable basis in `data/forecast_sd_basis.json` those games return to the
+standing refusal. FCS-vs-FCS games are never priced.
+
 Early-season rows carry their own status string
 (`nflvalue.engine.EARLY_SEASON_STATUS`) saying the preseason prior still
 dominates and the number is not actionable. Registered evidence windows for the

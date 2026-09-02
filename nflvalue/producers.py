@@ -20,6 +20,7 @@ from typing import Dict, Mapping, Optional, Set, Tuple
 
 import pandas as pd
 
+from . import cross_division as XD
 from . import engine as EG
 from . import forecast_contract as FC
 from . import ingest
@@ -33,6 +34,12 @@ ENGINE_TO_FAMILY: Dict[str, str] = {
     "ridge": "ridge_preseason_prior",
     "kalman": "kalman_montecarlo",
 }
+
+#: The family that prices an FBS-vs-FCS game, in any week, when -- and only
+#: when -- the registry holds a usable cross-division basis. It is never the
+#: week's main route; it rides inside that route's artifact as a per-row
+#: family override, so a reader can see which model made which number.
+CROSS_DIVISION_FAMILY = "ridge_cross_division"
 
 
 class ProducerError(RuntimeError):
@@ -86,6 +93,64 @@ def division_refusal(home: str, away: str, fbs: Set[str]) -> Optional[str]:
         # on -- the same rule the backtest scores by.
         return FC.DEFAULT_REFUSALS["cross_division"]
     return None
+
+
+def is_cross_division(home: str, away: str, fbs: Set[str]) -> bool:
+    """Exactly one FBS side -- the population the cross-division basis covers."""
+    return (home in fbs) != (away in fbs)
+
+
+def cross_division_forecasts(tbl, schedule: pd.DataFrame,
+                             registry: FC.BasisRegistry, week: int, *,
+                             fbs: Set[str], only_ids: Optional[Set[int]] = None
+                             ) -> Tuple[Dict[int, FC.Forecast], Dict[int, str]]:
+    """Price the FBS-vs-FCS games of a week from the cross-division ridge table.
+
+    Returns (forecasts, refusals). Nothing is priced unless the registry
+    issues a usable basis for `CROSS_DIVISION_FAMILY` this week: without one
+    every cross-division game comes back as the standing refusal, exactly as
+    before the basis existed. The SD is the registered pooled cross-division
+    residual SD; `p_home_win` is read off that one distribution. The FCS side
+    is the pooled pseudo-team's own fitted coefficients -- the model the
+    basis was registered against, and the only cross-division model the
+    repository has.
+    """
+    forecasts: Dict[int, FC.Forecast] = {}
+    refusals: Dict[int, str] = {}
+    targets = [g for g in schedule.itertuples()
+               if is_cross_division(str(g.home_team), str(g.away_team), fbs)
+               and (only_ids is None or int(g.id) in only_ids)]
+    if not targets:
+        return forecasts, refusals
+    try:
+        sd = registry.margin_sd(CROSS_DIVISION_FAMILY, week)
+    except FC.ContractError:
+        sd = None
+    if sd is None:
+        for g in targets:
+            refusals[int(g.id)] = FC.DEFAULT_REFUSALS["cross_division"]
+        return forecasts, refusals
+    basis_id = registry.basis_id(CROSS_DIVISION_FAMILY, week)
+    version = tbl.fingerprint()
+    for g in targets:
+        game_id = int(g.id)
+        home, away = str(g.home_team), str(g.away_team)
+        fbs_is_home = home in fbs
+        fbs_team = home if fbs_is_home else away
+        try:
+            margin = XD.predict_margin(tbl, fbs_team, fbs_is_home=fbs_is_home,
+                                       neutral=bool(g.neutral_site))
+        except R.RatingsError as exc:
+            refusals[game_id] = (f"NO RATING ({type(exc).__name__}): "
+                                 "new-to-FBS or unseen team")
+            continue
+        rating_sd = XD.rating_parameter_sd(tbl, fbs_team)
+        forecasts[game_id] = FC.Forecast(
+            predictive=FC.PredictiveMargin.from_normal(margin, sd, basis_id),
+            rating_parameter_sd=rating_sd,
+            model_family=CROSS_DIVISION_FAMILY,
+            model_version=version)
+    return forecasts, refusals
 
 
 def early_ridge_forecasts(tbl, schedule: pd.DataFrame, registry: FC.BasisRegistry,
@@ -178,8 +243,9 @@ def build_early_week(season: int, week: int, *, games: pd.DataFrame,
         return FC.build_artifact(season, week, schedule, {}, {}, provenance,
                                  degraded=True, degraded_reason=degraded_reason)
     try:
+        fbs = fbs_teams(season)
         forecasts, refusals = early_ridge_forecasts(
-            table, schedule, registry, week, fbs=fbs_teams(season))
+            table, schedule, registry, week, fbs=fbs)
     except UncertaintyUnvalidatedError as exc:
         # A margin model exists; its uncertainty does not. Publishing the
         # margin anyway, with no SD to size it, would be precision this run
@@ -190,5 +256,14 @@ def build_early_week(season: int, week: int, *, games: pd.DataFrame,
             degraded=True,
             degraded_reason=f"UNCERTAINTY UNVALIDATED: {exc}",
             degraded_status=FC.Status.UNCERTAINTY_UNVALIDATED)
+    # FBS-vs-FCS games: the same early table, projected against the pooled
+    # pseudo-team, priced only under a registered cross-division basis. The
+    # FBS-vs-FBS forecasts above are untouched by this -- the negative
+    # control in tests/test_cross_division.py holds them byte-identical.
+    xd_forecasts, xd_refusals = cross_division_forecasts(
+        table, schedule, registry, week, fbs=fbs)
+    forecasts = {**forecasts, **xd_forecasts}
+    refusals = {k: v for k, v in {**refusals, **xd_refusals}.items()
+                if k not in forecasts}
     return FC.build_artifact(season, week, schedule, forecasts, refusals,
                              provenance)

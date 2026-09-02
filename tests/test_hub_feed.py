@@ -606,3 +606,18 @@ def test_the_feed_stays_non_actionable(tmp_path, monkeypatch):
                  "recommend", "spread", "wager", "bet", "parlay"):
         assert word not in published, \
             f"actionable vocabulary reached the feed ({word})"
+
+
+def test_cross_division_override_rows_do_not_unresolve_the_main_family():
+    """A per-row `ridge_cross_division` override is the same run, not a
+    second route: the feed still names the main family. Two MAIN families
+    still resolve to nothing."""
+    XD = "ridge_cross_division"
+    assert HF._family_from_rows([{"model_family": RIDGE},
+                                 {"model_family": XD}]) == RIDGE
+    assert HF._family_from_rows([{"model_family": KALMAN},
+                                 {"model_family": XD}]) == KALMAN
+    assert HF._family_from_rows([{"model_family": XD}]) == XD
+    assert HF._family_from_rows([{"model_family": RIDGE},
+                                 {"model_family": KALMAN},
+                                 {"model_family": XD}]) == HF.UNRESOLVED_FAMILY
