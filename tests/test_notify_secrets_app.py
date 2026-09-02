@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import py_compile
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -89,25 +90,146 @@ def test_gitignore_covers_local_secrets():
     assert "config.local.json" in gi
 
 
-def test_no_secrets_in_tracked_files():
-    import re
+# A REAL discord webhook is /webhooks/<snowflake>/<~68-char token>; test
+# dummies (short fake tokens) are fine, live tokens are not.
+LIVE_WEBHOOK = re.compile(r"discord\.com/api/webhooks/\d{5,}/[A-Za-z0-9_\-]{30,}")
+
+# Files this scan must find in any healthy checkout. If the listing does not
+# contain them, the listing is wrong and the scan below would be checking
+# nothing -- which is the whole failure mode `tracked_files` exists to refuse.
+SENTINEL_TRACKED = ("README.md", "nflvalue/notify.py", "config.json")
+
+# Text file types worth reading for a leaked credential. The launchd plists,
+# the CI workflows and the shell scripts were NOT in the original set -- and
+# each plist carries an `EnvironmentVariables` dict, which is exactly where a
+# webhook would be pasted. A scan that skipped them while reporting PASS was
+# reporting on the wrong files.
+SCANNED_SUFFIXES = {".py", ".json", ".md", ".txt", ".html",
+                    ".sh", ".yml", ".yaml", ".plist", ".example",
+                    ".cfg", ".ini", ".toml"}
+
+
+class SecretGuardUnusable(RuntimeError):
+    """The guard could not establish what is tracked, so it proved nothing."""
+
+
+def tracked_files(root=ROOT) -> list:
+    """Every path git actually tracks, or raise.
+
+    Fail-closed on purpose, and this is the point of the whole function. The
+    version this replaces read `.stdout.splitlines()` without looking at the
+    return code, so any git failure -- `not a git repository`, `detected
+    dubious ownership`, a wrong cwd -- produced an EMPTY list, the scan loop
+    below ran zero times, and the repository's only secret guard reported
+    PASS while reading no files at all. Reproduced: `git ls-files` outside a
+    repo exits 128 with empty stdout, and every assertion downstream then
+    passes vacuously.
+
+    Dubious-ownership is not a hypothetical here: it is what git says about a
+    repo extracted into a sandbox under a different uid, which is exactly
+    where this suite runs.
+    """
     try:
-        tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True,
-                                 text=True, timeout=30).stdout.splitlines()
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pytest.skip("git unavailable")
-    assert "config.local.json" not in tracked
-    # a REAL discord webhook is /webhooks/<snowflake>/<~68-char token>; test
-    # dummies (short fake tokens) are fine, live tokens are not
-    live_webhook = re.compile(r"discord\.com/api/webhooks/\d{5,}/[A-Za-z0-9_\-]{30,}")
+        proc = subprocess.run(["git", "ls-files"], cwd=root,
+                              capture_output=True, text=True, timeout=30)
+    except FileNotFoundError:
+        pytest.skip("git binary unavailable")
+    except subprocess.TimeoutExpired as exc:
+        raise SecretGuardUnusable("git ls-files timed out") from exc
+
+    if proc.returncode != 0:
+        raise SecretGuardUnusable(
+            f"git ls-files exited {proc.returncode}: "
+            f"{(proc.stderr or '').strip()[:200]}")
+
+    listed = [ln for ln in proc.stdout.splitlines() if ln.strip()]
+    if not listed:
+        raise SecretGuardUnusable("git ls-files returned nothing")
+    missing = [s for s in SENTINEL_TRACKED if s not in listed]
+    if missing:
+        raise SecretGuardUnusable(
+            f"listing is missing files that must be tracked: {missing}")
+    return listed
+
+
+def scan_for_live_webhooks(tracked, root=ROOT) -> int:
+    """Assert no tracked text file carries a live webhook. Returns the number
+    of files actually read, so a caller can prove the scan was not empty."""
+    scanned = 0
     for path in tracked:
-        p = ROOT / path
-        if p.suffix in {".py", ".json", ".md", ".txt", ".html"} and p.exists():
-            text = p.read_text(errors="ignore")
-            assert not live_webhook.search(text), f"live webhook URL leaked in {path}"
+        p = root / path
+        if p.suffix in SCANNED_SUFFIXES and p.exists():
+            scanned += 1
+            assert not LIVE_WEBHOOK.search(p.read_text(errors="ignore")), \
+                f"live webhook URL leaked in {path}"
+    return scanned
+
+
+def test_no_secrets_in_tracked_files():
+    tracked = tracked_files()
+    assert "config.local.json" not in tracked
+    scanned = scan_for_live_webhooks(tracked)
+    assert scanned > 50, (
+        f"the secret scan read only {scanned} files -- too few for this "
+        "repository, so a pass here would not mean much")
+    # Coverage, not just volume: a big number proves nothing if the files most
+    # likely to carry a webhook are the ones being skipped.
+    for must_scan in ("ops/launchd/com.stallions.grade.plist",
+                      "scripts/run_weekly.sh",
+                      ".github/workflows/ci.yml"):
+        if must_scan in tracked:
+            assert (ROOT / must_scan).suffix in SCANNED_SUFFIXES, \
+                f"{must_scan} is tracked but the scan would skip it"
     cfg = json.loads((ROOT / "config.json").read_text())
     assert cfg.get("odds_api_key", "") == ""             # key comes from env/local only
     assert "discord_webhook" not in cfg                  # webhook never in tracked config
+
+
+# --------------------------------------------------------------------------- #
+# The guard's own failure modes -- a secret guard that can pass while reading
+# nothing is worse than no guard, because it is reported as evidence.
+# --------------------------------------------------------------------------- #
+def test_the_guard_refuses_when_git_fails(tmp_path):
+    """`git ls-files` outside a repository exits 128 with empty stdout. The
+    old guard turned that into a silent PASS."""
+    with pytest.raises(SecretGuardUnusable) as exc:
+        tracked_files(root=tmp_path)
+    assert "128" in str(exc.value) or "returned nothing" in str(exc.value)
+
+
+def test_the_guard_refuses_an_empty_or_partial_listing(monkeypatch):
+    """Even with git exiting 0, a listing that does not contain the files we
+    know are tracked means the scan would prove nothing."""
+    class _Proc:
+        returncode = 0
+        stderr = ""
+
+        def __init__(self, out):
+            self.stdout = out
+
+    monkeypatch.setattr(subprocess, "run", lambda *a, **k: _Proc(""))
+    with pytest.raises(SecretGuardUnusable, match="returned nothing"):
+        tracked_files()
+
+    monkeypatch.setattr(subprocess, "run",
+                        lambda *a, **k: _Proc("some/unrelated/file.py\n"))
+    with pytest.raises(SecretGuardUnusable, match="must be tracked"):
+        tracked_files()
+
+
+def test_the_scan_actually_reads_files_and_catches_a_live_token(tmp_path):
+    """The scan must fail on a planted live-shaped webhook -- otherwise the
+    regex could be wrong and every run would still report PASS."""
+    planted = tmp_path / "leaky.py"
+    planted.write_text(
+        'URL = "https://discord.com/api/webhooks/123456789/'
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"\n')
+    with pytest.raises(AssertionError, match="live webhook URL leaked"):
+        scan_for_live_webhooks(["leaky.py"], root=tmp_path)
+
+    safe = tmp_path / "fine.py"
+    safe.write_text('URL = "https://discord.com/api/webhooks/123/tok"\n')
+    assert scan_for_live_webhooks(["fine.py"], root=tmp_path) == 1
 
 
 # --------------------------------------------------------------------------- #

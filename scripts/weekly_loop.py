@@ -50,7 +50,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -353,22 +353,90 @@ def assemble_week_artifact(season: int, week: int, schedule: pd.DataFrame,
 # --------------------------------------------------------------------------- #
 # Season/week detection — self-scheduling, offseason-safe
 # --------------------------------------------------------------------------- #
+# How long after a kickoff results may still be landing. Matches the 7-day
+# window the preseason branch already uses, and it is what separates "the
+# slate just finished, grade it" from "the season is over".
+RESULTS_SETTLING = timedelta(days=7)
+
+
+def _week_or_none(weeks):
+    """Lowest real week number in `weeks`, or None if there is no real one.
+
+    CFBD occasionally serves a game with no week assigned. `int(NaN)` raises,
+    and this runs before the loop has a manifest to record anything in, so a
+    null week must skip a row rather than kill the run. Returning None rather
+    than a guessed number keeps the caller honest: a week we cannot determine
+    is not week 1.
+    """
+    clean = pd.to_numeric(weeks, errors="coerce").dropna()
+    return int(clean.min()) if len(clean) else None
+
+
+def _last_week(games):
+    """Highest real week number in the frame, or 1 if the frame has none."""
+    clean = pd.to_numeric(games["week"], errors="coerce").dropna()
+    return int(clean.max()) if len(clean) else 1
+
+
 def current_season_week(now=None):
-    """(season, next_week, in_season). Offseason -> in_season=False."""
+    """(season, week, in_season) for the week the loop is IN.
+
+    Total over every schedule shape this project has seen, because it runs on
+    the first line of `run()`, outside the per-stage try/except: an exception
+    here leaves no manifest, no notification, and no exit code the runner can
+    classify.
+
+    The shape that used to raise `int(NaN)` is not exotic and is not the
+    "night game's final has not landed" case it might look like. CFBD leaves a
+    handful of games permanently unscored every year -- lower-division
+    fixtures and weather cancellations; 4 in 2023, 2 in 2024, 2 in 2025 in
+    this repo's own caches -- so `played.all()` is never true for a real
+    season. Once the last game of the season had kicked off, the old code
+    reached its final line with an empty future selection and raised, every
+    January.
+
+    Scoredness alone therefore cannot separate "the slate just finished and
+    results are landing" from "the season ended months ago"; recency can, and
+    that is what `RESULTS_SETTLING` is for. Without it the loop reports
+    `in_season` on an October week all through January, and `pregame` -- which
+    is deliberately not sentinel-guarded and whose launchd job fires year
+    round -- re-simulates that week on every fire.
+    """
     now = now or datetime.now(timezone.utc)
     season = now.year if now.month >= 2 else now.year - 1
     games = ingest.load_games([season])
     if games.empty or "start_date" not in games.columns:
         return season, 1, False
+    if "week" not in games.columns or "home_points" not in games.columns:
+        return season, 1, False
+
     dates = pd.to_datetime(games["start_date"], errors="coerce", utc=True)
     played = games["home_points"].notna()
-    future = dates > now
-    if not future.any() and played.all():
-        return season, int(games["week"].max()), False
+    future = dates > pd.Timestamp(now)
+
+    if not future.any():
+        # Nothing left to play. Either a slate just finished and its results
+        # are still landing, or the season is over. An unparseable date column
+        # lands here too, with nothing recent -- and that is the right answer:
+        # with no kickoff times, no game can be frozen at its own kickoff, so
+        # the honest move is not to run rather than to publish fresh numbers
+        # for games that may already have started.
+        settling = ~played & (dates > pd.Timestamp(now) - RESULTS_SETTLING)
+        if settling.any():
+            week = _week_or_none(games.loc[settling, "week"])
+            if week is not None:
+                return season, week, True
+        return season, _last_week(games), False
+
+    week = _week_or_none(games.loc[future, "week"])
+    if week is None:
+        # Games ahead, but not one of them says which week it belongs to.
+        # Nothing can be priced against a week we cannot name.
+        return season, _last_week(games), False
     if future.all():
         days_to_first = (dates.min() - pd.Timestamp(now)).days
-        return season, int(games.loc[future, "week"].min()), days_to_first <= 7
-    return season, int(games.loc[future, "week"].min()), True
+        return season, week, days_to_first <= 7
+    return season, week, True
 
 
 # --------------------------------------------------------------------------- #
@@ -987,7 +1055,17 @@ def _halt_unhealthy(manifest: dict, stages, stage: str, health: dict,
 
 def run(job: str, force_week: int = None) -> int:
     season, week, in_season = current_season_week()
-    if force_week:
+    if force_week is not None:
+        # `if force_week:` was the test here, so --week 0 fell through to the
+        # auto-detected week: the operator asked for one week, got another,
+        # and the run exited 0 without saying so.  Weeks start at 1 (week 0
+        # slates are carried inside CFBD week 1), so anything below that is a
+        # refusal, not a default.
+        if force_week < 1:
+            raise LoopError(
+                f"--week {force_week}: the season starts at week 1, and a "
+                "week below it cannot be run. CFBD carries the week-0 slate "
+                "inside week 1.")
         week, in_season = force_week, True
     stamp = utcstamp()
     manifest = {"job": job, "season": season, "week": week, "stamp": stamp,
@@ -1092,16 +1170,39 @@ def run(job: str, force_week: int = None) -> int:
         release_lock()
 
 
-def main() -> int:
+def _week_arg(value: str) -> int:
+    """argparse type for --week: a real season week, or a clear refusal."""
+    try:
+        week = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"week must be a whole number, got {value!r}")
+    if week < 1:
+        raise argparse.ArgumentTypeError(
+            f"week must be 1 or greater, got {week} — the season starts at "
+            "week 1 and CFBD carries the week-0 slate inside it")
+    return week
+
+
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--job", choices=("week-open", "pregame", "grade"),
                     required=True)
-    ap.add_argument("--week", type=int, default=None,
+    ap.add_argument("--week", type=_week_arg, default=None,
                     help=("force the week the loop is IN (testing/backfill). "
                           "week-open and pregame price this week; grade "
                           "recaps and captures CLV for week-1, so "
                           "`--job grade --week N` grades week N-1"))
-    return run(ap.parse_args().job, force_week=ap.parse_args().week)
+    return ap
+
+
+def main_args(argv=None):
+    """Parsed arguments, so the CLI contract is testable without running a job."""
+    return build_parser().parse_args(argv)
+
+
+def main() -> int:
+    args = main_args()
+    return run(args.job, force_week=args.week)
 
 
 if __name__ == "__main__":
