@@ -373,7 +373,12 @@ def test_call_for_game_swaps_to_a_value_play_when_the_confident_call_is_a_pass()
     text = RP.render_upcoming(picks, _artifact(), {2: market2}, "t", 2026, 1,
                               days=1, today="2026-09-05")
     assert "(value)" in text and "Neutral A +6.0" in text
-    assert "OTHER side from who the model actually expects to win (Neutral B)" in text
+    # the rationale argues for the actual bet (Neutral A +6.0), not a
+    # bolted-on disclaimer after glazing the model's favourite (Neutral B)
+    assert "The model likes Neutral B to win this by about 4 points" in text
+    assert "the number gives Neutral A +6.0, more cushion than that projected gap" in text
+    assert ("the bet is that Neutral B doesn't cover, not that Neutral A "
+           "wins outright") in text
 
 
 def test_call_for_game_leaves_a_true_pass_alone_when_nothing_on_the_game_has_value():
@@ -407,8 +412,16 @@ def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total()
     assert "| Date | Game | Pick | Units | Chance it hits | Rationale |" in text
     assert "2u" in text and "1u" in text        # game 1 and game 3's units
     assert "n/a" in text                        # game 2: no market, no units
-    # the rationale column: the model's own why, in plain English
-    assert "Home U grades out about 4 points better than Away U on talent" in text
+    # the rationale column: the model's own why, in plain English -- game 1's
+    # frozen spread lean is on Away U (getting points), NOT the model's own
+    # favourite (Home U), so the rationale must argue for that bet, not
+    # glaze Home U's talent as if that were the pick
+    assert "The model likes Home U to win this by about 7 points" in text
+    assert "the number gives Away U +10.0, more cushion than that projected gap" in text
+    assert ("the bet is that Home U doesn't cover, not that Away U wins "
+           "outright") in text
+    assert "Home U grades out about" not in text
+    # game 3's moneyline pick IS the model's own favourite -- unchanged style
     assert "Big State is the big name in this one" in text
     assert "classic money game" in text
     assert ("Big State grades out about 27 points better than Tiny College "
@@ -531,13 +544,24 @@ def test_render_upcoming_top_section_thresholds_pass_through():
 
 
 # --------------------------------------------------------------------------- #
-# Casual rationale: same facts, plain English, no invented context
+# Casual rationale: same facts, plain English, argued for the actual pick
 # --------------------------------------------------------------------------- #
+
+def _on_side_call(team: str, kind: str = "moneyline"):
+    """A minimal call on the model's own favourite -- for exercising the
+    on-model-side branch, where the old talent/matchup framing still
+    applies as-is because the pick IS the favourite."""
+    if kind == "moneyline":
+        return {"kind": "moneyline", "pick": f"{team} ML -200", "p": 0.7,
+               "price": -200.0}
+    return {"kind": "spread", "pick": f"{team} -3.0", "p": 0.6,
+           "price": RP.SPREAD_PRICE}
+
 
 def test_casual_rationale_frames_cross_division_as_a_money_game():
     picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
-    p3 = next(p for p in picks if p["game_id"] == 3)
-    text = RP.casual_rationale(p3, {}, BASES)
+    p3 = next(p for p in picks if p["game_id"] == 3)       # pick: Big State
+    text = RP.casual_rationale(p3, _on_side_call("Big State"), {}, BASES)
     assert "Big State is the big name in this one" in text
     assert "Tiny College is a small school making the trip for a payday" in text
     assert "classic money game" in text
@@ -550,7 +574,7 @@ def test_casual_rationale_frames_a_power_conference_favourite_over_group_of_five
     picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
     p1 = next(p for p in picks if p["game_id"] == 1)      # pick: Home U
     conferences = {"Home U": "SEC", "Away U": "Conference USA"}
-    text = RP.casual_rationale(p1, conferences, BASES)
+    text = RP.casual_rationale(p1, _on_side_call("Home U"), conferences, BASES)
     assert "Home U (SEC) is the power-conference name here" in text
     assert "Away U out of the Conference USA" in text
     assert "step down in competition" in text
@@ -562,9 +586,59 @@ def test_casual_rationale_adds_no_tier_framing_without_conference_data():
     numbers, never an invented storyline to fill the gap."""
     picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
     p1 = next(p for p in picks if p["game_id"] == 1)
-    text = RP.casual_rationale(p1, {}, BASES)
+    text = RP.casual_rationale(p1, _on_side_call("Home U"), {}, BASES)
     assert "power-conference" not in text and "money game" not in text
     assert "Home U grades out about 4 points better than Away U on talent" in text
 
-    both_power = RP.casual_rationale(p1, {"Home U": "SEC", "Away U": "Big Ten"}, BASES)
+    both_power = RP.casual_rationale(
+        p1, _on_side_call("Home U"), {"Home U": "SEC", "Away U": "Big Ten"}, BASES)
     assert "power-conference" not in both_power and "step down" not in both_power
+
+
+def test_casual_rationale_argues_for_the_underdog_when_the_pick_is_the_points():
+    """This is the bug Curtis flagged: a spread pick on the team the model
+    does NOT favour must not spend the whole rationale glazing the
+    favourite and mention the actual bet as an afterthought (or not at
+    all). It has to lead with why the bet -- the number, not the winner --
+    makes sense, in terms of the model's own margin."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p1 = next(p for p in picks if p["game_id"] == 1)      # model favours Home U by 7
+    call = {"kind": "spread", "pick": "Away U +10.0", "p": 0.6,
+           "price": RP.SPREAD_PRICE}
+    text = RP.casual_rationale(p1, call, {}, BASES)
+    assert "The model likes Home U to win this by about 7 points" in text
+    assert "the number gives Away U +10.0" in text
+    assert "more cushion than that projected gap" in text
+    assert ("the bet is that Home U doesn't cover, not that Away U wins "
+           "outright") in text
+    # the old favourite-glazing talent sentence must not also appear --
+    # this is not a rationale for betting Home U
+    assert "Home U grades out about" not in text
+
+
+def test_casual_rationale_argues_for_a_dog_moneyline_on_price_not_talent():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p1 = next(p for p in picks if p["game_id"] == 1)
+    call = {"kind": "moneyline", "pick": "Away U ML +250", "p": 0.35,
+           "price": 250.0}
+    text = RP.casual_rationale(p1, call, {}, BASES)
+    assert "The model still expects Home U to win this by about 7 points" in text
+    assert "gives Away U only about 35% to win outright" in text
+    assert "the price on Away U (+250)" in text
+    assert "not the model's own pick, is where the value sits" in text
+
+
+def test_casual_rationale_flips_the_cross_division_bias_caution_for_a_dog_bet():
+    """The registered bias (the FBS side beats the projection, not falls
+    short of it) is bad news for a bet that the FCS side keeps it close --
+    the caution has to say so, not read as generic supportive noise."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p3 = next(p for p in picks if p["game_id"] == 3)       # model favours Big State
+    call = {"kind": "spread", "pick": "Tiny College +40.0", "p": 0.65,
+           "price": RP.SPREAD_PRICE}
+    text = RP.casual_rationale(p3, call, {}, BASES)
+    assert "The model likes Big State to win this by about 30 points" in text
+    assert ("the bet is that Big State doesn't cover, not that Tiny "
+           "College wins outright") in text
+    assert "cuts against the points-taking side, not for it" in text
+    assert "if anything this margin runs a little conservative" not in text
