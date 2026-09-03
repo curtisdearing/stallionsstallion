@@ -93,125 +93,180 @@ def _wagered_team(pick: str) -> str:
     return team.strip()
 
 
+def _pick_variant(options: List[str], variant: int) -> str:
+    return options[variant % len(options)]
+
+
 def casual_rationale_parts(p: Dict[str, Any], call: Dict[str, Any],
                            conferences: Dict[str, str],
-                           bases: Dict[str, dict]) -> List[str]:
-    """The same rationale `pick_row` already built, said the way you'd say
-    it out loud instead of the technical version -- but argued for the team
-    actually being bet (`call['pick']`), which is not always the model's own
-    straight-up favourite (`p['pick']`). A wide spread on a mismatch is
-    routinely a bet that the big favourite *doesn't cover* that many points,
-    not that the underdog wins; when that's the case this leads with the
-    number, not the favourite, and the historical cross-division bias -- the
-    FBS side tends to beat the projection, not fall short of it -- is flipped
-    to say what it actually means for a points-taking bet instead of reading
-    like blanket support for the favourite. No new facts either way: the
-    rating gap and home-field points are `p['why_components']` (the same
-    numbers that sum to the published margin), the framing is
-    `p['model_family']` plus conference tier, and the bias is the same
-    registered residual -- nothing here is invented or estimated."""
+                           bases: Dict[str, dict],
+                           variant: Optional[int] = None) -> List[str]:
+    """The rationale for the pick actually on the ticket, said out loud.
+
+    What Curtis asked for on 2026-09-03, in order: (1) lead with what the
+    model was built to measure — who wins, and how likely — before the
+    number; (2) argue for the team actually being bet, which on a wide
+    spread is usually a bet that the favourite doesn't cover, not that the
+    underdog wins; (3) stop stamping the same sentence on every game.
+    "Money game" was a tone example, not a line to repeat on every FCS
+    opponent; the registered cross-division bias is one statistic and does
+    not need the same paragraph forty times.
+
+    So: every phrasing below has several forms and `variant` picks one --
+    the block renderer passes the block's position, so consecutive games
+    never read the same; a caller that passes nothing gets a form keyed on
+    the game id, so the text is still byte-stable across runs. The FCS or
+    conference context is folded into the team's name once, not given its
+    own sentence. The bias caveat is one short line, direction-aware (it
+    helps a favourite-side bet and hurts a points-taking one), with the
+    full registered statement once in the page notes.
+
+    No new facts: win probability and margin are the artifact's own
+    (`p_pick`, `margin_pick`), the home-field points are the insight card's,
+    the line is the one on the ticket, and the bias is the registered
+    residual. Nothing is invented to vary the language."""
     if not p["pick"] or not call.get("pick"):
         return []
+    v = int(p["game_id"]) if variant is None else int(variant)
     home, away = p["home"], p["away"]
-    model_fav = p["pick"]
-    model_dog = away if model_fav == home else home
+    fav = p["pick"]
+    dog = away if fav == home else home
     wagered = _wagered_team(call["pick"])
-    on_model_side = (wagered == model_fav)
+    on_model_side = (wagered == fav)
     comps = p.get("why_components") or []
-    rating = next((comp["points"] for comp in comps
-                  if str(comp.get("label", "")).startswith("Rating differential")),
-                 None)
     hfa = next((comp["points"] for comp in comps
                if str(comp.get("label", "")).startswith("Home-field")), None)
     family = p.get("model_family")
-    hfa_clause = (f", plus {home}'s usual home-field bump of about {hfa:+.1f}"
-                 if hfa is not None else "")
+    cross = (family == "ridge_cross_division")
+    margin = p.get("margin_pick")
+    pw = _fmt_p(p.get("p_pick"))
+    m = f"{margin:.0f}" if margin is not None else "?"
+    hfa_short = (f" ({hfa:+.1f} of that is {home} at home)"
+                if hfa is not None and abs(hfa) >= 0.05 else "")
+
+    # Context folded into the name, once — not a sentence of its own.
+    def _tag(team: str) -> str:
+        if cross and team == dog:
+            return f"{team} (FCS)"
+        conf = conferences.get(team)
+        other = conferences.get(fav if team == dog else dog)
+        if conf and other and ((conf in POWER_CONFERENCES)
+                               != (other in POWER_CONFERENCES)):
+            return f"{team} ({conf})"
+        return team
+    fav_t, dog_t = _tag(fav), _tag(dog)
+
     bits = []
+    kind = call["kind"]
+    if kind == "spread":
+        line = float(call["pick"].rsplit(" ", 1)[-1])
+        la = f"{abs(line):g}"
+        if not on_model_side:
+            bits.append(_pick_variant([
+                f"Who wins? {fav_t}, {pw} of the time by the model's count, "
+                f"by about {m} points{hfa_short}. The book's number is {la}. "
+                f"That's the whole bet: {dog_t} keeps it inside {la}, and "
+                f"whether they actually win doesn't come into it.",
+                f"Straight up this is {fav}'s game — {pw}. The play is on "
+                f"the number: the line asks {fav_t} to win by {la}, the model "
+                f"has it closer to {m}{hfa_short}. So it's {dog_t} plus the "
+                f"points, a bet on the gap, not the result.",
+                f"{fav_t} should win this ({pw}), and the model puts the "
+                f"margin around {m}{hfa_short}. {la} is a bigger ask than "
+                f"that. Taking {dog_t} +{la} means betting {fav} wins by "
+                f"less than the book thinks — not that {dog} pulls it off.",
+                f"The model makes {fav_t} the favourite at {pw}, projected by "
+                f"roughly {m}{hfa_short}. The book wants {la} from them. "
+                f"That gap is the bet: {dog_t} and the points.",
+                f"{fav_t} is the winner here, {pw}, by about {m}"
+                f"{hfa_short}. But {la} points is more than the model sees. "
+                f"{dog_t} to lose by less than that is the play — the "
+                f"outcome isn't in question, the margin is.",
+            ], v))
+        else:
+            bits.append(_pick_variant([
+                f"{fav_t} to win ({pw}), and the model has them by about "
+                f"{m}{hfa_short} — enough to clear {la}, so laying the "
+                f"points beats the moneyline price.",
+                f"Model says {fav_t} wins this {pw} of the time, margin "
+                f"around {m}{hfa_short}. The book only asks for {la}. "
+                f"That's why this is {fav} minus the points rather than the "
+                f"moneyline.",
+                f"{fav_t} by {m} is the projection{hfa_short}, {pw} to win "
+                f"outright. {la} sits under that, so the spread is the "
+                f"better use of the same opinion.",
+            ], v))
+    elif kind == "moneyline":
+        price = call.get("price")
+        pr = f"{price:+.0f}" if price is not None else None
+        if not on_model_side:
+            pd_ = _fmt_p(call.get("p"))
+            bits.append(_pick_variant([
+                f"The model has {fav_t} winning ({pw}), but {dog_t} at {pr} "
+                f"pays well enough that its {pd_} shot at the upset is worth "
+                f"a ticket. A price play, not a prediction.",
+                f"{fav_t} is still the projected winner, {pw}. This is on "
+                f"{dog_t} because {pr} overpays for a {pd_} chance — the "
+                f"number is the reason, not the matchup.",
+            ], v))
+        elif pr is None:
+            bits.append(_pick_variant([
+                f"{fav_t} to win, {pw} by the model, projected margin about "
+                f"{m}{hfa_short}. No book price cached to check it against.",
+                f"The model has {fav_t} winning this {pw} of the time, by "
+                f"around {m}{hfa_short}. Nothing cached from a book yet, so "
+                f"there's no price to weigh that against.",
+            ], v))
+        else:
+            bits.append(_pick_variant([
+                f"{fav_t} wins this {pw} of the time by the model's count, by "
+                f"about {m}{hfa_short}. At {pr} the price still pays for "
+                f"that confidence.",
+                f"Simple one: the model has {fav_t} at {pw} to win, projected "
+                f"by about {m}{hfa_short}. The moneyline at {pr} is worth it "
+                f"at that number.",
+                f"{fav_t} to win, {pw}. The projected margin is roughly {m}"
+                f"{hfa_short}, and {pr} is still a fair price for that — "
+                f"which is rarer than it sounds on a favourite.",
+                f"{fav_t} over {dog_t}, {pw}, by about {m}{hfa_short}. "
+                f"{pr} on the moneyline hasn't priced all of that in.",
+            ], v))
 
-    if not on_model_side:
-        # The pick argues against the model's own favourite -- lead with
-        # why THIS side, in the actual bet's own terms, not the favourite's.
-        margin = p.get("margin_pick")
-        if call["kind"] == "spread" and margin is not None:
-            line = float(call["pick"].rsplit(" ", 1)[-1])
-            cmp = ("more cushion than" if abs(line) > margin
-                  else "not far off")
-            bits.append(
-                f"The model likes {model_fav} to win this by about "
-                f"{margin:.0f} points{hfa_clause} — but the number gives "
-                f"{wagered} {line:+.1f}, {cmp} that projected gap, so the "
-                f"bet is that {model_fav} doesn't cover, not that "
-                f"{wagered} wins outright.")
-        elif call["kind"] == "moneyline" and margin is not None:
-            price = call.get("price")
-            price_bit = (f" ({price:+.0f})" if price is not None else "")
-            bits.append(
-                f"The model still expects {model_fav} to win this by about "
-                f"{margin:.0f} points{hfa_clause} and gives {wagered} only "
-                f"about {call['p']:.0%} to win outright — but the price on "
-                f"{wagered}{price_bit} is generous enough that the number, "
-                "not the model's own pick, is where the value sits.")
-
-    if family == "ridge_cross_division":
-        bits.append(
-            f"{model_fav} is the big name in this one — {model_dog} is a "
-            "small school making the trip for a payday, a classic money "
-            "game.")
-    else:
-        fav_conf, dog_conf = conferences.get(model_fav), conferences.get(model_dog)
-        if fav_conf and dog_conf:
-            fav_power, dog_power = (fav_conf in POWER_CONFERENCES,
-                                    dog_conf in POWER_CONFERENCES)
-            if fav_power and not dog_power:
-                bits.append(
-                    f"{model_fav} ({fav_conf}) is the power-conference name "
-                    f"here against {model_dog} out of the {dog_conf} — a "
-                    "step down in competition.")
-            elif dog_power and not fav_power:
-                bits.append(
-                    f"{model_dog} ({dog_conf}) is the bigger name on paper, "
-                    f"but the model still likes {model_fav} ({fav_conf}) "
-                    "here.")
-
-    if on_model_side:
-        if rating is not None:
-            talent = (f"{model_fav} grades out about {abs(rating):.0f} "
-                     f"points better than {model_dog} on talent")
-            if hfa is not None:
-                talent += (f", and {home} gets the usual home-field bump "
-                          f"of about {hfa:+.1f} on top of that")
-            bits.append(talent + ".")
-        elif hfa is not None:
-            bits.append(f"{home} gets the usual home-field bump of about "
-                        f"{hfa:+.1f} points.")
-
-    if family == "ridge_cross_division":
+    if cross:
         basis = bases.get(str(p.get("forecast_sd_basis")) or "", {})
         if _finite(basis.get("mean_residual")):
-            bias = abs(float(basis["mean_residual"]))
+            b = f"{abs(float(basis['mean_residual'])):.1f}"
             if on_model_side:
-                bits.append(
-                    f"One thing to flag: in games like this historically, "
-                    f"the FBS side has actually beaten this projection by "
-                    f"about {bias:.1f} more points on average — a known "
-                    "bias we haven't corrected for, so if anything this "
-                    "margin runs a little conservative.")
+                bits.append(_pick_variant([
+                    f"If anything the registered {b}-point FBS-vs-FCS bias "
+                    f"runs {fav}'s way here.",
+                    f"The model has tended to undersell the FBS side in these "
+                    f"by ~{b}; that's a tailwind for this pick.",
+                    f"Known {b}-point bias in these games, uncorrected, and "
+                    f"it favours {fav}.",
+                ], v))
             else:
-                bits.append(
-                    f"One thing to flag against this side: in games like "
-                    f"this historically, the FBS side has beaten this "
-                    f"projection by about {bias:.1f} more points on "
-                    "average, on top of the margin already priced in here "
-                    "— a known bias we haven't corrected for, and it cuts "
-                    "against the points-taking side, not for it.")
+                bits.append(_pick_variant([
+                    f"Caveat: FBS teams have historically beaten this "
+                    f"projection by ~{b}, which works against a "
+                    f"points-taking bet.",
+                    f"One flag — the model has run about {b} points light "
+                    f"on the FBS side in these, the wrong direction for "
+                    f"{dog} and the points.",
+                    f"Known bias: {b} points, in the favourite's favour, "
+                    f"uncorrected. It hurts this side.",
+                    f"The {b}-point FBS-vs-FCS bias (see notes) cuts against "
+                    f"this one.",
+                ], v))
     return bits
 
 
 def casual_rationale(p: Dict[str, Any], call: Dict[str, Any],
                      conferences: Dict[str, str],
-                     bases: Dict[str, dict]) -> str:
+                     bases: Dict[str, dict],
+                     variant: Optional[int] = None) -> str:
     """`casual_rationale_parts` as one line, for anything that wants it flat."""
-    return " ".join(casual_rationale_parts(p, call, conferences, bases))
+    return " ".join(casual_rationale_parts(p, call, conferences, bases, variant))
 
 
 def default_out_dir() -> str:
@@ -995,7 +1050,7 @@ def _render_pick_blocks(pairs: List[tuple], conferences: Dict[str, str],
     they cannot drift into two formats."""
     lines = []
     last_day = None
-    for p, c in pairs:
+    for i, (p, c) in enumerate(pairs):
         if p["public_date"] != last_day:
             last_day = p["public_date"]
             day_label = pd.Timestamp(last_day).strftime("%A %b %d").replace(" 0", " ")
@@ -1012,7 +1067,7 @@ def _render_pick_blocks(pairs: List[tuple], conferences: Dict[str, str],
         lines.append(f"**Pick: {tags}{c['pick']}** — {units} — "
                      f"{_fmt_p(c['p'])} chance it hits")
         lines.append("")
-        for part in casual_rationale_parts(p, c, conferences, bases):
+        for part in casual_rationale_parts(p, c, conferences, bases, variant=i):
             lines += [part, ""]
     return lines
 
@@ -1106,16 +1161,15 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "anywhere on that game -- including the other side -- that clears "
         "the bar (50%+ and positive EV), tagged **(value)**; if nothing on "
         "the game clears it, the pass stands rather than being papered "
-        "over. **Rationale** always argues for the team actually being "
-        "bet, not the model's own straight-up favourite when the two "
-        "differ -- a wide spread on a mismatch is routinely a bet that the "
-        "favourite doesn't cover, not that the underdog wins, and the "
-        "rationale leads with that math (the model's own margin against "
-        "the number on the board) before the background on why the number "
-        "is that big. The talent gap, home-field number, money-game or "
-        "power-conference framing, and the registered cross-division bias "
-        "are the same facts either way -- nothing invented, just argued "
-        "for the side actually on the ticket.",
+        "over. **Rationale** leads with what the model was built to "
+        "measure -- who wins, and how likely -- then argues for the side "
+        "actually on the ticket: on a wide spread that is usually a bet "
+        "that the favourite doesn't cover, not that the underdog wins, and "
+        "it says so in those words. Same facts every game (the artifact's "
+        "win probability and margin, the card's home-field points, the "
+        "line on the ticket), said differently game to game so the page "
+        "reads like a person and not a template. An FCS opponent or a "
+        "conference mismatch is noted once, in the name, not as a speech.",
         "",
     ]
     lines += _render_pick_blocks(called, conferences, bases)
@@ -1142,6 +1196,21 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
             "-- the confidence shown is the model's own win probability, "
             "not measured against anything a book is offering, and units "
             "are n/a for the same reason.")
+    n_cross = sum(1 for p, _ in called if p.get("model_family") == "ridge_cross_division")
+    cross_bias = next((bases[str(p.get("forecast_sd_basis"))].get("mean_residual")
+                       for p, _ in called
+                       if p.get("model_family") == "ridge_cross_division"
+                       and str(p.get("forecast_sd_basis")) in bases), None)
+    if n_cross and _finite(cross_bias):
+        notes.append(
+            f"(FCS) {n_cross} picks are FBS-vs-FCS games, priced against the "
+            "pooled-FCS pseudo-team rather than a team-specific rating. The "
+            "registered out-of-sample bias on that basis is "
+            f"{abs(float(cross_bias)):.1f} points in the FBS side's favour "
+            "(the FBS team beats the projection by that much on average), "
+            "not corrected for -- it helps a bet on the favourite and hurts "
+            "a bet on the FCS side and the points. Each block carries one "
+            "line on it; this is the full statement.")
     n_unfrozen_spread = sum(1 for _, c in called
                             if c["kind"] == "spread" and c["frozen"] is False)
     if n_unfrozen_spread:
