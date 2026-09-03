@@ -378,13 +378,13 @@ def render_compact(picks: List[Dict[str, Any]], season: int, week: int,
     ]
     for p, c in called:
         site = " (N)" if p["neutral"] else ""
-        conf = _fmt_p(c["p"]) + ("\*" if c["flag"] else "")
+        conf = _fmt_p(c["p"]) + (r"\*" if c["flag"] else "")
         lines.append(f"| {p['away']} @ {p['home']}{site} · "
                      f"{p['kickoff_et']} | {c['pick']} | {conf} |")
     if n_flag:
         lines += [
             "",
-            f"\* {n_flag} spread leans sit on a market spread over "
+            rf"\* {n_flag} spread leans sit on a market spread over "
             f"{LARGE_SPREAD:.0f} points. Those are inside the open, "
             "pre-registered scale question (the model runs ~19% compressed "
             "against the market, which produces an underdog lean on every "
@@ -400,6 +400,264 @@ def render_compact(picks: List[Dict[str, Any]], season: int, week: int,
     return "\n".join(lines) + "\n"
 
 
+# --------------------------------------------------------------------------- #
+# The value page: model probability against the PRICE, not against 50%
+# --------------------------------------------------------------------------- #
+#: Standard spread juice. The ledger froze lines, not prices; -110 is the
+#: assumption the break-even below is built on and is stated on the page.
+SPREAD_PRICE = -110.0
+PROVIDER_PRIORITY = ("DraftKings", "Draft Kings", "Bovada", "ESPN Bet", "consensus")
+
+
+def _phi(z: float) -> float:
+    return 0.5 * (1.0 + math.erf(z / math.sqrt(2.0)))
+
+
+def payout(american: float) -> float:
+    """Net profit per 1 unit staked at American odds."""
+    american = float(american)
+    return american / 100.0 if american > 0 else 100.0 / abs(american)
+
+
+def implied(american: float) -> float:
+    """Break-even probability at these odds (vig included -- that IS the hurdle)."""
+    return 1.0 / (1.0 + payout(american))
+
+
+def expected_value(p: float, american: float) -> float:
+    """EV per 1 unit staked: p * profit - (1 - p) * 1."""
+    return p * payout(american) - (1.0 - p)
+
+
+def load_scale(season: int, week: int, path: Optional[str] = None
+               ) -> Optional[dict]:
+    """The registered model-vs-market scale diagnostic from the week's board
+    (slope, intercept fitted on the FBS-vs-FBS games), or None. Reported
+    beside the registered number, never substituted for it."""
+    path = path or os.path.join(DATA, f"board_{season}_wk{week:02d}.json")
+    if not os.path.exists(path):
+        return None
+    with open(path) as fh:
+        diag = (json.load(fh).get("scale_diagnostic") or {})
+    slope, intercept = diag.get("model_vs_market_slope"), diag.get(
+        "model_vs_market_intercept")
+    if not (_finite(slope) and _finite(intercept)) or float(slope) <= 0:
+        return None
+    return {"slope": float(slope), "intercept": float(intercept)}
+
+
+def rescale(mean: float, scale: Optional[dict]) -> Optional[float]:
+    """The model margin put on the market's scale by the registered fit."""
+    if scale is None:
+        return None
+    return (mean - scale["intercept"]) / scale["slope"]
+
+
+def load_market(season: int, week: int, path: Optional[str] = None
+                ) -> tuple:
+    """One cached market row per game (spread + moneylines) and the cache's
+    own timestamp. These are the LIVE cached prices, not frozen leans; the
+    page labels them as such and says when the cache was written."""
+    path = path or os.path.join(DATA, "cfbd", f"lines_{season}.parquet")
+    if not os.path.exists(path):
+        return {}, None
+    lines = pd.read_parquet(path)
+    lines = lines[lines["week"] == week]
+    as_of = pd.Timestamp(os.path.getmtime(path), unit="s", tz="UTC").strftime(
+        "%Y-%m-%dT%H:%MZ")
+    rank = {name: i for i, name in enumerate(PROVIDER_PRIORITY)}
+    out = {}
+    for gid, sub in lines.groupby("game_id"):
+        sub = sub.assign(_rank=sub["provider"].map(
+            lambda name: rank.get(str(name), len(rank)))).sort_values("_rank")
+        row = sub.iloc[0]
+        out[int(gid)] = {
+            "provider": str(row["provider"]),
+            "spread": (None if pd.isna(row["spread"]) else float(row["spread"])),
+            "home_ml": (None if pd.isna(row["home_moneyline"])
+                        else float(row["home_moneyline"])),
+            "away_ml": (None if pd.isna(row["away_moneyline"])
+                        else float(row["away_moneyline"])),
+        }
+    return out, as_of
+
+
+def value_plays(p: Dict[str, Any], row: Dict[str, Any], market: dict,
+                scale: Optional[dict] = None) -> List[Dict[str, Any]]:
+    """Every priced play for one game with its EV, from the model's own
+    distribution. Spread: the frozen ledger lean when one exists (registered
+    p_cover), else the cached spread (unfrozen, labelled). Moneyline: the
+    cached price for the side the model favours AND the other side -- value
+    can sit on the dog."""
+    if not p["pick"] or not _finite(row.get("projected_home_margin")):
+        return []
+    mean = float(row["projected_home_margin"])
+    sd = float(row["forecast_margin_sd"])
+    p_home = float(row["p_home_win"])
+    home, away = p["home"], p["away"]
+    mean_adj = rescale(mean, scale)
+    p_home_adj = None if mean_adj is None else _phi(mean_adj / sd)
+    plays = []
+    # ---- spread ----
+    if p["ats_side"]:
+        line_home = float(p["ats_line_home"])
+        frozen = True
+        p_cover = float(p["ats_p"])
+        side = p["ats_side"]
+    elif market and market.get("spread") is not None:
+        line_home = float(market["spread"])      # quoted from the HOME side
+        frozen = False
+        market_margin = -line_home
+        edge = mean - market_margin
+        p_cover = _phi(edge / sd) if edge >= 0 else _phi(-edge / sd)
+        side = (f"{home} {line_home:+.1f}" if edge >= 0
+                else f"{away} {-line_home:+.1f}")
+    else:
+        line_home, frozen, p_cover, side = None, None, None, None
+    if side:
+        if frozen and p["ats_p_adj"] is not None:
+            p_cover_adj = float(p["ats_p_adj"])
+        elif mean_adj is not None:
+            e_adj = mean_adj - (-line_home)
+            # the adjusted view may sit on the OTHER side; then the taken
+            # side's cover probability is the complement
+            same_side = (e_adj >= 0) == (side.startswith(home))
+            p_cover_adj = _phi(abs(e_adj) / sd) if same_side else _phi(-abs(e_adj) / sd)
+        else:
+            p_cover_adj = None
+        plays.append({
+            "kind": "spread", "pick": side, "p": p_cover,
+            "price": SPREAD_PRICE, "break_even": implied(SPREAD_PRICE),
+            "ev": expected_value(p_cover, SPREAD_PRICE),
+            "ev_adj": (None if p_cover_adj is None
+                       else expected_value(p_cover_adj, SPREAD_PRICE)),
+            "frozen": frozen, "flag": abs(line_home) > LARGE_SPREAD,
+            "p_adj": p_cover_adj,
+        })
+    # ---- moneyline, both sides ----
+    if market:
+        for team, prob, prob_adj, price in (
+                (home, p_home, p_home_adj, market.get("home_ml")),
+                (away, 1.0 - p_home,
+                 None if p_home_adj is None else 1.0 - p_home_adj,
+                 market.get("away_ml"))):
+            if price is None:
+                continue
+            plays.append({
+                "kind": "moneyline", "pick": f"{team} ML {price:+.0f}",
+                "p": prob, "price": price, "break_even": implied(price),
+                "ev": expected_value(prob, price),
+                "ev_adj": (None if prob_adj is None
+                           else expected_value(prob_adj, price)),
+                "frozen": False,
+                "flag": (line_home is not None and abs(line_home) > LARGE_SPREAD),
+                "p_adj": prob_adj,
+            })
+    return plays
+
+
+def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
+                 markets: Dict[int, dict], market_as_of: Optional[str],
+                 season: int, week: int, scale: Optional[dict] = None) -> str:
+    """Best play per game by expected value against the price, positive EV
+    only, ranked. A 99% favourite at -10000 does not appear: there is no
+    value in being right about something the price already says."""
+    by_id = {int(r["game_id"]): r for r in rows.to_dict("records")}
+    best = []
+    n_priced_games = 0
+    for p in picks:
+        plays = value_plays(p, by_id[p["game_id"]], markets.get(p["game_id"]),
+                            scale)
+        if plays:
+            n_priced_games += 1
+        plays = [x for x in plays if x["ev"] > 0]
+        if plays:
+            best.append((p, max(plays, key=lambda x: (x["ev"], -x["break_even"]))))
+    best.sort(key=lambda pb: (-pb[1]["ev"], pb[0]["game_id"]))
+    both = [(p, b) for p, b in best
+            if b.get("ev_adj") is not None and b["ev_adj"] > 0]
+    both.sort(key=lambda pb: (-min(pb[1]["ev"], pb[1]["ev_adj"]), pb[0]["game_id"]))
+    n_ml = sum(1 for _, b in best if b["kind"] == "moneyline")
+    n_unfrozen = sum(1 for _, b in best if b["frozen"] is False and b["kind"] == "spread")
+    n_flag = sum(1 for _, b in best if b["flag"])
+    lines = [
+        f"# {season} week {week} — value",
+        "",
+        "One play per game, the one with the highest expected value against "
+        "the actual price, positive EV only, ranked. EV is per 1 unit staked "
+        "from the model's own win / cover probability: a big favourite at a "
+        "big price does not appear, because the price already says it. "
+        f"Spread plays assume {SPREAD_PRICE:+.0f} (break-even "
+        f"{100 * implied(SPREAD_PRICE):.1f}%). Moneylines and any spread "
+        "marked (u) are the cached prices as of "
+        f"{market_as_of or 'unknown'} — NOT frozen leans; the frozen spreads "
+        "come from `data/board_ledger.csv`. Paper-only; private vault note; "
+        "gate 7 has not run and nothing here is staked.",
+        "",
+        f"{len(best)} games with a positive-EV play out of {n_priced_games} "
+        f"priced games with a market ({n_ml} moneyline, {len(best) - n_ml} "
+        f"spread, {n_unfrozen} of the spreads unfrozen). Over/under: none — "
+        "no total is published by contract in weeks 0-3 and no registered "
+        "basis backs an over/under probability yet.",
+        "",
+    ]
+
+    def _ev(value: Optional[float]) -> str:
+        return "n/a" if value is None else f"{100 * value:+.1f}%"
+
+    def table(items: List[tuple]) -> List[str]:
+        out = ["| Game | Pick | Model p | Break-even | EV (registered) "
+               "| EV (scale-adj) |",
+               "|---|---|---|---|---|---|"]
+        for p, b in items:
+            site = " (N)" if p["neutral"] else ""
+            tags = (("(u) " if b["frozen"] is False and b["kind"] == "spread"
+                     else "") + (r"\* " if b["flag"] else ""))
+            out.append(
+                f"| {p['away']} @ {p['home']}{site} · {p['kickoff_et']} | "
+                f"{tags}{b['pick']} | {_fmt_p(b['p'])} | "
+                f"{_fmt_p(b['break_even'])} | {_ev(b['ev'])} | "
+                f"{_ev(b.get('ev_adj'))} |")
+        return out
+
+    if scale:
+        lines += [
+            "## Plays that survive both views",
+            "",
+            "Positive EV under the registered numbers AND under the "
+            "scale-adjusted diagnostic (the model margin re-scaled by the "
+            f"registered fit: slope {scale['slope']:.3f}, intercept "
+            f"{scale['intercept']:.2f}, fitted on this week's FBS-vs-FBS "
+            "games and applied to every game, so for FBS-vs-FCS it is an "
+            "extrapolation). Ranked by the smaller of the two EVs. The "
+            "adjusted view is a diagnostic reported beside the registered "
+            "number, never in place of it.",
+            "",
+        ]
+        lines += table(both) if both else ["(none)"]
+        lines += ["", "## Every positive-EV play, registered view", ""]
+    lines += table(best)
+    notes = []
+    if n_flag:
+        notes.append(
+            rf"\* {n_flag} plays sit on a market spread over {LARGE_SPREAD:.0f} "
+            "points. Every one of those is inside the open, pre-registered "
+            "scale question: the model runs ~19% compressed against the "
+            "market, which manufactures an underdog edge on every large "
+            "spread — ONE bias, reported many times. Until week-1 results "
+            "grade result_raw against result_adj, treat them as a single "
+            "position, not a list of independent plays.")
+    if n_unfrozen:
+        notes.append(
+            f"(u) {n_unfrozen} spread plays use the cached line rather than a "
+            "frozen ledger lean (the ledger holds only the 43 FBS-vs-FBS "
+            "games recorded 2026-09-02T01:00Z). To grade them honestly, "
+            "freeze them first: `python3 scripts/board_ledger.py --record`.")
+    if notes:
+        lines += [""] + notes
+    return "\n".join(lines) + "\n"
+
+
 CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
                "home", "neutral", "status", "model_family", "pick", "p_pick",
                "margin_pick", "sd", "ci80_lo", "ci80_hi", "ci95_lo", "ci95_hi",
@@ -408,7 +666,8 @@ CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
 
 def write_outputs(picks: List[Dict[str, Any]], season: int, week: int,
                   out_dir: str, text: str,
-                  compact_text: Optional[str] = None) -> tuple:
+                  compact_text: Optional[str] = None,
+                  value_text: Optional[str] = None) -> tuple:
     os.makedirs(out_dir, exist_ok=True)
     stem = os.path.join(out_dir, f"{season}_wk{week:02d}_every_fbs_game")
     md_path, csv_path = stem + ".md", stem + ".csv"
@@ -418,6 +677,10 @@ def write_outputs(picks: List[Dict[str, Any]], season: int, week: int,
         with open(os.path.join(out_dir, f"{season}_wk{week:02d}_picks.md"),
                   "w") as fh:
             fh.write(compact_text)
+    if value_text is not None:
+        with open(os.path.join(out_dir, f"{season}_wk{week:02d}_value.md"),
+                  "w") as fh:
+            fh.write(value_text)
     with open(csv_path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(CSV_COLUMNS),
                                 extrasaction="ignore")
@@ -459,15 +722,20 @@ def main() -> int:
     picks = build(rows, cards, bases, fbs, ledger)
     text = render_markdown(picks, args.season, args.week, rows, bases)
     compact = render_compact(picks, args.season, args.week, rows)
+    markets, market_as_of = load_market(args.season, args.week)
+    value = render_value(picks, rows, markets, market_as_of,
+                         args.season, args.week,
+                         scale=load_scale(args.season, args.week))
     out_dir = args.out_dir or default_out_dir()
     md_path, csv_path = write_outputs(picks, args.season, args.week, out_dir,
-                                      text, compact)
+                                      text, compact, value)
     n_pick = sum(1 for p in picks if p["pick"])
     print(f"[picks] {len(picks)} FBS games, {n_pick} with a projected winner, "
           f"{len(picks) - n_pick} not forecast")
     print(f"[picks] wrote {md_path}")
     print(f"[picks] wrote {csv_path}")
     print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_picks.md')}")
+    print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_value.md')}")
     return 0
 
 

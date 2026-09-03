@@ -182,3 +182,68 @@ def test_compact_flags_large_spread_leans_and_never_shows_a_total():
     assert "Over/under: none" in text
     assert "over" not in text.lower().replace("over/under", "").replace("over 14", "")
     assert text == RP.render_compact(picks, 2026, 1, _artifact())   # byte-stable
+
+
+def test_odds_arithmetic():
+    assert RP.payout(-110) == pytest.approx(100 / 110)
+    assert RP.payout(+250) == 2.5
+    assert RP.implied(-110) == pytest.approx(0.5238, abs=1e-4)
+    assert RP.implied(+250) == pytest.approx(1 / 3.5)
+    # fair coin at even money is zero EV; 60% at -110 is positive
+    assert RP.expected_value(0.5, +100) == 0
+    assert RP.expected_value(0.6, -110) > 0
+
+
+def test_value_page_drops_the_priced_in_favourite_and_finds_the_dog():
+    """Game 3: Big State 95% to win. At -10000 that is NO value; the dog at
+    +2500 with a 4.7% model probability is a positive-EV play (4.7% * 25 >
+    95.3%). The page must show the dog, and the 95% side must not appear."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    markets = {3: {"provider": "Test", "spread": -30.0,
+                   "home_ml": -10000.0, "away_ml": 2500.0},
+               1: {"provider": "Test", "spread": -7.0,
+                   "home_ml": -300.0, "away_ml": 240.0}}
+    text = RP.render_value(picks, _artifact(), markets, "2026-09-02T01:03Z",
+                           2026, 1)
+    assert "Tiny College ML +2500" in text
+    assert "Big State ML" not in text
+    # game 1: home 66.9% at -300 (break-even 75%) is negative EV; away 33.1%
+    # at +240 (break-even 29.4%) is positive; the spread at -110 with p_cover
+    # from the model's own distribution competes on EV.
+    assert "Away U ML +240" in text or "(u) Away U +7.0" in text
+    assert "Home U ML -300" not in text
+    assert "Over/under: none" in text
+
+
+def test_value_page_prefers_the_frozen_ledger_spread_over_the_cache():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    markets = {1: {"provider": "Test", "spread": -3.0,
+                   "home_ml": None, "away_ml": None}}
+    plays = RP.value_plays(picks[-1], _artifact().set_index("game_id").loc[1]
+                           .to_dict() | {"game_id": 1}, markets[1])
+    spread = [x for x in plays if x["kind"] == "spread"][0]
+    assert spread["frozen"] is True and spread["pick"] == "Away U +10.0"
+    assert spread["p"] == 0.72 and spread["p_adj"] == 0.66
+
+
+def test_scale_adjusted_ev_is_reported_beside_the_registered_one_never_instead():
+    """Slope 0.8 / intercept 0: a registered +7 home margin re-scales to
+    +8.75. The registered EV column is untouched; the adjusted one is
+    computed from the re-scaled margin; the both-views section lists only
+    plays positive under both."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    scale = {"slope": 0.8, "intercept": 0.0}
+    row = _artifact().set_index("game_id").loc[1].to_dict() | {"game_id": 1}
+    market = {"provider": "T", "spread": -7.0, "home_ml": -300.0, "away_ml": 240.0}
+    plain = {x["pick"]: x for x in RP.value_plays(picks[-1], row, market)}
+    adj = {x["pick"]: x for x in RP.value_plays(picks[-1], row, market, scale)}
+    for pick in plain:
+        assert adj[pick]["ev"] == plain[pick]["ev"]          # registered unchanged
+    assert plain["Home U ML -300"]["ev_adj"] is None
+    p_adj = RP._phi(8.75 / 16.0)
+    assert adj["Home U ML -300"]["p_adj"] == pytest.approx(p_adj)
+    assert adj["Home U ML -300"]["ev_adj"] == pytest.approx(
+        RP.expected_value(p_adj, -300))
+    text = RP.render_value(picks, _artifact(), {1: market}, "t", 2026, 1, scale)
+    assert "## Plays that survive both views" in text
+    assert "EV (scale-adj)" in text
