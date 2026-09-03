@@ -300,9 +300,14 @@ def test_call_for_game_prefers_the_more_confident_of_spread_and_moneyline():
     market1 = {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0}
     # game 1: frozen spread lean 0.72 beats the ML win probability 0.669
     call1 = RP.call_for_game(picks[1], row1, market1)
+    ev1 = RP.expected_value(0.72, RP.SPREAD_PRICE)
+    ev1_adj = RP.expected_value(0.66, RP.SPREAD_PRICE)     # ledger's own p_cover_adj
     assert call1 == {"kind": "spread", "pick": "Away U +10.0", "p": 0.72,
                      "price": RP.SPREAD_PRICE, "flag": False, "frozen": True,
-                     "has_market": True}
+                     "has_market": True, "ev": pytest.approx(ev1),
+                     "ev_adj": pytest.approx(ev1_adj),
+                     "units": RP.units_for({"ev": ev1, "ev_adj": ev1_adj})}
+    assert call1["units"] == 2.0
 
     row3 = _artifact().set_index("game_id").loc[3].to_dict() | {"game_id": 3}
     market3 = {"provider": "T", "spread": -20.0, "home_ml": -500.0,
@@ -313,6 +318,11 @@ def test_call_for_game_prefers_the_more_confident_of_spread_and_moneyline():
     assert call3["kind"] == "moneyline" and call3["pick"] == "Big State ML"
     assert call3["p"] == pytest.approx(0.9533)
     assert call3["flag"] is True
+    ev3 = RP.expected_value(0.9533, -500.0)
+    assert call3["ev"] == pytest.approx(ev3)
+    assert call3["ev_adj"] is None            # no scale passed -> no adjusted view
+    assert call3["units"] == RP.units_for({"ev": ev3, "ev_adj": None})
+    assert call3["units"] == 1.0
 
 
 def test_call_for_game_falls_back_to_the_models_own_probability_with_no_market():
@@ -321,7 +331,8 @@ def test_call_for_game_falls_back_to_the_models_own_probability_with_no_market()
     call2 = RP.call_for_game(picks[2], row2, None)
     assert call2 == {"kind": "moneyline", "pick": "Neutral B ML",
                      "p": pytest.approx(0.599), "price": None, "flag": False,
-                     "frozen": None, "has_market": False}
+                     "frozen": None, "has_market": False,
+                     "ev": None, "ev_adj": None, "units": None}
 
 
 def test_call_for_game_is_none_for_a_refused_game():
@@ -345,6 +356,14 @@ def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total()
     assert "\\* Big State ML" in text          # large-spread flag carries over
     assert "(u) Away U +10.0" not in text       # frozen spread: not tagged (u)
     assert "(no market) Neutral B ML" in text   # no line or price at all
+    assert "| Date | Game | Pick | Units | Chance it hits | Rationale |" in text
+    assert "2u" in text and "1u" in text        # game 1 and game 3's units
+    assert "n/a" in text                        # game 2: no market, no units
+    # the rationale column: the model's own why, not just the call
+    assert "Rating differential +4.0; Home-field effect +3.0" in text
+    assert ("Rating differential (FCS side: pooled FCS pseudo-team) +27.0"
+           in text)
+    assert "registered bias: out of sample the FBS side beat this" in text
 
 
 def test_render_upcoming_window_excludes_games_outside_the_days_range():
@@ -353,3 +372,21 @@ def test_render_upcoming_window_excludes_games_outside_the_days_range():
                               days=3, today="2026-09-01")
     assert "0 calls" in text
     assert "Home U" not in text and "Big State" not in text
+
+
+def test_render_upcoming_scale_adjusted_ev_feeds_the_same_units_as_the_value_page():
+    """Passing `scale` through to `call_for_game` changes the adjusted EV
+    (and so can change units) exactly the way it changes `value_plays` --
+    this page is not a second, independently-tuned copy of that logic."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    market = {1: {"provider": "T", "spread": -7.0, "home_ml": -300.0, "away_ml": 240.0}}
+    scale = {"slope": 0.8, "intercept": 0.0}
+    row1 = _artifact().set_index("game_id").loc[1].to_dict() | {"game_id": 1}
+    direct = RP.value_plays(picks[-1] if picks[-1]["game_id"] == 1 else
+                            next(p for p in picks if p["game_id"] == 1),
+                            row1, market[1], scale)
+    ml = next(x for x in direct if x["pick"] == "Home U ML -300")
+    text = RP.render_upcoming(picks, _artifact(), market, "t", 2026, 1,
+                              days=1, today="2026-09-05", scale=scale)
+    assert RP.units_for({"ev": ml["ev"], "ev_adj": ml["ev_adj"]}) is not None
+    assert "Home U ML" in text

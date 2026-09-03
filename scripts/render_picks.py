@@ -730,17 +730,24 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
 # --------------------------------------------------------------------------- #
 
 def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
-                  market: Optional[dict]) -> Optional[Dict[str, Any]]:
+                  market: Optional[dict],
+                  scale: Optional[dict] = None) -> Optional[Dict[str, Any]]:
     """The single most-confident call for one game: a spread pick (frozen
     ledger lean, else the cached market line, standard -110 either way) when
     its cover probability beats the straight-up win probability, else the
     projected winner as a moneyline call at the cached price if one exists.
     No over/under: the early-season route publishes no total by contract,
     and no registered basis backs an over/under probability in any week
-    yet -- so none is shown, rather than made up."""
+    yet -- so none is shown, rather than made up.
+
+    Carries the same expected-value pair every value play does (registered
+    and scale-adjusted) and the units they size to, so this page does not
+    need a second pass through `value_plays` to answer "is this worth
+    anything" -- units are None (n/a) only when there is no price to check
+    the pick against at all."""
     if not p["pick"]:
         return None
-    plays = value_plays(p, row, market)
+    plays = value_plays(p, row, market, scale)
     favoured = [x for x in plays
                if x["kind"] == "spread"
                or x["pick"].startswith(f"{p['pick']} ML")]
@@ -748,24 +755,28 @@ def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
         best = max(favoured, key=lambda x: x["p"])
         label = (f"{p['pick']} ML" if best["kind"] == "moneyline"
                 else best["pick"])
-        price = best.get("price")
+        ev, ev_adj = best.get("ev"), best.get("ev_adj")
         return {"kind": best["kind"], "pick": label, "p": best["p"],
-                "price": price, "flag": best["flag"],
-                "frozen": best.get("frozen"),
-                "has_market": True}
+                "price": best.get("price"), "flag": best["flag"],
+                "frozen": best.get("frozen"), "has_market": True,
+                "ev": ev, "ev_adj": ev_adj,
+                "units": None if ev is None else units_for(
+                    {"ev": ev, "ev_adj": ev_adj})}
     return {"kind": "moneyline", "pick": f"{p['pick']} ML", "p": p["p_pick"],
             "price": None, "flag": False, "frozen": None,
-            "has_market": False}
+            "has_market": False, "ev": None, "ev_adj": None, "units": None}
 
 
 def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                     markets: Dict[int, dict], market_as_of: Optional[str],
                     season: int, week: int, days: int = 3,
-                    today: Optional[str] = None) -> str:
+                    today: Optional[str] = None,
+                    scale: Optional[dict] = None) -> str:
     """Every FBS game kicking off in the next `days` calendar days (public,
     America/New_York dates), one call per game, grouped by date and sorted
     by confidence within the day -- the format asked for: team + market
-    (moneyline or spread), not a ranked value list."""
+    (moneyline or spread), with the units it is worth and the rationale
+    behind it, not a ranked value list or a separate rationale lookup."""
     by_id = {int(r["game_id"]): r for r in rows.to_dict("records")}
     start = (pd.Timestamp(today) if today else
             pd.Timestamp.now(tz=cfb_calendar.PUBLIC_TIMEZONE)).normalize()
@@ -775,7 +786,8 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
     for p in picks:
         if p["public_date"] not in window:
             continue
-        call = call_for_game(p, by_id[p["game_id"]], markets.get(p["game_id"]))
+        call = call_for_game(p, by_id[p["game_id"]], markets.get(p["game_id"]),
+                             scale)
         if call:
             called.append((p, call))
     called.sort(key=lambda pc: (pc[0]["public_date"], -pc[1]["p"],
@@ -797,8 +809,18 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "and no registered basis backs an over/under probability in any "
         "week yet. Paper-only; private vault note; nothing here is staked.",
         "",
-        "| Date | Game | Pick | Confidence |",
-        "|---|---|---|---|",
+        "**Units** are confidence sized against the price, not just the "
+        "win probability: sized on the smaller of the model's own expected "
+        "profit per $100 and the scale-adjusted view (the model's margins "
+        "run about 19% smaller than the market's; see the value page for "
+        "the fit), ladder 3u/2u/1u/0.5u, capped at 3u since nothing has "
+        "been graded yet, and 'n/a' where there is no price to check the "
+        "pick against at all. **Rationale** is the model's own why: rating "
+        "differential plus home-field effect, always summing to the "
+        "published margin, plus the cross-division caveat where it applies.",
+        "",
+        "| Date | Game | Pick | Units | Chance it hits | Rationale |",
+        "|---|---|---|---|---|---|",
     ]
     last_day = None
     for p, c in called:
@@ -811,9 +833,11 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         tags = (("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
                + (r"\* " if c["flag"] else "")
                + ("(no market) " if not c["has_market"] else ""))
+        units = "n/a" if c["units"] is None else (
+            "pass" if c["units"] == 0 else f"{c['units']:g}u")
         lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
-                     f"{p['kickoff_et']} | {tags}{c['pick']} | "
-                     f"{_fmt_p(c['p'])} |")
+                     f"{p['kickoff_et']} | {tags}{c['pick']} | {units} | "
+                     f"{_fmt_p(c['p'])} | {p['rationale']} |")
     notes = []
     if n_flag:
         notes.append(
@@ -826,7 +850,8 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         notes.append(
             f"(no market) {n_no_market} picks have no cached line or price "
             "-- the confidence shown is the model's own win probability, "
-            "not measured against anything a book is offering.")
+            "not measured against anything a book is offering, and units "
+            "are n/a for the same reason.")
     n_unfrozen_spread = sum(1 for _, c in called
                             if c["kind"] == "spread" and c["frozen"] is False)
     if n_unfrozen_spread:
@@ -919,12 +944,13 @@ def main() -> int:
     text = render_markdown(picks, args.season, args.week, rows, bases)
     compact = render_compact(picks, args.season, args.week, rows)
     markets, market_as_of = load_market(args.season, args.week)
+    scale = load_scale(args.season, args.week)
     value = render_value(picks, rows, markets, market_as_of,
-                         args.season, args.week,
-                         scale=load_scale(args.season, args.week))
+                         args.season, args.week, scale=scale)
     upcoming = render_upcoming(picks, rows, markets, market_as_of,
                                args.season, args.week,
-                               days=args.upcoming_days, today=args.today)
+                               days=args.upcoming_days, today=args.today,
+                               scale=scale)
     out_dir = args.out_dir or default_out_dir()
     md_path, csv_path = write_outputs(
         picks, args.season, args.week, out_dir, text, compact, value,
