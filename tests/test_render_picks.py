@@ -443,6 +443,94 @@ def test_render_upcoming_scale_adjusted_ev_feeds_the_same_units_as_the_value_pag
 
 
 # --------------------------------------------------------------------------- #
+# top_plays: confidence AND value, not either alone
+# --------------------------------------------------------------------------- #
+def _pc(game_id, public_date, p, units):
+    """A minimal (pick, call) pair -- enough for top_plays, which only
+    reads public_date/game_id off the pick and p/units off the call."""
+    return ({"game_id": game_id, "public_date": public_date},
+           {"p": p, "units": units})
+
+
+def test_top_plays_excludes_a_longshot_with_value():
+    """High value, low confidence: a 55% swap at 2u is real value but not
+    the confidence Curtis asked for -- it must not make the cut."""
+    called = [_pc(1, "2026-09-05", 0.55, 2.0)]
+    assert RP.top_plays(called) == []
+
+
+def test_top_plays_excludes_a_guaranteed_favourite_with_no_value():
+    """High confidence, no value: a 98% moneyline priced at -20000 is a
+    pass (0 units) -- confidence alone is not what was asked for either."""
+    called = [_pc(1, "2026-09-05", 0.98, 0.0)]
+    assert RP.top_plays(called) == []
+
+
+def test_top_plays_excludes_a_pick_with_no_units_at_all():
+    """No market at all: units is None, not 0 -- still excluded, not a
+    false positive from a loose `< min_units` comparison."""
+    called = [_pc(1, "2026-09-05", 0.90, None)]
+    assert RP.top_plays(called) == []
+
+
+def test_top_plays_keeps_plays_clearing_both_bars_sorted_by_date_then_p_then_units():
+    called = [
+        _pc(1, "2026-09-06", 0.70, 1.0),
+        _pc(2, "2026-09-05", 0.80, 1.0),
+        _pc(3, "2026-09-05", 0.80, 2.0),   # same date+p as #2, more units
+        _pc(4, "2026-09-05", 0.66, 3.0),
+    ]
+    kept = RP.top_plays(called)
+    assert [p["game_id"] for p, _ in kept] == [3, 2, 4, 1]
+
+
+def test_top_plays_thresholds_are_tunable():
+    called = [_pc(1, "2026-09-05", 0.60, 1.5)]
+    assert RP.top_plays(called) == []                       # default 0.65 floor
+    assert len(RP.top_plays(called, min_p=0.55)) == 1        # loosen confidence
+    assert len(RP.top_plays(called, min_p=0.55, min_units=2.0)) == 0  # raise value
+
+
+def test_render_upcoming_top_section_lists_only_plays_clearing_both_bars():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    markets = {1: {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0},
+              3: {"provider": "T", "spread": -20.0, "home_ml": -500.0, "away_ml": 400.0}}
+    text = RP.render_upcoming(picks, _artifact(), markets, "t", 2026, 1,
+                              days=1, today="2026-09-05", bases=BASES)
+    assert "## The list: confidence AND value, not either alone" in text
+    assert "## Every call this window" in text
+    top_section = text.split("## The list")[1].split("## Every call")[0]
+    # game 1 (72%, 2u) and game 3 (95%, 1u) clear both bars; game 2 (60%,
+    # no market -> no units) does not -- it must be absent from the top
+    # section even though it is still reported in the full list below.
+    assert "Away U +10.0" in top_section
+    assert "Big State ML" in top_section
+    assert "Neutral B ML" not in top_section
+    assert "2 of 3 calls clear both bars" in text
+    full_section = text.split("## Every call")[1]
+    assert "Neutral B ML" in full_section
+
+
+def test_render_upcoming_top_section_says_so_when_nothing_clears_both_bars():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    text = RP.render_upcoming(picks, _artifact(), {}, "t", 2026, 1,
+                              days=3, today="2026-09-01")
+    assert "Nothing this window clears both bars." in text
+
+
+def test_render_upcoming_top_section_thresholds_pass_through():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    markets = {1: {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0},
+              3: {"provider": "T", "spread": -20.0, "home_ml": -500.0, "away_ml": 400.0}}
+    text = RP.render_upcoming(picks, _artifact(), markets, "t", 2026, 1,
+                              days=1, today="2026-09-05", bases=BASES,
+                              min_confidence=0.99, min_units=1.0)
+    top_section = text.split("## The list")[1].split("## Every call")[0]
+    assert "0 of 3 calls clear both bars" in text
+    assert "Away U +10.0" not in top_section and "Big State ML" not in top_section
+
+
+# --------------------------------------------------------------------------- #
 # Casual rationale: same facts, plain English, no invented context
 # --------------------------------------------------------------------------- #
 

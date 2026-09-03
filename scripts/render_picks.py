@@ -511,6 +511,15 @@ MIN_PLAY_PROB = 0.5
 #: pass.
 UNIT_LADDER = ((40.0, 3.0), (25.0, 2.0), (10.0, 1.0), (0.0, 0.5))
 
+#: Curtis's rule (2026-09-03): the list he actually acts on is not "every
+#: call" -- it's the plays that clear BOTH bars at once. A longshot value
+#: swap at 51% is not confidence; a -20000 moneyline "lock" worth 0 units is
+#: not value. Neither belongs on the list he bets from and grades against
+#: real outcomes -- that's the only way to learn whether the pricing logic
+#: (the EV/units layer sitting on top of the model) is any good.
+TOP_MIN_CONFIDENCE = 0.65
+TOP_MIN_UNITS = 1.0
+
 
 def units_for(play: Dict[str, Any]) -> float:
     """Units from the conservative (smaller) expected profit per $100."""
@@ -685,6 +694,25 @@ def best_value_play(plays: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     if not candidates:
         return None
     return max(candidates, key=lambda x: (x["ev"], -x["break_even"]))
+
+
+def top_plays(called: List[tuple], min_p: float = TOP_MIN_CONFIDENCE,
+             min_units: float = TOP_MIN_UNITS) -> List[tuple]:
+    """The `(pick, call)` pairs from a `render_upcoming` pass that clear
+    BOTH bars: real confidence (the play's own probability -- the side
+    actually being bet, not the model's headline number when this swapped
+    to a value play) AND real value (units sized off actual expected profit
+    against the price on offer, not just "positive"). This is what filters
+    out the two things that are not what Curtis asked for: a longshot swap
+    with value but low confidence, and a heavily-priced "lock" with
+    confidence but no units. Sorted date, then confidence, then value --
+    the three axes this is meant to track by."""
+    picks = [(p, c) for p, c in called
+            if c["units"] is not None and c["units"] >= min_units
+            and c["p"] >= min_p]
+    picks.sort(key=lambda pc: (pc[0]["public_date"], -pc[1]["p"],
+                               -pc[1]["units"], pc[0]["game_id"]))
+    return picks
 
 
 def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
@@ -889,19 +917,58 @@ def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
             "swapped": swapped}
 
 
+def _render_pick_rows(pairs: List[tuple], conferences: Dict[str, str],
+                      bases: Dict[str, dict]) -> List[str]:
+    """The `| Date | Game | Pick | Units | Chance it hits | Rationale |` rows
+    for one ordered list of `(pick, call)` pairs, with its own day-label
+    reset -- factored out so the top-plays table and the full-window table
+    render identically without drifting into two formats."""
+    lines = []
+    last_day = None
+    for p, c in pairs:
+        if p["public_date"] != last_day:
+            last_day = p["public_date"]
+            day_label = pd.Timestamp(last_day).strftime("%a %b %d").replace(" 0", " ")
+        else:
+            day_label = ""
+        site = " (N)" if p["neutral"] else ""
+        tags = (("(value) " if c.get("swapped") else "")
+               + ("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
+               + (r"\* " if c["flag"] else "")
+               + ("(no market) " if not c["has_market"] else ""))
+        units = "n/a" if c["units"] is None else (
+            "pass" if c["units"] == 0 else f"{c['units']:g}u")
+        rationale = casual_rationale(p, conferences, bases)
+        if c.get("swapped") and not c["pick"].startswith(p["pick"]):
+            rationale += (f" One catch: this is the OTHER side from who the "
+                         f"model actually expects to win ({p['pick']}) — "
+                         "we're not saying they lose, just that this side "
+                         "is the one worth laying money on.")
+        lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
+                     f"{p['kickoff_et']} | {tags}{c['pick']} | {units} | "
+                     f"{_fmt_p(c['p'])} | {rationale} |")
+    return lines
+
+
 def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                     markets: Dict[int, dict], market_as_of: Optional[str],
                     season: int, week: int, days: int = 3,
                     today: Optional[str] = None,
                     scale: Optional[dict] = None,
                     conferences: Optional[Dict[str, str]] = None,
-                    bases: Optional[Dict[str, dict]] = None) -> str:
+                    bases: Optional[Dict[str, dict]] = None,
+                    min_confidence: float = TOP_MIN_CONFIDENCE,
+                    min_units: float = TOP_MIN_UNITS) -> str:
     """Every FBS game kicking off in the next `days` calendar days (public,
     America/New_York dates), one call per game, grouped by date and sorted
-    by confidence within the day -- the format asked for: team + market
-    (moneyline or spread), with the units it is worth and the rationale
-    behind it in plain English, not a ranked value list or a separate
-    rationale lookup."""
+    by confidence within the day -- team + market (moneyline or spread),
+    the units it is worth, and the rationale behind it in plain English.
+
+    Leads with a second, curated table -- the plays that clear BOTH the
+    confidence floor and the value floor at once (`top_plays`), which is
+    the actionable list: not a longshot swap with value and not a priced-in
+    "lock" with none. That's the list meant to be logged with
+    `scripts/bet_log.py` and graded once games are final."""
     conferences, bases = (conferences or {}), (bases or {})
     by_id = {int(r["game_id"]): r for r in rows.to_dict("records")}
     start = (pd.Timestamp(today) if today else
@@ -918,6 +985,7 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
             called.append((p, call))
     called.sort(key=lambda pc: (pc[0]["public_date"], -pc[1]["p"],
                                 pc[0]["game_id"]))
+    top = top_plays(called, min_p=min_confidence, min_units=min_units)
     not_called = [p for p in picks if p["public_date"] in window and not p["pick"]]
     n_flag = sum(1 for _, c in called if c["flag"])
     n_no_market = sum(1 for _, c in called if not c["has_market"])
@@ -934,6 +1002,33 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "none -- the early-season route publishes no total by contract, "
         "and no registered basis backs an over/under probability in any "
         "week yet. Paper-only; private vault note; nothing here is staked.",
+        "",
+        "## The list: confidence AND value, not either alone",
+        "",
+        f"{len(top)} of {len(called)} calls clear both bars: at least "
+        f"{min_confidence:.0%} on the side actually being bet (its own "
+        "chance, not the model's headline number when this swapped to a "
+        "value play) AND at least "
+        f"{min_units:g} unit of sized value against the price actually on "
+        "offer. Not a longshot that happens to have value, not a "
+        "'guaranteed' favourite worth nothing at its price -- both, "
+        "together. Sorted date, then confidence, then value. This is the "
+        "list meant to be logged with `scripts/bet_log.py --add` and "
+        "graded with `--grade` once the games are final -- that's the only "
+        "way to learn whether the pricing logic on top of the model (the "
+        "EV/units layer, not the model's own win probability) is actually "
+        "any good.",
+        "",
+    ]
+    if top:
+        lines += ["| Date | Game | Pick | Units | Chance it hits | Rationale |",
+                 "|---|---|---|---|---|---|"]
+        lines += _render_pick_rows(top, conferences, bases)
+    else:
+        lines += ["*Nothing this window clears both bars.*"]
+    lines += [
+        "",
+        "## Every call this window",
         "",
         "**Units** are confidence sized against the price, not just the "
         "win probability: sized on the smaller of the model's own expected "
@@ -957,29 +1052,7 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "| Date | Game | Pick | Units | Chance it hits | Rationale |",
         "|---|---|---|---|---|---|",
     ]
-    last_day = None
-    for p, c in called:
-        if p["public_date"] != last_day:
-            last_day = p["public_date"]
-            day_label = pd.Timestamp(last_day).strftime("%a %b %d").replace(" 0", " ")
-        else:
-            day_label = ""
-        site = " (N)" if p["neutral"] else ""
-        tags = (("(value) " if c.get("swapped") else "")
-               + ("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
-               + (r"\* " if c["flag"] else "")
-               + ("(no market) " if not c["has_market"] else ""))
-        units = "n/a" if c["units"] is None else (
-            "pass" if c["units"] == 0 else f"{c['units']:g}u")
-        rationale = casual_rationale(p, conferences, bases)
-        if c.get("swapped") and not c["pick"].startswith(p["pick"]):
-            rationale += (f" One catch: this is the OTHER side from who the "
-                         f"model actually expects to win ({p['pick']}) — "
-                         "we're not saying they lose, just that this side "
-                         "is the one worth laying money on.")
-        lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
-                     f"{p['kickoff_et']} | {tags}{c['pick']} | {units} | "
-                     f"{_fmt_p(c['p'])} | {rationale} |")
+    lines += _render_pick_rows(called, conferences, bases)
     notes = []
     n_swapped = sum(1 for _, c in called if c.get("swapped"))
     if n_swapped:
@@ -1073,6 +1146,12 @@ def main() -> int:
     ap.add_argument("--today", default=None,
                     help="override 'today' (public ET date, YYYY-MM-DD) for "
                          "the next-N-days window; default is the real clock")
+    ap.add_argument("--min-confidence", type=float, default=TOP_MIN_CONFIDENCE,
+                    help="confidence floor for the top-plays table on the "
+                         f"next-N-days page (default {TOP_MIN_CONFIDENCE:g})")
+    ap.add_argument("--min-units", type=float, default=TOP_MIN_UNITS,
+                    help="units floor for the top-plays table on the "
+                         f"next-N-days page (default {TOP_MIN_UNITS:g})")
     args = ap.parse_args()
     if args.auto:
         import importlib.util
@@ -1102,7 +1181,8 @@ def main() -> int:
                                args.season, args.week,
                                days=args.upcoming_days, today=args.today,
                                scale=scale, conferences=load_conferences(args.season),
-                               bases=bases)
+                               bases=bases, min_confidence=args.min_confidence,
+                               min_units=args.min_units)
     out_dir = args.out_dir or default_out_dir()
     md_path, csv_path = write_outputs(
         picks, args.season, args.week, out_dir, text, compact, value,
