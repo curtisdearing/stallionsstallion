@@ -409,7 +409,12 @@ def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total()
     assert "\\* Big State ML" in text          # large-spread flag carries over
     assert "(u) Away U +10.0" not in text       # frozen spread: not tagged (u)
     assert "(no market) Neutral B ML" in text   # no line or price at all
-    assert "| Date | Game | Pick | Units | Chance it hits | Rationale |" in text
+    # block format, not a table: a day heading, a game heading, the pick
+    # line, then the rationale as spaced paragraphs
+    assert "### Saturday Sep 5" in text
+    assert "#### Tiny College @ Big State · " in text
+    assert "**Pick: \\* Big State ML -500** — 1u — 95% chance it hits" in text
+    assert "|---|" not in text
     assert "2u" in text and "1u" in text        # game 1 and game 3's units
     assert "n/a" in text                        # game 2: no market, no units
     # the rationale column: the model's own why, in plain English -- game 1's
@@ -522,6 +527,25 @@ def test_render_upcoming_top_section_lists_only_plays_clearing_both_bars():
     assert "2 of 3 calls clear both bars" in text
     full_section = text.split("## Every call")[1]
     assert "Neutral B ML" in full_section
+
+
+def test_render_upcoming_rationale_is_one_sentence_per_paragraph():
+    """Curtis (2026-09-03): wide, spaced, verbatim -- each rationale
+    sentence stands as its own paragraph under the pick, never crammed
+    into one wrapped line."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    markets = {3: {"provider": "T", "spread": -20.0, "home_ml": -500.0, "away_ml": 400.0}}
+    text = RP.render_upcoming(picks, _artifact(), markets, "t", 2026, 1,
+                              days=1, today="2026-09-05", bases=BASES)
+    p3 = next(p for p in picks if p["game_id"] == 3)
+    call = {"kind": "moneyline", "pick": "Big State ML -500", "p": 0.9533,
+           "price": -500.0}
+    parts = RP.casual_rationale_parts(p3, call, {}, BASES)
+    assert len(parts) == 3
+    block = text.split("#### Tiny College @ Big State")[1].split("####")[0]
+    for part in parts:
+        assert f"\n{part}\n\n" in block           # own paragraph, blank line after
+    assert " ".join(parts) not in block           # never the flat one-liner
 
 
 def test_render_upcoming_top_section_says_so_when_nothing_clears_both_bars():

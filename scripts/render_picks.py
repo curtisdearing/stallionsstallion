@@ -93,9 +93,9 @@ def _wagered_team(pick: str) -> str:
     return team.strip()
 
 
-def casual_rationale(p: Dict[str, Any], call: Dict[str, Any],
-                     conferences: Dict[str, str],
-                     bases: Dict[str, dict]) -> str:
+def casual_rationale_parts(p: Dict[str, Any], call: Dict[str, Any],
+                           conferences: Dict[str, str],
+                           bases: Dict[str, dict]) -> List[str]:
     """The same rationale `pick_row` already built, said the way you'd say
     it out loud instead of the technical version -- but argued for the team
     actually being bet (`call['pick']`), which is not always the model's own
@@ -111,7 +111,7 @@ def casual_rationale(p: Dict[str, Any], call: Dict[str, Any],
     `p['model_family']` plus conference tier, and the bias is the same
     registered residual -- nothing here is invented or estimated."""
     if not p["pick"] or not call.get("pick"):
-        return ""
+        return []
     home, away = p["home"], p["away"]
     model_fav = p["pick"]
     model_dog = away if model_fav == home else home
@@ -204,7 +204,14 @@ def casual_rationale(p: Dict[str, Any], call: Dict[str, Any],
                     "average, on top of the margin already priced in here "
                     "— a known bias we haven't corrected for, and it cuts "
                     "against the points-taking side, not for it.")
-    return " ".join(bits)
+    return bits
+
+
+def casual_rationale(p: Dict[str, Any], call: Dict[str, Any],
+                     conferences: Dict[str, str],
+                     bases: Dict[str, dict]) -> str:
+    """`casual_rationale_parts` as one line, for anything that wants it flat."""
+    return " ".join(casual_rationale_parts(p, call, conferences, bases))
 
 
 def default_out_dir() -> str:
@@ -977,20 +984,22 @@ def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
             "swapped": swapped}
 
 
-def _render_pick_rows(pairs: List[tuple], conferences: Dict[str, str],
-                      bases: Dict[str, dict]) -> List[str]:
-    """The `| Date | Game | Pick | Units | Chance it hits | Rationale |` rows
-    for one ordered list of `(pick, call)` pairs, with its own day-label
-    reset -- factored out so the top-plays table and the full-window table
-    render identically without drifting into two formats."""
+def _render_pick_blocks(pairs: List[tuple], conferences: Dict[str, str],
+                        bases: Dict[str, dict]) -> List[str]:
+    """One block per game -- a day heading when the day changes, the game
+    and kickoff, the pick with its units and chance on one line, then the
+    rationale as its own spaced paragraphs, one sentence per paragraph.
+    Curtis (2026-09-03): the table cell was cramming the rationale into a
+    single wrapped line; he wants it wide, spaced, and read in full. Both
+    the top-plays list and the full-window list render through here so
+    they cannot drift into two formats."""
     lines = []
     last_day = None
     for p, c in pairs:
         if p["public_date"] != last_day:
             last_day = p["public_date"]
-            day_label = pd.Timestamp(last_day).strftime("%a %b %d").replace(" 0", " ")
-        else:
-            day_label = ""
+            day_label = pd.Timestamp(last_day).strftime("%A %b %d").replace(" 0", " ")
+            lines += [f"### {day_label}", ""]
         site = " (N)" if p["neutral"] else ""
         tags = (("(value) " if c.get("swapped") else "")
                + ("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
@@ -998,10 +1007,13 @@ def _render_pick_rows(pairs: List[tuple], conferences: Dict[str, str],
                + ("(no market) " if not c["has_market"] else ""))
         units = "n/a" if c["units"] is None else (
             "pass" if c["units"] == 0 else f"{c['units']:g}u")
-        rationale = casual_rationale(p, c, conferences, bases)
-        lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
-                     f"{p['kickoff_et']} | {tags}{c['pick']} | {units} | "
-                     f"{_fmt_p(c['p'])} | {rationale} |")
+        lines.append(f"#### {p['away']} @ {p['home']}{site} · {p['kickoff_et']}")
+        lines.append("")
+        lines.append(f"**Pick: {tags}{c['pick']}** — {units} — "
+                     f"{_fmt_p(c['p'])} chance it hits")
+        lines.append("")
+        for part in casual_rationale_parts(p, c, conferences, bases):
+            lines += [part, ""]
     return lines
 
 
@@ -1076,9 +1088,7 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "",
     ]
     if top:
-        lines += ["| Date | Game | Pick | Units | Chance it hits | Rationale |",
-                 "|---|---|---|---|---|---|"]
-        lines += _render_pick_rows(top, conferences, bases)
+        lines += _render_pick_blocks(top, conferences, bases)
     else:
         lines += ["*Nothing this window clears both bars.*"]
     lines += [
@@ -1107,10 +1117,8 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "are the same facts either way -- nothing invented, just argued "
         "for the side actually on the ticket.",
         "",
-        "| Date | Game | Pick | Units | Chance it hits | Rationale |",
-        "|---|---|---|---|---|---|",
     ]
-    lines += _render_pick_rows(called, conferences, bases)
+    lines += _render_pick_blocks(called, conferences, bases)
     notes = []
     n_swapped = sum(1 for _, c in called if c.get("swapped"))
     if n_swapped:
