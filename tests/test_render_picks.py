@@ -306,7 +306,8 @@ def test_call_for_game_prefers_the_more_confident_of_spread_and_moneyline():
                      "price": RP.SPREAD_PRICE, "flag": False, "frozen": True,
                      "has_market": True, "ev": pytest.approx(ev1),
                      "ev_adj": pytest.approx(ev1_adj),
-                     "units": RP.units_for({"ev": ev1, "ev_adj": ev1_adj})}
+                     "units": RP.units_for({"ev": ev1, "ev_adj": ev1_adj}),
+                     "swapped": False}
     assert call1["units"] == 2.0
 
     row3 = _artifact().set_index("game_id").loc[3].to_dict() | {"game_id": 3}
@@ -315,9 +316,10 @@ def test_call_for_game_prefers_the_more_confident_of_spread_and_moneyline():
     # game 3: ML win probability 0.9533 beats the frozen spread lean 0.60,
     # and the underlying line is over the large-spread threshold either way
     call3 = RP.call_for_game(picks[3], row3, market3)
-    assert call3["kind"] == "moneyline" and call3["pick"] == "Big State ML"
+    assert call3["kind"] == "moneyline" and call3["pick"] == "Big State ML -500"
     assert call3["p"] == pytest.approx(0.9533)
     assert call3["flag"] is True
+    assert call3["swapped"] is False           # positive EV -- no need to swap
     ev3 = RP.expected_value(0.9533, -500.0)
     assert call3["ev"] == pytest.approx(ev3)
     assert call3["ev_adj"] is None            # no scale passed -> no adjusted view
@@ -332,7 +334,8 @@ def test_call_for_game_falls_back_to_the_models_own_probability_with_no_market()
     assert call2 == {"kind": "moneyline", "pick": "Neutral B ML",
                      "p": pytest.approx(0.599), "price": None, "flag": False,
                      "frozen": None, "has_market": False,
-                     "ev": None, "ev_adj": None, "units": None}
+                     "ev": None, "ev_adj": None, "units": None,
+                     "swapped": False}
 
 
 def test_call_for_game_is_none_for_a_refused_game():
@@ -341,12 +344,57 @@ def test_call_for_game_is_none_for_a_refused_game():
     assert RP.call_for_game(picks[5], row5, None) is None
 
 
+def test_call_for_game_swaps_to_a_value_play_when_the_confident_call_is_a_pass():
+    """Game 2: the model's straight-up favourite (Neutral B, 59.9%) is
+    quoted at -400 -- priced in, negative EV, a pass. The spread on the
+    OTHER team (Neutral A +6.0) is a genuine, if modest, positive-EV play
+    at 50%+. call_for_game must reach for it instead of reporting a pass
+    on a game that actually has value on the board."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    by_id = _by_id(picks)
+    row2 = _artifact().set_index("game_id").loc[2].to_dict() | {"game_id": 2}
+    market2 = {"provider": "T", "spread": 6.0, "home_ml": None, "away_ml": -400.0}
+
+    # the confident (favoured) side alone would be a pass
+    ev_away_ml = RP.expected_value(0.5987, -400.0)
+    assert ev_away_ml < 0
+
+    call2 = RP.call_for_game(by_id[2], row2, market2)
+    p_cover = RP._phi(2.0 / 16.0)          # edge 2.0 (mean -4.0 vs market +4.0), sd 16.0
+    ev_spread = RP.expected_value(p_cover, RP.SPREAD_PRICE)
+    assert ev_spread > 0 and p_cover >= RP.MIN_PLAY_PROB
+    assert call2["swapped"] is True
+    assert call2["kind"] == "spread"
+    assert call2["pick"] == "Neutral A +6.0"     # the OTHER team from Neutral B
+    assert call2["p"] == pytest.approx(p_cover)
+    assert call2["ev"] == pytest.approx(ev_spread)
+    assert call2["units"] == RP.units_for({"ev": ev_spread, "ev_adj": None})
+
+    text = RP.render_upcoming(picks, _artifact(), {2: market2}, "t", 2026, 1,
+                              days=1, today="2026-09-05")
+    assert "(value)" in text and "Neutral A +6.0" in text
+    assert "OTHER side from who the model actually expects to win (Neutral B)" in text
+
+
+def test_call_for_game_leaves_a_true_pass_alone_when_nothing_on_the_game_has_value():
+    """No play on the game clears the bar: the pass stands, honestly --
+    swapping to anything here would be inventing value that is not there."""
+    picks = _by_id(RP.build(_artifact(), _cards(), BASES, FBS, {}))
+    row3 = _artifact().set_index("game_id").loc[3].to_dict() | {"game_id": 3}
+    # both the ML and the spread are priced in: no candidate anywhere
+    market3 = {"provider": "T", "spread": -29.0, "home_ml": -20000.0,
+              "away_ml": 5000.0}
+    call3 = RP.call_for_game(picks[3], row3, market3)
+    assert call3["swapped"] is False
+    assert call3["units"] == 0.0
+
+
 def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total():
     picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
     markets = {1: {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0},
               3: {"provider": "T", "spread": -20.0, "home_ml": -500.0, "away_ml": 400.0}}
     text = RP.render_upcoming(picks, _artifact(), markets, "t", 2026, 1,
-                              days=1, today="2026-09-05")
+                              days=1, today="2026-09-05", bases=BASES)
     assert "Over/under: none" in text
     # highest confidence first within the one day in the fixture: game 3
     # (95%), then game 1's spread lean (72%), then game 2 (60%)
@@ -359,11 +407,13 @@ def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total()
     assert "| Date | Game | Pick | Units | Chance it hits | Rationale |" in text
     assert "2u" in text and "1u" in text        # game 1 and game 3's units
     assert "n/a" in text                        # game 2: no market, no units
-    # the rationale column: the model's own why, not just the call
-    assert "Rating differential +4.0; Home-field effect +3.0" in text
-    assert ("Rating differential (FCS side: pooled FCS pseudo-team) +27.0"
-           in text)
-    assert "registered bias: out of sample the FBS side beat this" in text
+    # the rationale column: the model's own why, in plain English
+    assert "Home U grades out about 4 points better than Away U on talent" in text
+    assert "Big State is the big name in this one" in text
+    assert "classic money game" in text
+    assert ("Big State grades out about 27 points better than Tiny College "
+           "on talent") in text
+    assert "the FBS side has actually beaten this projection by about 4.6" in text
 
 
 def test_render_upcoming_window_excludes_games_outside_the_days_range():
@@ -390,3 +440,43 @@ def test_render_upcoming_scale_adjusted_ev_feeds_the_same_units_as_the_value_pag
                               days=1, today="2026-09-05", scale=scale)
     assert RP.units_for({"ev": ml["ev"], "ev_adj": ml["ev_adj"]}) is not None
     assert "Home U ML" in text
+
+
+# --------------------------------------------------------------------------- #
+# Casual rationale: same facts, plain English, no invented context
+# --------------------------------------------------------------------------- #
+
+def test_casual_rationale_frames_cross_division_as_a_money_game():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p3 = next(p for p in picks if p["game_id"] == 3)
+    text = RP.casual_rationale(p3, {}, BASES)
+    assert "Big State is the big name in this one" in text
+    assert "Tiny College is a small school making the trip for a payday" in text
+    assert "classic money game" in text
+    assert "Big State grades out about 27 points better than Tiny College" in text
+    assert "usual home-field bump of about +3.0" in text
+    assert "the FBS side has actually beaten this projection by about 4.6" in text
+
+
+def test_casual_rationale_frames_a_power_conference_favourite_over_group_of_five():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p1 = next(p for p in picks if p["game_id"] == 1)      # pick: Home U
+    conferences = {"Home U": "SEC", "Away U": "Conference USA"}
+    text = RP.casual_rationale(p1, conferences, BASES)
+    assert "Home U (SEC) is the power-conference name here" in text
+    assert "Away U out of the Conference USA" in text
+    assert "step down in competition" in text
+    assert "Home U grades out about 4 points better than Away U on talent" in text
+
+
+def test_casual_rationale_adds_no_tier_framing_without_conference_data():
+    """No conference pull, or two teams from comparable tiers: just the
+    numbers, never an invented storyline to fill the gap."""
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    p1 = next(p for p in picks if p["game_id"] == 1)
+    text = RP.casual_rationale(p1, {}, BASES)
+    assert "power-conference" not in text and "money game" not in text
+    assert "Home U grades out about 4 points better than Away U on talent" in text
+
+    both_power = RP.casual_rationale(p1, {"Home U": "SEC", "Away U": "Big Ten"}, BASES)
+    assert "power-conference" not in both_power and "step down" not in both_power

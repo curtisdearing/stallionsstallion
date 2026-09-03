@@ -44,6 +44,7 @@ import pandas as pd  # noqa: E402
 
 from nflvalue import cfb_calendar  # noqa: E402
 from nflvalue import forecast_contract as FC  # noqa: E402
+from nflvalue import ingest  # noqa: E402
 from nflvalue import producers as PR  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,6 +58,93 @@ FAMILY_LABEL = {
     "kalman_montecarlo": "Kalman ratings + drive-level Monte Carlo",
     "ridge_cross_division": "ridge vs pooled FCS pseudo-team (FBS-vs-FCS)",
 }
+
+#: The four traditional power conferences, for framing an FBS-vs-FBS
+#: rationale in plain terms (a blueblood against a small-conference team).
+#: Descriptive only -- conference is never an input to any forecast, so
+#: getting this set wrong changes nothing about a number, only a sentence.
+POWER_CONFERENCES = {"SEC", "Big Ten", "Big 12", "ACC"}
+
+
+def load_conferences(season: int) -> Dict[str, str]:
+    """team -> conference name for the season, from the same /teams pull
+    `producers.fbs_teams` uses. Purely descriptive: used only to phrase the
+    rationale in plain terms, never to price anything. {} if the pull has
+    no conference column -- the casual rationale just skips that framing."""
+    teams = ingest.load("teams", [int(season)])
+    if teams.empty or "conference" not in teams.columns:
+        return {}
+    return {str(r.team): str(r.conference) for r in teams.itertuples()}
+
+
+def casual_rationale(p: Dict[str, Any], conferences: Dict[str, str],
+                     bases: Dict[str, dict]) -> str:
+    """The same rationale `pick_row` already built, said the way you'd say
+    it out loud instead of the technical version. No new facts: the rating
+    gap and home-field points are `p['why_components']` (the same numbers
+    that sum to the published margin), the framing is `p['model_family']`
+    plus conference tier, and the caution is the same registered bias --
+    nothing here is invented or estimated. A cross-division game (an FCS
+    opponent, projected as the pooled pseudo-team) reads as the money game
+    it is: a big program hosting a small school for a payday. A Power-
+    conference team against a Group-of-Five opponent reads as a plain
+    step down in competition. Anything else -- two teams from comparable
+    conferences, or conference data this pull doesn't have -- gets just
+    the numbers, no framing sentence invented to fill the gap."""
+    if not p["pick"]:
+        return ""
+    home, away = p["home"], p["away"]
+    favorite = p["pick"]
+    underdog = away if favorite == home else home
+    comps = p.get("why_components") or []
+    rating = next((c["points"] for c in comps
+                  if str(c.get("label", "")).startswith("Rating differential")),
+                 None)
+    hfa = next((c["points"] for c in comps
+               if str(c.get("label", "")).startswith("Home-field")), None)
+    family = p.get("model_family")
+    bits = []
+    if family == "ridge_cross_division":
+        bits.append(
+            f"{favorite} is the big name in this one — {underdog} is a "
+            "small school making the trip for a payday, a classic money "
+            "game.")
+    else:
+        fav_conf, dog_conf = conferences.get(favorite), conferences.get(underdog)
+        if fav_conf and dog_conf:
+            fav_power, dog_power = (fav_conf in POWER_CONFERENCES,
+                                    dog_conf in POWER_CONFERENCES)
+            if fav_power and not dog_power:
+                bits.append(
+                    f"{favorite} ({fav_conf}) is the power-conference name "
+                    f"here against {underdog} out of the {dog_conf} — a "
+                    "step down in competition.")
+            elif dog_power and not fav_power:
+                bits.append(
+                    f"{underdog} ({dog_conf}) is the bigger name on paper, "
+                    f"but the model still likes {favorite} ({fav_conf}) "
+                    "here.")
+    if rating is not None:
+        talent = (f"{favorite} grades out about {abs(rating):.0f} points "
+                 f"better than {underdog} on talent")
+        if hfa is not None:
+            talent += (f", and {home} gets the usual home-field bump of "
+                      f"about {hfa:+.1f} on top of that")
+        bits.append(talent + ".")
+    elif hfa is not None:
+        bits.append(f"{home} gets the usual home-field bump of about "
+                    f"{hfa:+.1f} points.")
+    if family == "ridge_cross_division":
+        basis = bases.get(str(p.get("forecast_sd_basis")) or "", {})
+        if _finite(basis.get("mean_residual")):
+            bias = abs(float(basis["mean_residual"]))
+            bits.append(
+                f"One thing to flag: in games like this historically, the "
+                f"FBS side has actually beaten this projection by about "
+                f"{bias:.1f} more points on average — a known bias we "
+                "haven't corrected for, so if anything this margin runs "
+                "a little conservative.")
+    return " ".join(bits)
 
 
 def default_out_dir() -> str:
@@ -159,6 +247,8 @@ def pick_row(row: Dict[str, Any], card: Dict[str, Any],
         "status": row["status"],
         "home_is_fbs": home in fbs, "away_is_fbs": away in fbs,
         "model_family": row.get("model_family"),
+        "forecast_sd_basis": row.get("forecast_sd_basis"),
+        "why_components": card.get("why") or [],
         "pick": None, "p_pick": None, "margin_pick": None,
         "ci80_lo": None, "ci80_hi": None, "ci95_lo": None, "ci95_hi": None,
         "sd": None, "rationale": "", "caution": "", "result": "",
@@ -584,6 +674,19 @@ def value_plays(p: Dict[str, Any], row: Dict[str, Any], market: dict,
     return plays
 
 
+def best_value_play(plays: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    """The single highest-EV play on a game that clears the profitability
+    bar: at least `MIN_PLAY_PROB` and a positive registered expected value.
+    None if nothing on the game clears it -- that is the honest answer on
+    some games, not a case to work around. The one selection rule behind
+    both the value page's ranking and the next-N-days page's value swap;
+    factored out so they cannot drift into two different bars."""
+    candidates = [x for x in plays if x["ev"] > 0 and x["p"] >= MIN_PLAY_PROB]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda x: (x["ev"], -x["break_even"]))
+
+
 def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                  markets: Dict[int, dict], market_as_of: Optional[str],
                  season: int, week: int, scale: Optional[dict] = None) -> str:
@@ -598,9 +701,9 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                             scale)
         if plays:
             n_priced_games += 1
-        plays = [x for x in plays if x["ev"] > 0 and x["p"] >= MIN_PLAY_PROB]
-        if plays:
-            best.append((p, max(plays, key=lambda x: (x["ev"], -x["break_even"]))))
+        play = best_value_play(plays)
+        if play is not None:
+            best.append((p, play))
     best.sort(key=lambda pb: (-pb[1]["ev"], pb[0]["game_id"]))
     both = [(p, b) for p, b in best
             if b.get("ev_adj") is not None and b["ev_adj"] > 0]
@@ -732,51 +835,74 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
 def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
                   market: Optional[dict],
                   scale: Optional[dict] = None) -> Optional[Dict[str, Any]]:
-    """The single most-confident call for one game: a spread pick (frozen
-    ledger lean, else the cached market line, standard -110 either way) when
-    its cover probability beats the straight-up win probability, else the
-    projected winner as a moneyline call at the cached price if one exists.
-    No over/under: the early-season route publishes no total by contract,
-    and no registered basis backs an over/under probability in any week
-    yet -- so none is shown, rather than made up.
+    """One call for one game: the model's most-confident side (a spread pick
+    -- frozen ledger lean, else the cached market line, standard -110 either
+    way -- when its cover probability beats the straight-up win probability,
+    else the projected winner as a moneyline call at the cached price) UNLESS
+    that call is a pass on units (priced in, no value against the price), in
+    which case this reaches for the best play anywhere on the game --
+    including the other side -- that clears the value bar (`best_value_play`:
+    at least 50% and positive EV), and marks it `swapped`. Only when nothing
+    on the game clears that bar does a pass stand, honestly, rather than
+    being papered over with a play that does not actually pay. No over/under:
+    the early-season route publishes no total by contract, and no registered
+    basis backs an over/under probability in any week yet -- so none is
+    shown, rather than made up.
 
     Carries the same expected-value pair every value play does (registered
     and scale-adjusted) and the units they size to, so this page does not
     need a second pass through `value_plays` to answer "is this worth
     anything" -- units are None (n/a) only when there is no price to check
-    the pick against at all."""
+    any pick against at all."""
     if not p["pick"]:
         return None
     plays = value_plays(p, row, market, scale)
     favoured = [x for x in plays
                if x["kind"] == "spread"
                or x["pick"].startswith(f"{p['pick']} ML")]
-    if favoured:
-        best = max(favoured, key=lambda x: x["p"])
-        label = (f"{p['pick']} ML" if best["kind"] == "moneyline"
-                else best["pick"])
-        ev, ev_adj = best.get("ev"), best.get("ev_adj")
-        return {"kind": best["kind"], "pick": label, "p": best["p"],
-                "price": best.get("price"), "flag": best["flag"],
-                "frozen": best.get("frozen"), "has_market": True,
-                "ev": ev, "ev_adj": ev_adj,
-                "units": None if ev is None else units_for(
-                    {"ev": ev, "ev_adj": ev_adj})}
-    return {"kind": "moneyline", "pick": f"{p['pick']} ML", "p": p["p_pick"],
-            "price": None, "flag": False, "frozen": None,
-            "has_market": False, "ev": None, "ev_adj": None, "units": None}
+    confident = max(favoured, key=lambda x: x["p"]) if favoured else None
+    swapped = False
+    chosen = confident
+    if confident is not None:
+        ev = confident.get("ev")
+        units = None if ev is None else units_for(
+            {"ev": ev, "ev_adj": confident.get("ev_adj")})
+        if units == 0.0:
+            alt = best_value_play(plays)
+            if alt is not None and alt["pick"] != confident["pick"]:
+                chosen, swapped = alt, True
+    elif plays:
+        chosen = best_value_play(plays)
+        swapped = chosen is not None
+    if chosen is None:
+        return {"kind": "moneyline", "pick": f"{p['pick']} ML", "p": p["p_pick"],
+                "price": None, "flag": False, "frozen": None,
+                "has_market": False, "ev": None, "ev_adj": None, "units": None,
+                "swapped": False}
+    ev, ev_adj = chosen.get("ev"), chosen.get("ev_adj")
+    return {"kind": chosen["kind"], "pick": chosen["pick"], "p": chosen["p"],
+            "price": chosen.get("price"), "flag": chosen["flag"],
+            "frozen": chosen.get("frozen"), "has_market": True,
+            "ev": ev, "ev_adj": ev_adj,
+            "units": None if ev is None else units_for(
+                {"ev": ev, "ev_adj": ev_adj}),
+            "swapped": swapped}
 
 
 def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                     markets: Dict[int, dict], market_as_of: Optional[str],
                     season: int, week: int, days: int = 3,
                     today: Optional[str] = None,
-                    scale: Optional[dict] = None) -> str:
+                    scale: Optional[dict] = None,
+                    conferences: Optional[Dict[str, str]] = None,
+                    bases: Optional[Dict[str, dict]] = None) -> str:
     """Every FBS game kicking off in the next `days` calendar days (public,
     America/New_York dates), one call per game, grouped by date and sorted
     by confidence within the day -- the format asked for: team + market
     (moneyline or spread), with the units it is worth and the rationale
-    behind it, not a ranked value list or a separate rationale lookup."""
+    behind it in plain English, not a ranked value list or a separate
+    rationale lookup."""
+    conferences, bases = (conferences or {}), (bases or {})
     by_id = {int(r["game_id"]): r for r in rows.to_dict("records")}
     start = (pd.Timestamp(today) if today else
             pd.Timestamp.now(tz=cfb_calendar.PUBLIC_TIMEZONE)).normalize()
@@ -815,9 +941,18 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         "run about 19% smaller than the market's; see the value page for "
         "the fit), ladder 3u/2u/1u/0.5u, capped at 3u since nothing has "
         "been graded yet, and 'n/a' where there is no price to check the "
-        "pick against at all. **Rationale** is the model's own why: rating "
-        "differential plus home-field effect, always summing to the "
-        "published margin, plus the cross-division caveat where it applies.",
+        "pick against at all. When the model's most-confident side is a "
+        "pass (priced in, no value), this page reaches for the best play "
+        "anywhere on that game -- including the other side -- that clears "
+        "the bar (50%+ and positive EV), tagged **(value)**; if nothing on "
+        "the game clears it, the pass stands rather than being papered "
+        "over. **Rationale** is the same why, in plain English: the talent "
+        "gap and home-field number that add up to the projected margin, an "
+        "FCS opponent framed as the money game it is, a Power-conference "
+        "team framed as a step up on a Group-of-Five opponent where the "
+        "data says so -- nothing invented, just said the way you'd say it "
+        "out loud. For a (value) pick against the model's own projected "
+        "winner, that's noted too.",
         "",
         "| Date | Game | Pick | Units | Chance it hits | Rationale |",
         "|---|---|---|---|---|---|",
@@ -830,15 +965,31 @@ def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
         else:
             day_label = ""
         site = " (N)" if p["neutral"] else ""
-        tags = (("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
+        tags = (("(value) " if c.get("swapped") else "")
+               + ("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
                + (r"\* " if c["flag"] else "")
                + ("(no market) " if not c["has_market"] else ""))
         units = "n/a" if c["units"] is None else (
             "pass" if c["units"] == 0 else f"{c['units']:g}u")
+        rationale = casual_rationale(p, conferences, bases)
+        if c.get("swapped") and not c["pick"].startswith(p["pick"]):
+            rationale += (f" One catch: this is the OTHER side from who the "
+                         f"model actually expects to win ({p['pick']}) — "
+                         "we're not saying they lose, just that this side "
+                         "is the one worth laying money on.")
         lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
                      f"{p['kickoff_et']} | {tags}{c['pick']} | {units} | "
-                     f"{_fmt_p(c['p'])} | {p['rationale']} |")
+                     f"{_fmt_p(c['p'])} | {rationale} |")
     notes = []
+    n_swapped = sum(1 for _, c in called if c.get("swapped"))
+    if n_swapped:
+        notes.append(
+            f"(value) {n_swapped} picks are not the model's most-confident "
+            "side on that game -- the confident side priced in with no "
+            "value, so this shows whichever play on the game clears the "
+            "50%+ and positive-EV bar instead. Read the confidence column "
+            "literally: it is that play's own chance, not the model's "
+            "headline win probability.")
     if n_flag:
         notes.append(
             rf"\* {n_flag} picks sit on a market spread over "
@@ -950,7 +1101,8 @@ def main() -> int:
     upcoming = render_upcoming(picks, rows, markets, market_as_of,
                                args.season, args.week,
                                days=args.upcoming_days, today=args.today,
-                               scale=scale)
+                               scale=scale, conferences=load_conferences(args.season),
+                               bases=bases)
     out_dir = args.out_dir or default_out_dir()
     md_path, csv_path = write_outputs(
         picks, args.season, args.week, out_dir, text, compact, value,
