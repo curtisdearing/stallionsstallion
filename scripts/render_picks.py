@@ -90,6 +90,39 @@ def load_inputs(season: int, week: int, artifact: Optional[str] = None,
     return rows, cards, bases
 
 
+def load_ledger(season: int, week: int, path: Optional[str] = None
+                ) -> Dict[int, dict]:
+    """The frozen market leans for the week, by game id, or {}.
+
+    Read from `data/board_ledger.csv` -- the first-write-wins ledger whose
+    lines were frozen before kickoff -- never from the live lines cache, so a
+    spread shown here is the one the lean was actually recorded against.
+    """
+    path = path or os.path.join(DATA, "board_ledger.csv")
+    if not os.path.exists(path):
+        return {}
+    frame = pd.read_csv(path)
+    frame = frame[(frame["season"] == season) & (frame["week"] == week)]
+    out = {}
+    for row in frame.to_dict("records"):
+        out[int(row["game_id"])] = {
+            "ats_side": str(row["side_raw"]),
+            "ats_p": float(row["p_cover_raw"]),
+            "ats_p_adj": float(row["p_cover_adj"]),
+            "ats_line_home": float(row["line_taken_home"]),
+            "ats_book": str(row.get("book", "")),
+            "ats_taken_at": str(row.get("taken_at_utc", "")),
+        }
+    return out
+
+
+#: Above this market spread the registered lean is inside the pre-registered
+#: scale question (model = 0.807 x market + 0.92, 2026-09-02): the model runs
+#: ~19% compressed against the market, which mechanically produces an
+#: underdog lean on every large spread. Flagged, never hidden.
+LARGE_SPREAD = 14.0
+
+
 def _finite(value: Any) -> bool:
     try:
         return value is not None and math.isfinite(float(value))
@@ -105,10 +138,18 @@ def _why_text(card: Dict[str, Any]) -> str:
 
 
 def pick_row(row: Dict[str, Any], card: Dict[str, Any],
-             bases: Dict[str, dict], fbs: set) -> Dict[str, Any]:
+             bases: Dict[str, dict], fbs: set,
+             ledger: Optional[Dict[int, dict]] = None) -> Dict[str, Any]:
     """One game -> one line of the page. Refused games keep their reason."""
     home, away = str(row["home"]), str(row["away"])
+    lean = (ledger or {}).get(int(row["game_id"]), {})
     out = {
+        "ats_side": lean.get("ats_side"), "ats_p": lean.get("ats_p"),
+        "ats_p_adj": lean.get("ats_p_adj"),
+        "ats_line_home": lean.get("ats_line_home"),
+        "ats_book": lean.get("ats_book"),
+        "ats_large_spread": (None if not lean else
+                             abs(lean["ats_line_home"]) > LARGE_SPREAD),
         "game_id": int(row["game_id"]),
         "kickoff_utc": row["kickoff_utc"],
         "kickoff_et": kickoff_et(row["kickoff_utc"]),
@@ -162,7 +203,8 @@ def pick_row(row: Dict[str, Any], card: Dict[str, Any],
 
 
 def build(rows: pd.DataFrame, cards: Dict[int, dict], bases: Dict[str, dict],
-          fbs: set) -> List[Dict[str, Any]]:
+          fbs: set, ledger: Optional[Dict[int, dict]] = None
+          ) -> List[Dict[str, Any]]:
     out = []
     for row in rows.sort_values(["kickoff_utc", "game_id"]).to_dict("records"):
         home, away = str(row["home"]), str(row["away"])
@@ -172,7 +214,7 @@ def build(rows: pd.DataFrame, cards: Dict[int, dict], bases: Dict[str, dict],
         if card is None:
             raise SystemExit(f"game {row['game_id']} has no insight card; "
                              "the cards and the artifact are out of step")
-        out.append(pick_row(row, card, bases, fbs))
+        out.append(pick_row(row, card, bases, fbs, ledger))
     return out
 
 
@@ -294,6 +336,70 @@ def render_markdown(picks: List[Dict[str, Any]], season: int, week: int,
     return "\n".join(lines) + "\n"
 
 
+def best_call(p: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """The one call to show for a game: the frozen spread lean when the model
+    holds it with MORE confidence than the straight-up winner, else the
+    straight-up winner. Totals never appear: the early-season ridge publishes
+    no total by contract, and no registered basis backs an over/under
+    probability in any week yet, so there is no honest number to show."""
+    if not p["pick"]:
+        return None
+    if p["ats_side"] and p["ats_p"] is not None and p["ats_p"] > p["p_pick"]:
+        return {"kind": "spread", "pick": p["ats_side"], "p": p["ats_p"],
+                "flag": bool(p["ats_large_spread"]), "p_adj": p["ats_p_adj"]}
+    return {"kind": "straight_up", "pick": f"{p['pick']} (straight up)",
+            "p": p["p_pick"], "flag": False, "p_adj": None}
+
+
+def render_compact(picks: List[Dict[str, Any]], season: int, week: int,
+                   rows: pd.DataFrame) -> str:
+    """Game / pick / confidence, one line per game, most confident first."""
+    calls = [(p, best_call(p)) for p in picks]
+    called = [(p, c) for p, c in calls if c]
+    called.sort(key=lambda pc: (-pc[1]["p"], pc[0]["game_id"]))
+    n_spread = sum(1 for _, c in called if c["kind"] == "spread")
+    n_flag = sum(1 for _, c in called if c["flag"])
+    n_lines = sum(1 for p in picks if p["ats_side"])
+    snapshot = sorted(set(rows["snapshot_id"].dropna().astype(str)))
+    lines = [
+        f"# {season} week {week} — picks",
+        "",
+        f"{len(called)} calls: {len(called) - n_spread} straight up, "
+        f"{n_spread} against the spread (shown where the model holds the "
+        f"spread lean with more confidence than the winner; {n_lines} games "
+        "had a frozen line). Over/under: none — the early-season route "
+        "publishes no total by contract, and no registered basis backs an "
+        "over/under probability yet. Paper-only; private vault note. "
+        f"Snapshot {', '.join(snapshot)}; spread leans from "
+        "`data/board_ledger.csv` (frozen before kickoff).",
+        "",
+        "| Game | Pick | Confidence |",
+        "|---|---|---|",
+    ]
+    for p, c in called:
+        site = " (N)" if p["neutral"] else ""
+        conf = _fmt_p(c["p"]) + ("\*" if c["flag"] else "")
+        lines.append(f"| {p['away']} @ {p['home']}{site} · "
+                     f"{p['kickoff_et']} | {c['pick']} | {conf} |")
+    if n_flag:
+        lines += [
+            "",
+            f"\* {n_flag} spread leans sit on a market spread over "
+            f"{LARGE_SPREAD:.0f} points. Those are inside the open, "
+            "pre-registered scale question (the model runs ~19% compressed "
+            "against the market, which produces an underdog lean on every "
+            "large spread — one bias, reported many times). The confidence "
+            "shown is the registered number; the scale-adjusted diagnostic "
+            "for each is in the CSV (`ats_p_adj`). Treat these as one "
+            "position, not many.",
+        ]
+    refused = [p for p in picks if not p["pick"]]
+    if refused:
+        lines += ["", "Not called: " + "; ".join(
+            f"{p['away']} @ {p['home']}" for p in refused) + "."]
+    return "\n".join(lines) + "\n"
+
+
 CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
                "home", "neutral", "status", "model_family", "pick", "p_pick",
                "margin_pick", "sd", "ci80_lo", "ci80_hi", "ci95_lo", "ci95_hi",
@@ -301,12 +407,17 @@ CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
 
 
 def write_outputs(picks: List[Dict[str, Any]], season: int, week: int,
-                  out_dir: str, text: str) -> tuple:
+                  out_dir: str, text: str,
+                  compact_text: Optional[str] = None) -> tuple:
     os.makedirs(out_dir, exist_ok=True)
     stem = os.path.join(out_dir, f"{season}_wk{week:02d}_every_fbs_game")
     md_path, csv_path = stem + ".md", stem + ".csv"
     with open(md_path, "w") as fh:
         fh.write(text)
+    if compact_text is not None:
+        with open(os.path.join(out_dir, f"{season}_wk{week:02d}_picks.md"),
+                  "w") as fh:
+            fh.write(compact_text)
     with open(csv_path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(CSV_COLUMNS),
                                 extrasaction="ignore")
@@ -344,15 +455,19 @@ def main() -> int:
     rows, cards, bases = load_inputs(args.season, args.week, args.artifact,
                                      args.insights)
     fbs = PR.fbs_teams(args.season)
-    picks = build(rows, cards, bases, fbs)
+    ledger = load_ledger(args.season, args.week)
+    picks = build(rows, cards, bases, fbs, ledger)
     text = render_markdown(picks, args.season, args.week, rows, bases)
-    md_path, csv_path = write_outputs(picks, args.season, args.week,
-                                      args.out_dir or default_out_dir(), text)
+    compact = render_compact(picks, args.season, args.week, rows)
+    out_dir = args.out_dir or default_out_dir()
+    md_path, csv_path = write_outputs(picks, args.season, args.week, out_dir,
+                                      text, compact)
     n_pick = sum(1 for p in picks if p["pick"])
     print(f"[picks] {len(picks)} FBS games, {n_pick} with a projected winner, "
           f"{len(picks) - n_pick} not forecast")
     print(f"[picks] wrote {md_path}")
     print(f"[picks] wrote {csv_path}")
+    print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_picks.md')}")
     return 0
 
 

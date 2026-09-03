@@ -149,3 +149,36 @@ def test_probability_format_never_prints_a_certainty():
     assert RP._fmt_p(0.9986) == "99.9%"
     assert RP._fmt_p(0.669) == "67%"
     assert RP._fmt_p(None) == ""
+
+
+def _ledger():
+    return {1: {"ats_side": "Away U +10.0", "ats_p": 0.72, "ats_p_adj": 0.66,
+                "ats_line_home": -10.0, "ats_book": "Test", "ats_taken_at": "t"},
+            3: {"ats_side": "Big State -20.0", "ats_p": 0.60, "ats_p_adj": 0.55,
+                "ats_line_home": -20.0, "ats_book": "Test", "ats_taken_at": "t"}}
+
+
+def test_compact_shows_the_spread_lean_only_when_it_is_the_more_confident_call():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    by_id = {p["game_id"]: RP.best_call(p) for p in picks}
+    # game 1: straight-up 0.669 < spread 0.72 -> the spread lean, no flag
+    assert by_id[1] == {"kind": "spread", "pick": "Away U +10.0", "p": 0.72,
+                        "flag": False, "p_adj": 0.66}
+    # game 3: straight-up 0.953 > spread 0.60 -> the winner, even with a line
+    assert by_id[3]["kind"] == "straight_up" and by_id[3]["p"] == 0.953
+    # game 2: no line at all -> the winner
+    assert by_id[2]["kind"] == "straight_up"
+    # refused game -> no call
+    assert by_id[5] is None
+
+
+def test_compact_flags_large_spread_leans_and_never_shows_a_total():
+    ledger = _ledger()
+    ledger[3]["ats_p"] = 0.99   # now the more confident call, on a 20-pt spread
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, ledger)
+    text = RP.render_compact(picks, 2026, 1, _artifact())
+    assert "| Big State -20.0 | 99%\\*" in text
+    assert "spread leans sit on a market spread over 14" in text
+    assert "Over/under: none" in text
+    assert "over" not in text.lower().replace("over/under", "").replace("over 14", "")
+    assert text == RP.render_compact(picks, 2026, 1, _artifact())   # byte-stable
