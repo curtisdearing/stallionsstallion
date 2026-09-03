@@ -725,6 +725,123 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
     return "\n".join(lines) + "\n"
 
 
+# --------------------------------------------------------------------------- #
+# The upcoming page: one call per game, sorted by date then confidence
+# --------------------------------------------------------------------------- #
+
+def call_for_game(p: Dict[str, Any], row: Dict[str, Any],
+                  market: Optional[dict]) -> Optional[Dict[str, Any]]:
+    """The single most-confident call for one game: a spread pick (frozen
+    ledger lean, else the cached market line, standard -110 either way) when
+    its cover probability beats the straight-up win probability, else the
+    projected winner as a moneyline call at the cached price if one exists.
+    No over/under: the early-season route publishes no total by contract,
+    and no registered basis backs an over/under probability in any week
+    yet -- so none is shown, rather than made up."""
+    if not p["pick"]:
+        return None
+    plays = value_plays(p, row, market)
+    favoured = [x for x in plays
+               if x["kind"] == "spread"
+               or x["pick"].startswith(f"{p['pick']} ML")]
+    if favoured:
+        best = max(favoured, key=lambda x: x["p"])
+        label = (f"{p['pick']} ML" if best["kind"] == "moneyline"
+                else best["pick"])
+        price = best.get("price")
+        return {"kind": best["kind"], "pick": label, "p": best["p"],
+                "price": price, "flag": best["flag"],
+                "frozen": best.get("frozen"),
+                "has_market": True}
+    return {"kind": "moneyline", "pick": f"{p['pick']} ML", "p": p["p_pick"],
+            "price": None, "flag": False, "frozen": None,
+            "has_market": False}
+
+
+def render_upcoming(picks: List[Dict[str, Any]], rows: pd.DataFrame,
+                    markets: Dict[int, dict], market_as_of: Optional[str],
+                    season: int, week: int, days: int = 3,
+                    today: Optional[str] = None) -> str:
+    """Every FBS game kicking off in the next `days` calendar days (public,
+    America/New_York dates), one call per game, grouped by date and sorted
+    by confidence within the day -- the format asked for: team + market
+    (moneyline or spread), not a ranked value list."""
+    by_id = {int(r["game_id"]): r for r in rows.to_dict("records")}
+    start = (pd.Timestamp(today) if today else
+            pd.Timestamp.now(tz=cfb_calendar.PUBLIC_TIMEZONE)).normalize()
+    window = {(start + pd.Timedelta(days=i)).strftime("%Y-%m-%d")
+             for i in range(days)}
+    called = []
+    for p in picks:
+        if p["public_date"] not in window:
+            continue
+        call = call_for_game(p, by_id[p["game_id"]], markets.get(p["game_id"]))
+        if call:
+            called.append((p, call))
+    called.sort(key=lambda pc: (pc[0]["public_date"], -pc[1]["p"],
+                                pc[0]["game_id"]))
+    not_called = [p for p in picks if p["public_date"] in window and not p["pick"]]
+    n_flag = sum(1 for _, c in called if c["flag"])
+    n_no_market = sum(1 for _, c in called if not c["has_market"])
+    lo = min(window) if window else (today or "")
+    hi = max(window) if window else (today or "")
+    lines = [
+        f"# {season} week {week} — picks, {lo} to {hi}",
+        "",
+        f"{len(called)} calls across {len(window)} days, one per game, "
+        "sorted by date then by how confident the model is. Spread picks "
+        "use the frozen line where one was recorded, else the current "
+        "cached market line (both assume standard -110 juice); moneyline "
+        "picks use the cached price when the book has one. Over/under: "
+        "none -- the early-season route publishes no total by contract, "
+        "and no registered basis backs an over/under probability in any "
+        "week yet. Paper-only; private vault note; nothing here is staked.",
+        "",
+        "| Date | Game | Pick | Confidence |",
+        "|---|---|---|---|",
+    ]
+    last_day = None
+    for p, c in called:
+        if p["public_date"] != last_day:
+            last_day = p["public_date"]
+            day_label = pd.Timestamp(last_day).strftime("%a %b %d").replace(" 0", " ")
+        else:
+            day_label = ""
+        site = " (N)" if p["neutral"] else ""
+        tags = (("(u) " if c["kind"] == "spread" and c["frozen"] is False else "")
+               + (r"\* " if c["flag"] else "")
+               + ("(no market) " if not c["has_market"] else ""))
+        lines.append(f"| {day_label} | {p['away']} @ {p['home']}{site} · "
+                     f"{p['kickoff_et']} | {tags}{c['pick']} | "
+                     f"{_fmt_p(c['p'])} |")
+    notes = []
+    if n_flag:
+        notes.append(
+            rf"\* {n_flag} picks sit on a market spread over "
+            f"{LARGE_SPREAD:.0f} points -- inside the open, pre-registered "
+            "scale question (the model runs ~19% compressed against the "
+            "market, which leans it toward the underdog on every large "
+            "spread). One opinion repeated, not independent picks.")
+    if n_no_market:
+        notes.append(
+            f"(no market) {n_no_market} picks have no cached line or price "
+            "-- the confidence shown is the model's own win probability, "
+            "not measured against anything a book is offering.")
+    n_unfrozen_spread = sum(1 for _, c in called
+                            if c["kind"] == "spread" and c["frozen"] is False)
+    if n_unfrozen_spread:
+        notes.append(
+            f"(u) {n_unfrozen_spread} spread picks use the cached line "
+            "rather than a frozen ledger lean; the market can move before "
+            "kickoff on those.")
+    if notes:
+        lines += [""] + notes
+    if not_called:
+        lines += ["", "Not called: " + "; ".join(
+            f"{p['away']} @ {p['home']}" for p in not_called) + "."]
+    return "\n".join(lines) + "\n"
+
+
 CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
                "home", "neutral", "status", "model_family", "pick", "p_pick",
                "margin_pick", "sd", "ci80_lo", "ci80_hi", "ci95_lo", "ci95_hi",
@@ -734,7 +851,9 @@ CSV_COLUMNS = ("game_id", "kickoff_et", "kickoff_utc", "public_date", "away",
 def write_outputs(picks: List[Dict[str, Any]], season: int, week: int,
                   out_dir: str, text: str,
                   compact_text: Optional[str] = None,
-                  value_text: Optional[str] = None) -> tuple:
+                  value_text: Optional[str] = None,
+                  upcoming_text: Optional[str] = None,
+                  upcoming_days: int = 3) -> tuple:
     os.makedirs(out_dir, exist_ok=True)
     stem = os.path.join(out_dir, f"{season}_wk{week:02d}_every_fbs_game")
     md_path, csv_path = stem + ".md", stem + ".csv"
@@ -748,6 +867,11 @@ def write_outputs(picks: List[Dict[str, Any]], season: int, week: int,
         with open(os.path.join(out_dir, f"{season}_wk{week:02d}_value.md"),
                   "w") as fh:
             fh.write(value_text)
+    if upcoming_text is not None:
+        with open(os.path.join(
+                out_dir, f"{season}_wk{week:02d}_next{upcoming_days}days.md"),
+                  "w") as fh:
+            fh.write(upcoming_text)
     with open(csv_path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(CSV_COLUMNS),
                                 extrasaction="ignore")
@@ -768,6 +892,11 @@ def main() -> int:
     ap.add_argument("--artifact", default=None)
     ap.add_argument("--insights", default=None)
     ap.add_argument("--out-dir", default=None)
+    ap.add_argument("--upcoming-days", type=int, default=3,
+                    help="window for the next-N-days picks page (default 3)")
+    ap.add_argument("--today", default=None,
+                    help="override 'today' (public ET date, YYYY-MM-DD) for "
+                         "the next-N-days window; default is the real clock")
     args = ap.parse_args()
     if args.auto:
         import importlib.util
@@ -793,9 +922,13 @@ def main() -> int:
     value = render_value(picks, rows, markets, market_as_of,
                          args.season, args.week,
                          scale=load_scale(args.season, args.week))
+    upcoming = render_upcoming(picks, rows, markets, market_as_of,
+                               args.season, args.week,
+                               days=args.upcoming_days, today=args.today)
     out_dir = args.out_dir or default_out_dir()
-    md_path, csv_path = write_outputs(picks, args.season, args.week, out_dir,
-                                      text, compact, value)
+    md_path, csv_path = write_outputs(
+        picks, args.season, args.week, out_dir, text, compact, value,
+        upcoming, args.upcoming_days)
     n_pick = sum(1 for p in picks if p["pick"])
     print(f"[picks] {len(picks)} FBS games, {n_pick} with a projected winner, "
           f"{len(picks) - n_pick} not forecast")
@@ -803,6 +936,7 @@ def main() -> int:
     print(f"[picks] wrote {csv_path}")
     print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_picks.md')}")
     print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_value.md')}")
+    print(f"[picks] wrote {os.path.join(out_dir, f'{args.season}_wk{args.week:02d}_next{args.upcoming_days}days.md')}")
     return 0
 
 

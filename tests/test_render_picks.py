@@ -284,3 +284,72 @@ def test_value_page_groups_by_day_with_units():
     assert "## Picks by day, sized in units" in text
     assert "### 2026-09-05 — " in text
     assert "| Units |" in text
+
+
+# --------------------------------------------------------------------------- #
+# The upcoming page: one call per game, sorted by date then confidence
+# --------------------------------------------------------------------------- #
+
+def _by_id(picks):
+    return {p["game_id"]: p for p in picks}
+
+
+def test_call_for_game_prefers_the_more_confident_of_spread_and_moneyline():
+    picks = _by_id(RP.build(_artifact(), _cards(), BASES, FBS, _ledger()))
+    row1 = _artifact().set_index("game_id").loc[1].to_dict() | {"game_id": 1}
+    market1 = {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0}
+    # game 1: frozen spread lean 0.72 beats the ML win probability 0.669
+    call1 = RP.call_for_game(picks[1], row1, market1)
+    assert call1 == {"kind": "spread", "pick": "Away U +10.0", "p": 0.72,
+                     "price": RP.SPREAD_PRICE, "flag": False, "frozen": True,
+                     "has_market": True}
+
+    row3 = _artifact().set_index("game_id").loc[3].to_dict() | {"game_id": 3}
+    market3 = {"provider": "T", "spread": -20.0, "home_ml": -500.0,
+              "away_ml": 400.0}
+    # game 3: ML win probability 0.9533 beats the frozen spread lean 0.60,
+    # and the underlying line is over the large-spread threshold either way
+    call3 = RP.call_for_game(picks[3], row3, market3)
+    assert call3["kind"] == "moneyline" and call3["pick"] == "Big State ML"
+    assert call3["p"] == pytest.approx(0.9533)
+    assert call3["flag"] is True
+
+
+def test_call_for_game_falls_back_to_the_models_own_probability_with_no_market():
+    picks = _by_id(RP.build(_artifact(), _cards(), BASES, FBS, {}))
+    row2 = _artifact().set_index("game_id").loc[2].to_dict() | {"game_id": 2}
+    call2 = RP.call_for_game(picks[2], row2, None)
+    assert call2 == {"kind": "moneyline", "pick": "Neutral B ML",
+                     "p": pytest.approx(0.599), "price": None, "flag": False,
+                     "frozen": None, "has_market": False}
+
+
+def test_call_for_game_is_none_for_a_refused_game():
+    picks = _by_id(RP.build(_artifact(), _cards(), BASES, FBS, {}))
+    row5 = _artifact().set_index("game_id").loc[5].to_dict() | {"game_id": 5}
+    assert RP.call_for_game(picks[5], row5, None) is None
+
+
+def test_render_upcoming_sorts_by_date_then_confidence_and_never_shows_a_total():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, _ledger())
+    markets = {1: {"provider": "T", "spread": -4.0, "home_ml": -300.0, "away_ml": 240.0},
+              3: {"provider": "T", "spread": -20.0, "home_ml": -500.0, "away_ml": 400.0}}
+    text = RP.render_upcoming(picks, _artifact(), markets, "t", 2026, 1,
+                              days=1, today="2026-09-05")
+    assert "Over/under: none" in text
+    # highest confidence first within the one day in the fixture: game 3
+    # (95%), then game 1's spread lean (72%), then game 2 (60%)
+    i3, i1, i2 = text.index("Big State ML"), text.index("Away U +10.0"), \
+        text.index("Neutral B ML")
+    assert i3 < i1 < i2
+    assert "\\* Big State ML" in text          # large-spread flag carries over
+    assert "(u) Away U +10.0" not in text       # frozen spread: not tagged (u)
+    assert "(no market) Neutral B ML" in text   # no line or price at all
+
+
+def test_render_upcoming_window_excludes_games_outside_the_days_range():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    text = RP.render_upcoming(picks, _artifact(), {}, "t", 2026, 1,
+                              days=3, today="2026-09-01")
+    assert "0 calls" in text
+    assert "Home U" not in text and "Big State" not in text
