@@ -406,6 +406,12 @@ def render_compact(picks: List[Dict[str, Any]], season: int, week: int,
 #: Standard spread juice. The ledger froze lines, not prices; -110 is the
 #: assumption the break-even below is built on and is stated on the page.
 SPREAD_PRICE = -110.0
+
+#: Curtis's rule (2026-09-03): a play the model gives less than an even
+#: chance is cut, whatever its expected value. A 26% long shot at 40-to-1
+#: has a large expected profit and is still a pick that loses three times
+#: in four; this page is for picks, not for lottery tickets.
+MIN_PLAY_PROB = 0.5
 PROVIDER_PRIORITY = ("DraftKings", "Draft Kings", "Bovada", "ESPN Bet", "consensus")
 
 
@@ -570,7 +576,7 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
                             scale)
         if plays:
             n_priced_games += 1
-        plays = [x for x in plays if x["ev"] > 0]
+        plays = [x for x in plays if x["ev"] > 0 and x["p"] >= MIN_PLAY_PROB]
         if plays:
             best.append((p, max(plays, key=lambda x: (x["ev"], -x["break_even"]))))
     best.sort(key=lambda pb: (-pb[1]["ev"], pb[0]["game_id"]))
@@ -583,31 +589,40 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
     lines = [
         f"# {season} week {week} — value",
         "",
-        "One play per game, the one with the highest expected value against "
-        "the actual price, positive EV only, ranked. EV is per 1 unit staked "
-        "from the model's own win / cover probability: a big favourite at a "
-        "big price does not appear, because the price already says it. "
-        f"Spread plays assume {SPREAD_PRICE:+.0f} (break-even "
-        f"{100 * implied(SPREAD_PRICE):.1f}%). Moneylines and any spread "
-        "marked (u) are the cached prices as of "
-        f"{market_as_of or 'unknown'} — NOT frozen leans; the frozen spreads "
-        "come from `data/board_ledger.csv`. Paper-only; private vault note; "
-        "gate 7 has not run and nothing here is staked.",
+        "One pick per game, only where the model gives it at least a "
+        f"{100 * MIN_PLAY_PROB:.0f}% chance AND it pays better than that chance "
+        "deserves. Best pick per game, ranked by expected profit.",
         "",
-        f"{len(best)} games with a positive-EV play out of {n_priced_games} "
-        f"priced games with a market ({n_ml} moneyline, {len(best) - n_ml} "
-        f"spread, {n_unfrozen} of the spreads unfrozen). Over/under: none — "
-        "no total is published by contract in weeks 0-3 and no registered "
-        "basis backs an over/under probability yet.",
+        "**How to read it.** *Chance it hits* is the model's probability the "
+        "pick wins (covers, for a spread). *Needs to hit* is how often a pick "
+        "at that price has to win just to break even — a −110 spread needs "
+        f"{100 * implied(SPREAD_PRICE):.1f}%, a +150 underdog needs 40%. The "
+        "gap between those two is the whole case for the pick. *Expected "
+        "profit per $100* is what that gap is worth on average: chance of "
+        "winning × payout, minus the chance of losing × $100. It is an "
+        "average over many bets, not what happens on one.",
+        "",
+        "Spread picks assume a standard −110 price. Moneylines and any spread "
+        "marked (u) use the cached prices as of "
+        f"{market_as_of or 'unknown'} — not frozen; the frozen spreads come "
+        "from `data/board_ledger.csv`. Paper-only; private vault note; gate 7 "
+        "has not run and nothing here is staked.",
+        "",
+        f"{len(best)} picks from {n_priced_games} priced games with a market "
+        f"({n_ml} moneyline, {len(best) - n_ml} spread, {n_unfrozen} of the "
+        f"spreads unfrozen). Cut: every play the model gives under "
+        f"{100 * MIN_PLAY_PROB:.0f}%. Over/under: none — no total is published "
+        "by contract in weeks 0-3 and no registered basis backs an over/under "
+        "probability yet.",
         "",
     ]
 
     def _ev(value: Optional[float]) -> str:
-        return "n/a" if value is None else f"{100 * value:+.1f}%"
+        return "n/a" if value is None else f"${100 * value:+.0f}"
 
     def table(items: List[tuple]) -> List[str]:
-        out = ["| Game | Pick | Model p | Break-even | EV (registered) "
-               "| EV (scale-adj) |",
+        out = ["| Game | Pick | Chance it hits | Needs to hit | "
+               "Expected profit per $100 | Same, scale-adjusted |",
                "|---|---|---|---|---|---|"]
         for p, b in items:
             site = " (N)" if p["neutral"] else ""
@@ -622,34 +637,34 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
 
     if scale:
         lines += [
-            "## Plays that survive both views",
+            "## Picks that survive both views",
             "",
-            "Positive EV under the registered numbers AND under the "
-            "scale-adjusted diagnostic (the model margin re-scaled by the "
-            f"registered fit: slope {scale['slope']:.3f}, intercept "
+            "Profitable under the model's own numbers AND after the "
+            "scale adjustment (the model's margins are known to run about "
+            "19% smaller than the market's; this view stretches them back "
+            f"out — slope {scale['slope']:.3f}, intercept "
             f"{scale['intercept']:.2f}, fitted on this week's FBS-vs-FBS "
-            "games and applied to every game, so for FBS-vs-FCS it is an "
-            "extrapolation). Ranked by the smaller of the two EVs. The "
-            "adjusted view is a diagnostic reported beside the registered "
-            "number, never in place of it.",
+            "games, so for FBS-vs-FCS it is an extrapolation). Ranked by "
+            "the smaller of the two profits. The adjusted view is a "
+            "diagnostic shown beside the registered number, never in place "
+            "of it.",
             "",
         ]
         lines += table(both) if both else ["(none)"]
-        lines += ["", "## Every positive-EV play, registered view", ""]
+        lines += ["", "## Every pick, model's own numbers", ""]
     lines += table(best)
     notes = []
     if n_flag:
         notes.append(
-            rf"\* {n_flag} plays sit on a market spread over {LARGE_SPREAD:.0f} "
-            "points. Every one of those is inside the open, pre-registered "
-            "scale question: the model runs ~19% compressed against the "
-            "market, which manufactures an underdog edge on every large "
-            "spread — ONE bias, reported many times. Until week-1 results "
-            "grade result_raw against result_adj, treat them as a single "
-            "position, not a list of independent plays.")
+            rf"\* {n_flag} picks sit on a market spread over {LARGE_SPREAD:.0f} "
+            "points. The model's margins run about 19% smaller than the "
+            "market's, which makes it lean the underdog on every big spread "
+            "for the same reason — so these are one opinion repeated, not "
+            "independent picks. Week-1 results will say whether that opinion "
+            "is right (result_raw vs result_adj).")
     if n_unfrozen:
         notes.append(
-            f"(u) {n_unfrozen} spread plays use the cached line rather than a "
+            f"(u) {n_unfrozen} spread picks use the cached line rather than a "
             "frozen ledger lean (the ledger holds only the 43 FBS-vs-FBS "
             "games recorded 2026-09-02T01:00Z). To grade them honestly, "
             "freeze them first: `python3 scripts/board_ledger.py --record`.")

@@ -194,25 +194,30 @@ def test_odds_arithmetic():
     assert RP.expected_value(0.6, -110) > 0
 
 
-def test_value_page_drops_the_priced_in_favourite_and_finds_the_dog():
+def test_value_page_drops_the_priced_in_favourite_and_cuts_the_long_shot():
     """Game 3: Big State 95% to win. At -10000 that is NO value; the dog at
-    +2500 with a 4.7% model probability is a positive-EV play (4.7% * 25 >
-    95.3%). The page must show the dog, and the 95% side must not appear."""
+    +2500 with a 4.7% model probability is positive-EV (4.7% * 25 > 95.3%)
+    and is CUT anyway -- under 50% is not a pick. Neither side appears."""
     picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
     markets = {3: {"provider": "Test", "spread": -30.0,
                    "home_ml": -10000.0, "away_ml": 2500.0},
-               1: {"provider": "Test", "spread": -7.0,
+               1: {"provider": "Test", "spread": -4.0,
                    "home_ml": -300.0, "away_ml": 240.0}}
     text = RP.render_value(picks, _artifact(), markets, "2026-09-02T01:03Z",
                            2026, 1)
-    assert "Tiny College ML +2500" in text
-    assert "Big State ML" not in text
-    # game 1: home 66.9% at -300 (break-even 75%) is negative EV; away 33.1%
-    # at +240 (break-even 29.4%) is positive; the spread at -110 with p_cover
-    # from the model's own distribution competes on EV.
-    assert "Away U ML +240" in text or "(u) Away U +7.0" in text
+    # The dog is positive-EV but a 4.7% chance: CUT by the >= 50% rule.
+    assert "Tiny College ML +2500" not in text
+    assert "Big State ML" not in text          # priced in: negative EV
+    # game 1: home 66.9% at -300 (needs 75%) loses money; the away dog at
+    # +240 is profitable but only 33% -- cut. The spread (model +7 against
+    # a -4 line: 3 points of edge, ~57% to cover) is the only pick that
+    # clears both bars; it is the model's own margin against the cached
+    # line, so it is marked unfrozen.
+    assert "Away U ML +240" not in text
     assert "Home U ML -300" not in text
+    assert "(u) Home U -4.0" in text
     assert "Over/under: none" in text
+    assert "Chance it hits" in text and "Needs to hit" in text
 
 
 def test_value_page_prefers_the_frozen_ledger_spread_over_the_cache():
@@ -245,5 +250,17 @@ def test_scale_adjusted_ev_is_reported_beside_the_registered_one_never_instead()
     assert adj["Home U ML -300"]["ev_adj"] == pytest.approx(
         RP.expected_value(p_adj, -300))
     text = RP.render_value(picks, _artifact(), {1: market}, "t", 2026, 1, scale)
-    assert "## Plays that survive both views" in text
-    assert "EV (scale-adj)" in text
+    assert "## Picks that survive both views" in text
+    assert "Same, scale-adjusted" in text
+
+
+def test_under_fifty_percent_is_cut_whatever_the_payout():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    markets = {2: {"provider": "T", "spread": None,
+                   "home_ml": +300.0, "away_ml": -120.0}}
+    # game 2: away 59.9% at -120 (needs 54.5%) -> a pick; home 40% at +300
+    # would be the higher-EV play (0.4*3 - 0.6 = +0.6) but is under 50%.
+    text = RP.render_value(picks, _artifact(), markets, "t", 2026, 1)
+    assert "Neutral B ML -120" in text
+    assert "Neutral A ML +300" not in text
+    assert RP.MIN_PLAY_PROB == 0.5
