@@ -412,6 +412,28 @@ SPREAD_PRICE = -110.0
 #: has a large expected profit and is still a pick that loses three times
 #: in four; this page is for picks, not for lottery tickets.
 MIN_PLAY_PROB = 0.5
+
+#: Units as confidence (Curtis, 2026-09-03). Sized on the SMALLER of the two
+#: expected profits -- the model's own and the scale-adjusted one -- because
+#: the scale question is open and a pick that only works under one view has
+#: not earned the other's confidence. Capped at 3: nothing here has been
+#: graded yet. A pick negative under either view gets 0 and is listed as a
+#: pass.
+UNIT_LADDER = ((40.0, 3.0), (25.0, 2.0), (10.0, 1.0), (0.0, 0.5))
+
+
+def units_for(play: Dict[str, Any]) -> float:
+    """Units from the conservative (smaller) expected profit per $100."""
+    evs = [play["ev"]]
+    if play.get("ev_adj") is not None:
+        evs.append(play["ev_adj"])
+    worst = 100.0 * min(evs)
+    if worst <= 0:
+        return 0.0
+    for floor, units in UNIT_LADDER:
+        if worst >= floor:
+            return units
+    return 0.0
 PROVIDER_PRIORITY = ("DraftKings", "Draft Kings", "Bovada", "ESPN Bet", "consensus")
 
 
@@ -620,20 +642,50 @@ def render_value(picks: List[Dict[str, Any]], rows: pd.DataFrame,
     def _ev(value: Optional[float]) -> str:
         return "n/a" if value is None else f"${100 * value:+.0f}"
 
+    def _units(b) -> str:
+        u = units_for(b)
+        return "pass" if u == 0 else (f"{u:g}u")
+
     def table(items: List[tuple]) -> List[str]:
-        out = ["| Game | Pick | Chance it hits | Needs to hit | "
+        out = ["| Game | Pick | Units | Chance it hits | Needs to hit | "
                "Expected profit per $100 | Same, scale-adjusted |",
-               "|---|---|---|---|---|---|"]
+               "|---|---|---|---|---|---|---|"]
         for p, b in items:
             site = " (N)" if p["neutral"] else ""
             tags = (("(u) " if b["frozen"] is False and b["kind"] == "spread"
                      else "") + (r"\* " if b["flag"] else ""))
             out.append(
                 f"| {p['away']} @ {p['home']}{site} · {p['kickoff_et']} | "
-                f"{tags}{b['pick']} | {_fmt_p(b['p'])} | "
+                f"{tags}{b['pick']} | {_units(b)} | {_fmt_p(b['p'])} | "
                 f"{_fmt_p(b['break_even'])} | {_ev(b['ev'])} | "
                 f"{_ev(b.get('ev_adj'))} |")
         return out
+
+    # ---- by day, units first: the page a reader actually uses ----------
+    by_day: Dict[str, List[tuple]] = {}
+    for p, b in best:
+        by_day.setdefault(p["public_date"], []).append((p, b))
+    lines += [
+        "## Picks by day, sized in units",
+        "",
+        "Units are confidence: sized on the SMALLER of the two expected "
+        "profits (the model's own and the scale-adjusted one), so a pick that "
+        "only works under one view is not trusted. 3u = both views say $40+ "
+        "per $100; 2u = $25+; 1u = $10+; 0.5u = anything positive; pass = "
+        "negative under either view. Capped at 3u because nothing has been "
+        "graded yet. Starred picks are one opinion repeated (see below) -- "
+        "size the group, not each line.",
+        "",
+    ]
+    for day in sorted(by_day):
+        items = sorted(by_day[day],
+                       key=lambda pb: (-units_for(pb[1]), -pb[1]["ev"],
+                                       pb[0]["game_id"]))
+        total = sum(units_for(b) for _, b in items)
+        lines += [f"### {day} — {total:g} units across "
+                  f"{sum(1 for _, b in items if units_for(b) > 0)} picks", ""]
+        lines += table(items)
+        lines += [""]
 
     if scale:
         lines += [

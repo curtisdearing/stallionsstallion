@@ -264,3 +264,23 @@ def test_under_fifty_percent_is_cut_whatever_the_payout():
     assert "Neutral B ML -120" in text
     assert "Neutral A ML +300" not in text
     assert RP.MIN_PLAY_PROB == 0.5
+
+
+def test_units_come_from_the_smaller_of_the_two_views_and_cap_at_three():
+    assert RP.units_for({"ev": 0.90, "ev_adj": 0.45}) == 3.0
+    assert RP.units_for({"ev": 0.90, "ev_adj": 0.30}) == 2.0
+    assert RP.units_for({"ev": 0.12, "ev_adj": 0.60}) == 1.0
+    assert RP.units_for({"ev": 0.05, "ev_adj": 0.04}) == 0.5
+    assert RP.units_for({"ev": 0.50, "ev_adj": -0.01}) == 0.0   # pass
+    assert RP.units_for({"ev": 0.50, "ev_adj": None}) == 3.0    # one view only
+    assert max(u for _, u in RP.UNIT_LADDER) == 3.0
+
+
+def test_value_page_groups_by_day_with_units():
+    picks = RP.build(_artifact(), _cards(), BASES, FBS, {})
+    markets = {1: {"provider": "T", "spread": -4.0, "home_ml": None, "away_ml": None}}
+    text = RP.render_value(picks, _artifact(), markets, "t", 2026, 1,
+                           {"slope": 0.8, "intercept": 0.0})
+    assert "## Picks by day, sized in units" in text
+    assert "### 2026-09-05 — " in text
+    assert "| Units |" in text
