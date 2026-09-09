@@ -1,0 +1,784 @@
+{
+  "baselines": {
+    "c_corrected_wf_kalman_20260830": {
+      "full": {
+        "away_score": {
+          "bias": -0.2807727272727272,
+          "mae": 9.175583916083916,
+          "n": 429,
+          "rmse": 11.34517422186267
+        },
+        "home_score": {
+          "bias": -1.0357202797202798,
+          "mae": 10.15277738927739,
+          "n": 429,
+          "rmse": 12.709659599833822
+        },
+        "joint_score_distribution": null,
+        "margin": {
+          "bias": -0.7549475524475523,
+          "mae": 13.11595104895105,
+          "n": 429,
+          "rmse": 16.593617450771973
+        },
+        "margin_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.7995337995337995,
+          "coverage95": 0.9417249417249417,
+          "crps": 9.351270241736552,
+          "negative_log_density": 4.227762631279895,
+          "standardized_residual_sd": 0.9812845382783116
+        },
+        "n": 429,
+        "score_mean_status": "algebraic means from existing supported MC M/T; unselected corrected record, not published incumbent scores",
+        "seasons": [
+          2023
+        ],
+        "team_score_mae": 9.664180652680653,
+        "total": {
+          "bias": -1.316493006993007,
+          "mae": 13.93904428904429,
+          "n": 429,
+          "rmse": 17.468506245056172
+        },
+        "total_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.8065268065268065,
+          "coverage95": 0.9370629370629371,
+          "crps": 9.816612971969786,
+          "negative_log_density": 4.2824489733652005,
+          "standardized_residual_sd": 1.0358634416018746
+        },
+        "weeks": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "win": {
+          "brier": 0.18928074898018646,
+          "log_loss": 0.5601152516529921,
+          "mean_p_home": 0.5464959207459208,
+          "observed_home_win": 0.5547785547785548,
+          "reliability": [
+            {
+              "hi": 0.2,
+              "lo": 0.1,
+              "n": 29,
+              "observed": 0.034482758620689655,
+              "predicted": 0.14524137931034484,
+              "wilson95": [
+                0.006113056614032261,
+                0.1717589106470025
+              ]
+            },
+            {
+              "hi": 0.3,
+              "lo": 0.2,
+              "n": 37,
+              "observed": 0.24324324324324326,
+              "predicted": 0.2575067567567567,
+              "wilson95": [
+                0.13361203432663304,
+                0.4011760249070895
+              ]
+            },
+            {
+              "hi": 0.4,
+              "lo": 0.3,
+              "n": 50,
+              "observed": 0.36,
+              "predicted": 0.347625,
+              "wilson95": [
+                0.24138562967182875,
+                0.49859237989698046
+              ]
+            },
+            {
+              "hi": 0.5,
+              "lo": 0.4,
+              "n": 63,
+              "observed": 0.4126984126984127,
+              "predicted": 0.4505198412698413,
+              "wilson95": [
+                0.2995827804043614,
+                0.5358490464818889
+              ]
+            },
+            {
+              "hi": 0.6,
+              "lo": 0.5,
+              "n": 60,
+              "observed": 0.5833333333333334,
+              "predicted": 0.5579791666666666,
+              "wilson95": [
+                0.45727854313239624,
+                0.6993591351212818
+              ]
+            },
+            {
+              "hi": 0.7,
+              "lo": 0.6,
+              "n": 72,
+              "observed": 0.7222222222222222,
+              "predicted": 0.6477326388888889,
+              "wilson95": [
+                0.6095334868037199,
+                0.8123985399467706
+              ]
+            },
+            {
+              "hi": 0.8,
+              "lo": 0.7,
+              "n": 54,
+              "observed": 0.7407407407407407,
+              "predicted": 0.7410185185185185,
+              "wilson95": [
+                0.610688551197827,
+                0.8388149203520608
+              ]
+            },
+            {
+              "hi": 0.9,
+              "lo": 0.8,
+              "n": 64,
+              "observed": 0.890625,
+              "predicted": 0.8564453125,
+              "wilson95": [
+                0.7910113670806147,
+                0.9459995524731695
+              ]
+            }
+          ]
+        }
+      },
+      "input": "data/backtest_c_corrected_wf_kalman_20260830.csv",
+      "p4_involved": {
+        "away_score": {
+          "bias": 0.8148978494623654,
+          "mae": 9.687362903225806,
+          "n": 186,
+          "rmse": 11.728474299118393
+        },
+        "home_score": {
+          "bias": -1.4694663978494629,
+          "mae": 9.681961021505376,
+          "n": 186,
+          "rmse": 12.024570486860691
+        },
+        "joint_score_distribution": null,
+        "margin": {
+          "bias": -2.284364247311828,
+          "mae": 13.198420698924732,
+          "n": 186,
+          "rmse": 16.777731078690515
+        },
+        "margin_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.7956989247311828,
+          "coverage95": 0.9408602150537635,
+          "crps": 9.46178443275201,
+          "negative_log_density": 4.238878456883517,
+          "standardized_residual_sd": 0.9858878801031024
+        },
+        "n": 186,
+        "score_mean_status": "algebraic means from existing supported MC M/T; unselected corrected record, not published incumbent scores",
+        "seasons": [
+          2023
+        ],
+        "team_score_mae": 9.684661962365592,
+        "total": {
+          "bias": -0.6545685483870964,
+          "mae": 13.382423387096775,
+          "n": 186,
+          "rmse": 16.81673420757628
+        },
+        "total_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.8010752688172043,
+          "coverage95": 0.956989247311828,
+          "crps": 9.45036465625212,
+          "negative_log_density": 4.245489837903703,
+          "standardized_residual_sd": 1.002666913465953
+        },
+        "weeks": [
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "win": {
+          "brier": 0.18399598252688174,
+          "log_loss": 0.5454836255561996,
+          "mean_p_home": 0.5531102150537635,
+          "observed_home_win": 0.5860215053763441,
+          "reliability": [
+            {
+              "hi": 0.2,
+              "lo": 0.1,
+              "n": 14,
+              "observed": 0.0,
+              "predicted": 0.1444642857142857,
+              "wilson95": [
+                0.0,
+                0.21531701192718142
+              ]
+            },
+            {
+              "hi": 0.3,
+              "lo": 0.2,
+              "n": 18,
+              "observed": 0.3333333333333333,
+              "predicted": 0.262375,
+              "wilson95": [
+                0.1627855436366286,
+                0.5625093065574964
+              ]
+            },
+            {
+              "hi": 0.4,
+              "lo": 0.3,
+              "n": 15,
+              "observed": 0.4666666666666667,
+              "predicted": 0.3559666666666667,
+              "wilson95": [
+                0.24809225259746442,
+                0.6988336984894921
+              ]
+            },
+            {
+              "hi": 0.5,
+              "lo": 0.4,
+              "n": 28,
+              "observed": 0.42857142857142855,
+              "predicted": 0.4522321428571428,
+              "wilson95": [
+                0.2650829618073122,
+                0.609295210143846
+              ]
+            },
+            {
+              "hi": 0.6,
+              "lo": 0.5,
+              "n": 23,
+              "observed": 0.5652173913043478,
+              "predicted": 0.5563043478260868,
+              "wilson95": [
+                0.3681104930501695,
+                0.7436563166780135
+              ]
+            },
+            {
+              "hi": 0.7,
+              "lo": 0.6,
+              "n": 37,
+              "observed": 0.7297297297297297,
+              "predicted": 0.6497432432432433,
+              "wilson95": [
+                0.5702152452607867,
+                0.8460270175300932
+              ]
+            },
+            {
+              "hi": 0.8,
+              "lo": 0.7,
+              "n": 24,
+              "observed": 0.7916666666666666,
+              "predicted": 0.7416979166666667,
+              "wilson95": [
+                0.5952915551476452,
+                0.9075531089521192
+              ]
+            },
+            {
+              "hi": 0.9,
+              "lo": 0.8,
+              "n": 27,
+              "observed": 0.9259259259259259,
+              "predicted": 0.870185185185185,
+              "wilson95": [
+                0.7663002270926937,
+                0.9794457783026165
+              ]
+            }
+          ]
+        }
+      },
+      "sha256": "39c303b270c64591addb536f94b13aead68fa6868c5c71ea66876c73a2c9d1ed",
+      "status": "candidate"
+    },
+    "cross_division": {
+      "full": {
+        "away_score": null,
+        "home_score": null,
+        "joint_score_distribution": null,
+        "margin": {
+          "bias": -4.63971316360601,
+          "mae": 15.01614909015025,
+          "n": 599,
+          "rmse": 18.472914033449825
+        },
+        "margin_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.7779632721202003,
+          "coverage95": 0.9415692821368948,
+          "crps": 10.509132429588401,
+          "negative_log_density": 4.3362735073252345,
+          "standardized_residual_sd": 1.0000002930251497
+        },
+        "n": 599,
+        "seasons": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "team_score_mae": null,
+        "total": null,
+        "unavailable_reason": "route has no supported total or team-score forecast",
+        "weeks": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "win": {
+          "brier": 0.05285099847904112,
+          "log_loss": 0.2000939888217404,
+          "mean_p_home": 0.8925672481199005,
+          "observed_home_win": 0.9415692821368948,
+          "reliability": [
+            {
+              "hi": 0.2,
+              "lo": 0.1,
+              "n": 2,
+              "observed": 0.0,
+              "predicted": 0.14834400928645636,
+              "wilson95": [
+                0.0,
+                0.6576280471103807
+              ]
+            },
+            {
+              "hi": 0.3,
+              "lo": 0.2,
+              "n": 1,
+              "observed": 0.0,
+              "predicted": 0.23462368137484096,
+              "wilson95": [
+                0.0,
+                0.7934567085261071
+              ]
+            },
+            {
+              "hi": 0.5,
+              "lo": 0.4,
+              "n": 2,
+              "observed": 1.0,
+              "predicted": 0.47055020505532746,
+              "wilson95": [
+                0.34237195288961925,
+                1.0
+              ]
+            },
+            {
+              "hi": 0.6,
+              "lo": 0.5,
+              "n": 2,
+              "observed": 1.0,
+              "predicted": 0.5557227922229453,
+              "wilson95": [
+                0.34237195288961925,
+                1.0
+              ]
+            },
+            {
+              "hi": 0.7,
+              "lo": 0.6,
+              "n": 22,
+              "observed": 0.9090909090909091,
+              "predicted": 0.6631740209764488,
+              "wilson95": [
+                0.7218461934161421,
+                0.9747051037171622
+              ]
+            },
+            {
+              "hi": 0.8,
+              "lo": 0.7,
+              "n": 61,
+              "observed": 0.819672131147541,
+              "predicted": 0.7602378590069627,
+              "wilson95": [
+                0.7052560663212193,
+                0.8962096593857343
+              ]
+            },
+            {
+              "hi": 0.9,
+              "lo": 0.8,
+              "n": 151,
+              "observed": 0.9072847682119205,
+              "predicted": 0.8524183310097935,
+              "wilson95": [
+                0.8503923846703979,
+                0.9439677872730591
+              ]
+            },
+            {
+              "hi": 1.0,
+              "lo": 0.9,
+              "n": 358,
+              "observed": 0.9860335195530726,
+              "predicted": 0.9563810561059515,
+              "wilson95": [
+                0.9677267170425394,
+                0.9940200804511703
+              ]
+            }
+          ]
+        }
+      },
+      "input": "data/backtest_cross_division.csv",
+      "sha256": "18ae1c01405f2a523d34d1e6ae19dce541a1122c22f96891ca3327506509c752",
+      "status": "not in evidence manifest"
+    },
+    "early": {
+      "full": {
+        "away_score": null,
+        "home_score": null,
+        "joint_score_distribution": null,
+        "margin": {
+          "bias": -0.934956056629834,
+          "mae": 13.566547175414364,
+          "n": 724,
+          "rmse": 16.912422363545343
+        },
+        "margin_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.7997237569060773,
+          "coverage95": 0.9530386740331491,
+          "crps": 9.546177956926568,
+          "negative_log_density": 4.246987644388778,
+          "standardized_residual_sd": 1.0000019797242927
+        },
+        "n": 724,
+        "seasons": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "team_score_mae": null,
+        "total": null,
+        "unavailable_reason": "route has no supported total or team-score forecast",
+        "weeks": [
+          1,
+          2,
+          3
+        ],
+        "win": {
+          "brier": 0.16831462310339038,
+          "log_loss": 0.502457194954212,
+          "mean_p_home": 0.630915597358508,
+          "observed_home_win": 0.6270718232044199,
+          "reliability": [
+            {
+              "hi": 0.1,
+              "lo": 0.0,
+              "n": 6,
+              "observed": 0.0,
+              "predicted": 0.05372981868074756,
+              "wilson95": [
+                0.0,
+                0.3903430336530645
+              ]
+            },
+            {
+              "hi": 0.2,
+              "lo": 0.1,
+              "n": 26,
+              "observed": 0.11538461538461539,
+              "predicted": 0.15961302019125329,
+              "wilson95": [
+                0.04003171821149494,
+                0.28976293086898336
+              ]
+            },
+            {
+              "hi": 0.3,
+              "lo": 0.2,
+              "n": 53,
+              "observed": 0.2641509433962264,
+              "predicted": 0.2566690847634198,
+              "wilson95": [
+                0.16437206511316813,
+                0.3958092105722453
+              ]
+            },
+            {
+              "hi": 0.4,
+              "lo": 0.3,
+              "n": 71,
+              "observed": 0.352112676056338,
+              "predicted": 0.35728617803833945,
+              "wilson95": [
+                0.25122584561603256,
+                0.4681815427882774
+              ]
+            },
+            {
+              "hi": 0.5,
+              "lo": 0.4,
+              "n": 72,
+              "observed": 0.375,
+              "predicted": 0.4556150299384352,
+              "wilson95": [
+                0.27219009399354577,
+                0.4904731409593034
+              ]
+            },
+            {
+              "hi": 0.6,
+              "lo": 0.5,
+              "n": 83,
+              "observed": 0.5542168674698795,
+              "predicted": 0.5503490904860517,
+              "wilson95": [
+                0.4472482426556269,
+                0.6563887239594516
+              ]
+            },
+            {
+              "hi": 0.7,
+              "lo": 0.6,
+              "n": 87,
+              "observed": 0.6666666666666666,
+              "predicted": 0.6523922699506652,
+              "wilson95": [
+                0.5624216326943015,
+                0.7568153688556492
+              ]
+            },
+            {
+              "hi": 0.8,
+              "lo": 0.7,
+              "n": 108,
+              "observed": 0.7407407407407407,
+              "predicted": 0.7522134922470499,
+              "wilson95": [
+                0.6508333329885407,
+                0.8141099439316748
+              ]
+            },
+            {
+              "hi": 0.9,
+              "lo": 0.8,
+              "n": 105,
+              "observed": 0.8857142857142857,
+              "predicted": 0.8527556607296863,
+              "wilson95": [
+                0.8107971091681477,
+                0.9334036376051448
+              ]
+            },
+            {
+              "hi": 1.0,
+              "lo": 0.9,
+              "n": 113,
+              "observed": 0.9557522123893806,
+              "predicted": 0.9497345949239241,
+              "wilson95": [
+                0.90058093130631,
+                0.9809544122699507
+              ]
+            }
+          ]
+        }
+      },
+      "input": "data/backtest_early.csv",
+      "p4_involved": {
+        "away_score": null,
+        "home_score": null,
+        "joint_score_distribution": null,
+        "margin": {
+          "bias": -1.2150016060606061,
+          "mae": 13.12083906868687,
+          "n": 495,
+          "rmse": 16.540784189214637
+        },
+        "margin_distribution": {
+          "approximation": "Gaussian from summaries; not empirical joint scores",
+          "coverage80": 0.806060606060606,
+          "coverage95": 0.9575757575757575,
+          "crps": 9.307260286721997,
+          "negative_log_density": 4.225218208142301,
+          "standardized_residual_sd": 0.9771921234209509
+        },
+        "n": 495,
+        "seasons": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "team_score_mae": null,
+        "total": null,
+        "unavailable_reason": "route has no supported total or team-score forecast",
+        "weeks": [
+          1,
+          2,
+          3
+        ],
+        "win": {
+          "brier": 0.1538318726508583,
+          "log_loss": 0.4642727529810835,
+          "mean_p_home": 0.6556194172332057,
+          "observed_home_win": 0.6606060606060606,
+          "reliability": [
+            {
+              "hi": 0.1,
+              "lo": 0.0,
+              "n": 5,
+              "observed": 0.0,
+              "predicted": 0.056118070704451774,
+              "wilson95": [
+                -2.7755575615628914e-17,
+                0.43449149475208104
+              ]
+            },
+            {
+              "hi": 0.2,
+              "lo": 0.1,
+              "n": 22,
+              "observed": 0.045454545454545456,
+              "predicted": 0.15857012527533226,
+              "wilson95": [
+                0.008069219301147859,
+                0.21798489499518053
+              ]
+            },
+            {
+              "hi": 0.3,
+              "lo": 0.2,
+              "n": 29,
+              "observed": 0.2413793103448276,
+              "predicted": 0.2508536789022714,
+              "wilson95": [
+                0.12218268185062131,
+                0.4210795221832869
+              ]
+            },
+            {
+              "hi": 0.4,
+              "lo": 0.3,
+              "n": 46,
+              "observed": 0.41304347826086957,
+              "predicted": 0.3565818419344288,
+              "wilson95": [
+                0.2828839329710102,
+                0.5566075761298211
+              ]
+            },
+            {
+              "hi": 0.5,
+              "lo": 0.4,
+              "n": 39,
+              "observed": 0.41025641025641024,
+              "predicted": 0.45746893803068983,
+              "wilson95": [
+                0.27079089435400483,
+                0.5658165152665509
+              ]
+            },
+            {
+              "hi": 0.6,
+              "lo": 0.5,
+              "n": 53,
+              "observed": 0.5660377358490566,
+              "predicted": 0.5499368778617311,
+              "wilson95": [
+                0.4326511497976876,
+                0.6904980930103964
+              ]
+            },
+            {
+              "hi": 0.7,
+              "lo": 0.6,
+              "n": 48,
+              "observed": 0.6666666666666666,
+              "predicted": 0.6503704681610296,
+              "wilson95": [
+                0.5253984633247204,
+                0.783233986291032
+              ]
+            },
+            {
+              "hi": 0.8,
+              "lo": 0.7,
+              "n": 72,
+              "observed": 0.7361111111111112,
+              "predicted": 0.7521602194859888,
+              "wilson95": [
+                0.6242391943879235,
+                0.8240635840344728
+              ]
+            },
+            {
+              "hi": 0.9,
+              "lo": 0.8,
+              "n": 79,
+              "observed": 0.8987341772151899,
+              "predicted": 0.8559021788161635,
+              "wilson95": [
+                0.8126986682072592,
+                0.9477888163415664
+              ]
+            },
+            {
+              "hi": 1.0,
+              "lo": 0.9,
+              "n": 102,
+              "observed": 0.9607843137254902,
+              "predicted": 0.9520335636533473,
+              "wilson95": [
+                0.9034734282412418,
+                0.9846461769045611
+              ]
+            }
+          ]
+        }
+      },
+      "sha256": "7b065cb280c93d58e71d3962b701850235e6452ba097e911319a4055b9b6f142",
+      "status": "selected"
+    }
+  },
+  "certified_later_incumbent_scores": null,
+  "corrected_later_record_is_unselected_candidate": true,
+  "incumbent_early_team_scores": null,
+  "incumbent_early_total": null,
+  "metrics_exactly_match_audit": true,
+  "selected_later_benchmark": []
+}

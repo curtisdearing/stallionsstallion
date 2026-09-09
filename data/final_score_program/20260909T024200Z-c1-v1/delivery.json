@@ -1,0 +1,19 @@
+{
+  "semantics": "Lossless transport; artifact_hashes.json remains canonical over uncompressed bytes. Local original CSVs are build outputs, compressed copies are committed.",
+  "files": {
+    "forecasts.csv": {
+      "transport": "forecasts.csv.gz",
+      "transport_sha256": "6dc41fa7f4947ceac30c7808b7071af80efe37d961c5fc7c6ff9d1c63b25b34c",
+      "uncompressed_sha256": "aa73fbcd82cbf0701bb4dffa88eebb2316618027aad1c97e2809fae5b283b6d3",
+      "bytes": 10300278,
+      "compressed_bytes": 1497533
+    },
+    "postmortems.csv": {
+      "transport": "postmortems.csv.gz",
+      "transport_sha256": "dbb8bdeeda38a5653f5961118479974ee2adb78808cb7ca3ba6698bca3f6764f",
+      "uncompressed_sha256": "07e480184771d2665a218253e667fe02df5140a6dc9229b746b2c56b83b29e8c",
+      "bytes": 4209366,
+      "compressed_bytes": 547188
+    }
+  }
+}

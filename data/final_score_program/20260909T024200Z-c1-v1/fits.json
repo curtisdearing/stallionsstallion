@@ -1,0 +1,3092 @@
+[
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.728256078482644,
+      "one_se": 1.9975882152230877,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.155809877574493,
+        "covariance": [
+          [
+            115.06563296998854,
+            50.42773841479781
+          ],
+          [
+            50.42773841479781,
+            147.7637137797376
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.726865011269068,
+        "margin_sd": 12.726895533480683,
+        "mean_residual": [
+          -5.895718783687366,
+          0.9438985288126329
+        ],
+        "n": 16,
+        "total_sd": 19.070522373005982
+      },
+      "frozen_state": {
+        "away_sd": 12.146635465844431,
+        "covariance": [
+          [
+            114.97738449616168,
+            50.27213385807042
+          ],
+          [
+            50.27213385807042,
+            147.54075314010976
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.722750789613722,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.943017606911885,
+          0.8965997055881152
+        ],
+        "n": 16,
+        "total_sd": 19.054196528649857
+      },
+      "reference": {
+        "away_sd": 12.162101700539239,
+        "covariance": [
+          [
+            114.70222489168067,
+            50.32253637290475
+          ],
+          [
+            50.32253637290475,
+            147.91671777425944
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.709912459571305,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.841337190287059,
+          0.9982801222129392
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      },
+      "simple": {
+        "away_sd": 15.39898050630964,
+        "covariance": [
+          [
+            180.72987025868215,
+            -27.29722774031839
+          ],
+          [
+            -27.29722774031839,
+            237.12860063370425
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.443581005769339,
+        "margin_sd": 21.735982296022954,
+        "mean_residual": [
+          -3.9171224439185073,
+          -0.9259346241556115
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      }
+    },
+    "variant": "C1_fbs_1"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.107929871510832,
+      "one_se": 0.8976964491214041,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.43473206095772,
+        "covariance": [
+          [
+            144.14380229397582,
+            4.627673962842061
+          ],
+          [
+            4.627673962842061,
+            108.88363318397893
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.005990267111489,
+        "margin_sd": 15.613202347765515,
+        "mean_residual": [
+          -1.2504274477575226,
+          -2.1290885486749542
+        ],
+        "n": 109,
+        "total_sd": 16.195146908986
+      },
+      "frozen_state": {
+        "away_sd": 10.449594272882393,
+        "covariance": [
+          [
+            144.1863416254203,
+            4.80413727050309
+          ],
+          [
+            4.80413727050309,
+            109.1940204678565
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.007761724210733,
+        "margin_sd": 15.613202347765515,
+        "mean_residual": [
+          -1.4897309415110405,
+          -2.368392042428471
+        ],
+        "n": 109,
+        "total_sd": 16.216924388868655
+      },
+      "reference": {
+        "away_sd": 10.484723751414267,
+        "covariance": [
+          [
+            144.91419618295058,
+            5.535770387075193
+          ],
+          [
+            5.535770387075193,
+            109.92943214347046
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.03803124198266,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.3806044141381126,
+          -2.259265515055544
+        ],
+        "n": 109,
+        "total_sd": 16.306905564838825
+      },
+      "simple": {
+        "away_sd": 12.96037138370676,
+        "covariance": [
+          [
+            217.20199157464822,
+            -59.62902443884091
+          ],
+          [
+            -59.62902443884091,
+            167.97122640360504
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.737774308715961,
+        "margin_sd": 22.4595473430774,
+        "mean_residual": [
+          0.8534245850327012,
+          -4.49329451422636
+        ],
+        "n": 109,
+        "total_sd": 16.306905564838825
+      }
+    },
+    "variant": "C1_fbs_1"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.155797481360956,
+      "one_se": 0.5425473683128106,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.457009772527256,
+        "covariance": [
+          [
+            139.71572305695884,
+            11.24084334705152
+          ],
+          [
+            11.24084334705152,
+            131.26307292778503
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.820140568409448,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.5999717372661572,
+          -1.4661799105334834
+        ],
+        "n": 202,
+        "total_sd": 17.13068833056182
+      },
+      "frozen_state": {
+        "away_sd": 11.477710481499237,
+        "covariance": [
+          [
+            139.8478418353199,
+            11.544285220898258
+          ],
+          [
+            11.544285220898258,
+            131.73783789711746
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.82572796217298,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.6975376461883193,
+          -1.563745819455646
+        ],
+        "n": 202,
+        "total_sd": 17.166078473962358
+      },
+      "reference": {
+        "away_sd": 11.503036599143508,
+        "covariance": [
+          [
+            140.01183765884286,
+            11.91728968471855
+          ],
+          [
+            11.91728968471855,
+            132.31985100123504
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.832659788012283,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.6440278698906393,
+          -1.5102360431579662
+        ],
+        "n": 202,
+        "total_sd": 17.209481922170554
+      },
+      "simple": {
+        "away_sd": 14.140041468382368,
+        "covariance": [
+          [
+            230.27886288859196,
+            -67.02668379332496
+          ],
+          [
+            -67.02668379332496,
+            199.940772727573
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.174941940204976,
+        "margin_sd": 23.754431232989244,
+        "mean_residual": [
+          1.9010110731382666,
+          -4.055274986186873
+        ],
+        "n": 202,
+        "total_sd": 17.209481922170554
+      }
+    },
+    "variant": "C1_fbs_1"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.15502501563099,
+      "one_se": 0.39473834397483804,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.351323823055036,
+        "covariance": [
+          [
+            135.2948124963885,
+            6.402188448900604
+          ],
+          [
+            6.402188448900604,
+            128.8525525358568
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.631629829752514,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.36218300508561274,
+          -1.8386995117522795
+        ],
+        "n": 300,
+        "total_sd": 16.641867140740143
+      },
+      "frozen_state": {
+        "away_sd": 11.364685186867243,
+        "covariance": [
+          [
+            135.50953875593999,
+            6.661310009047818
+          ],
+          [
+            6.661310009047818,
+            129.15606939659975
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.640856444263024,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.4465130251510175,
+          -1.923029531817684
+        ],
+        "n": 300,
+        "total_sd": 16.672978983092236
+      },
+      "reference": {
+        "away_sd": 11.392149210745051,
+        "covariance": [
+          [
+            135.00772357824604,
+            6.722899541840527
+          ],
+          [
+            6.722899541840527,
+            129.7810636398791
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.619282403756527,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.4333253118790567,
+          -1.9098418185457233
+        ],
+        "n": 300,
+        "total_sd": 16.680365292816766
+      },
+      "simple": {
+        "away_sd": 13.667361983087117,
+        "covariance": [
+          [
+            216.83185106902482,
+            -62.697024171976814
+          ],
+          [
+            -62.697024171976814,
+            186.796783576735
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.72521140999425,
+        "margin_sd": 23.000493103186145,
+        "mean_residual": [
+          1.8996138015150639,
+          -4.242780931939844
+        ],
+        "n": 300,
+        "total_sd": 16.680365292816766
+      }
+    },
+    "variant": "C1_fbs_1"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.08350177003291,
+      "one_se": 0.3222926792574209,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.153571960007513,
+        "covariance": [
+          [
+            137.31020425249253,
+            -2.8444067136796907
+          ],
+          [
+            -2.8444067136796907,
+            124.40216746706585
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.717943687033681,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.6643745282335843,
+          -1.5002059677397572
+        ],
+        "n": 405,
+        "total_sd": 16.000736179694954
+      },
+      "frozen_state": {
+        "away_sd": 11.152973580147679,
+        "covariance": [
+          [
+            137.6108880452341,
+            -2.7007387111057706
+          ],
+          [
+            -2.7007387111057706,
+            124.38881967947214
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.730766728787769,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.7683212904643196,
+          -1.6041527299704923
+        ],
+        "n": 405,
+        "total_sd": 16.018683788079926
+      },
+      "reference": {
+        "away_sd": 11.182190868378036,
+        "covariance": [
+          [
+            137.69435394326305,
+            -2.3327192934087764
+          ],
+          [
+            -2.3327192934087764,
+            125.04139261683716
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.734323753129665,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.7521726719950005,
+          -1.5880041115011734
+        ],
+        "n": 405,
+        "total_sd": 16.064566846737034
+      },
+      "simple": {
+        "away_sd": 13.584596315539853,
+        "covariance": [
+          [
+            221.48874251472057,
+            -73.97984579880847
+          ],
+          [
+            -73.97984579880847,
+            184.54125705617898
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.88249785871715,
+        "margin_sd": 23.53698560072034,
+        "mean_residual": [
+          1.6952108145490732,
+          -4.035387598045249
+        ],
+        "n": 405,
+        "total_sd": 16.064566846737034
+      }
+    },
+    "variant": "C1_fbs_1"
+  },
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.728256078482644,
+      "one_se": 1.9975882152230877,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.155809877574493,
+        "covariance": [
+          [
+            115.06563296998854,
+            50.42773841479781
+          ],
+          [
+            50.42773841479781,
+            147.7637137797376
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.726865011269068,
+        "margin_sd": 12.726895533480683,
+        "mean_residual": [
+          -5.895718783687366,
+          0.9438985288126329
+        ],
+        "n": 16,
+        "total_sd": 19.070522373005982
+      },
+      "frozen_state": {
+        "away_sd": 12.146635465844431,
+        "covariance": [
+          [
+            114.97738449616168,
+            50.27213385807042
+          ],
+          [
+            50.27213385807042,
+            147.54075314010976
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.722750789613722,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.943017606911885,
+          0.8965997055881152
+        ],
+        "n": 16,
+        "total_sd": 19.054196528649857
+      },
+      "reference": {
+        "away_sd": 12.162101700539239,
+        "covariance": [
+          [
+            114.70222489168067,
+            50.32253637290475
+          ],
+          [
+            50.32253637290475,
+            147.91671777425944
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.709912459571305,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.841337190287059,
+          0.9982801222129392
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      },
+      "simple": {
+        "away_sd": 15.39898050630964,
+        "covariance": [
+          [
+            180.72987025868215,
+            -27.29722774031839
+          ],
+          [
+            -27.29722774031839,
+            237.12860063370425
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.443581005769339,
+        "margin_sd": 21.735982296022954,
+        "mean_residual": [
+          -3.9171224439185073,
+          -0.9259346241556115
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      }
+    },
+    "variant": "C1_fbs_3"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.001586858870764,
+      "one_se": 0.9140581839322645,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.418946211122753,
+        "covariance": [
+          [
+            144.1393302323051,
+            4.460841415151807
+          ],
+          [
+            4.460841415151807,
+            108.55444015026917
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.005804022734383,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.0949576579656288,
+          -1.9736187588830594
+        ],
+        "n": 109,
+        "total_sd": 16.17453100441796
+      },
+      "frozen_state": {
+        "away_sd": 10.427330867937565,
+        "covariance": [
+          [
+            144.13156887272078,
+            4.544355174946862
+          ],
+          [
+            4.544355174946862,
+            108.72922902944359
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.00548078473831,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.2474195489937876,
+          -2.1260806499112186
+        ],
+        "n": 109,
+        "total_sd": 16.184854285783917
+      },
+      "reference": {
+        "away_sd": 10.463985659315577,
+        "covariance": [
+          [
+            145.4580178418043,
+            5.590463083947876
+          ],
+          [
+            5.590463083947876,
+            109.49499587836208
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.060597739822198,
+        "margin_sd": 15.613202347765515,
+        "mean_residual": [
+          -1.0580260587504515,
+          -1.936687159667883
+        ],
+        "n": 109,
+        "total_sd": 16.313612104253984
+      },
+      "simple": {
+        "away_sd": 12.909704611378881,
+        "covariance": [
+          [
+            216.86376597744447,
+            -58.69514962121973
+          ],
+          [
+            -58.69514962121973,
+            166.66047315305715
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.726295052641193,
+        "margin_sd": 22.38112013222174,
+        "mean_residual": [
+          0.678578029112004,
+          -3.673291247530339
+        ],
+        "n": 109,
+        "total_sd": 16.313612104253988
+      }
+    },
+    "variant": "C1_fbs_3"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.158830822457702,
+      "one_se": 0.5490329907066779,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.440744273136422,
+        "covariance": [
+          [
+            139.39951607544077,
+            10.896518154051916
+          ],
+          [
+            10.896518154051916,
+            130.89062952330383
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.806757220991747,
+        "margin_sd": 15.763791082434478,
+        "mean_residual": [
+          -0.6244152668779575,
+          -1.490623440145284
+        ],
+        "n": 202,
+        "total_sd": 17.090441243772744
+      },
+      "frozen_state": {
+        "away_sd": 11.4503563254563,
+        "covariance": [
+          [
+            139.43197377732756,
+            11.022762233301902
+          ],
+          [
+            11.022762233301902,
+            131.11065997991707
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.808131680216288,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.694253647466801,
+          -1.5604618207341276
+        ],
+        "n": 202,
+        "total_sd": 17.105208511557187
+      },
+      "reference": {
+        "away_sd": 11.473333329599157,
+        "covariance": [
+          [
+            139.78052773221245,
+            11.46039806683126
+          ],
+          [
+            11.46039806683126,
+            131.6373776920909
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.82288153252888,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.6805825867738282,
+          -1.546790760041155
+        ],
+        "n": 202,
+        "total_sd": 17.156302094506433
+      },
+      "simple": {
+        "away_sd": 14.105962686747452,
+        "covariance": [
+          [
+            229.6839358413612,
+            -67.16170880165336
+          ],
+          [
+            -67.16170880165336,
+            198.97818331991138
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.155326979031537,
+        "margin_sd": 23.727316257102895,
+        "mean_residual": [
+          1.6331176211190248,
+          -3.860490967934007
+        ],
+        "n": 202,
+        "total_sd": 17.156302094506433
+      }
+    },
+    "variant": "C1_fbs_3"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.150943301974802,
+      "one_se": 0.39844800528198937,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.344134094453299,
+        "covariance": [
+          [
+            134.96832277903547,
+            6.157356498764589
+          ],
+          [
+            6.157356498764589,
+            128.68937835293775
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.617586788099992,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.44878220314795175,
+          -1.925298709814618
+        ],
+        "n": 300,
+        "total_sd": 16.61241746795157
+      },
+      "frozen_state": {
+        "away_sd": 11.35040740717268,
+        "covariance": [
+          [
+            135.09398675890125,
+            6.291373466628819
+          ],
+          [
+            6.291373466628819,
+            128.83174830880043
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.622993881048947,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.515509194801854,
+          -1.992025701468521
+        ],
+        "n": 300,
+        "total_sd": 16.6285441936737
+      },
+      "reference": {
+        "away_sd": 11.385932031962383,
+        "covariance": [
+          [
+            134.7815541495998,
+            6.5390071258113815
+          ],
+          [
+            6.5390071258113815,
+            129.63944823646705
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.609545820125772,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.6318303397065488,
+          -2.1083468463732156
+        ],
+        "n": 300,
+        "total_sd": 16.658301733300714
+      },
+      "simple": {
+        "away_sd": 13.661720095722304,
+        "covariance": [
+          [
+            216.2680051780226,
+            -62.70579225709782
+          ],
+          [
+            -62.70579225709782,
+            186.64259597386265
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.70605335152918,
+        "margin_sd": 22.985260182692755,
+        "mean_residual": [
+          1.706374514349438,
+          -4.446551700429202
+        ],
+        "n": 300,
+        "total_sd": 16.658301733300714
+      }
+    },
+    "variant": "C1_fbs_3"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.078528929836938,
+      "one_se": 0.32513438971840014,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.14373730764934,
+        "covariance": [
+          [
+            137.1134761783973,
+            -3.0524138933123526
+          ],
+          [
+            -3.0524138933123526,
+            124.18288118189575
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.709546369454168,
+        "margin_sd": 16.35240609656321,
+        "mean_residual": [
+          -0.7765596406549773,
+          -1.6123910801611498
+        ],
+        "n": 405,
+        "total_sd": 15.974715320582972
+      },
+      "frozen_state": {
+        "away_sd": 11.14035166618452,
+        "covariance": [
+          [
+            137.31841525353906,
+            -2.9876673235592337
+          ],
+          [
+            -2.9876673235592337,
+            124.1074352462602
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.718294041947363,
+        "margin_sd": 16.35240609656321,
+        "mean_residual": [
+          -0.8587844487906422,
+          -1.6946158882968148
+        ],
+        "n": 405,
+        "total_sd": 15.98281939623547
+      },
+      "reference": {
+        "away_sd": 11.170330708541998,
+        "covariance": [
+          [
+            137.67565944038628,
+            -2.4746187841675575
+          ],
+          [
+            -2.4746187841675575,
+            124.77628813819636
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.733527152582308,
+        "margin_sd": 16.35240609656321,
+        "mean_residual": [
+          -1.0178273507454692,
+          -1.8536587902516422
+        ],
+        "n": 405,
+        "total_sd": 16.046890976455455
+      },
+      "simple": {
+        "away_sd": 13.568842788149325,
+        "covariance": [
+          [
+            221.06523499767133,
+            -73.83800979846787
+          ],
+          [
+            -73.83800979846787,
+            184.11349460951195
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.868262675836451,
+        "margin_sd": 23.512863483721393,
+        "mean_residual": [
+          1.4863298020235882,
+          -4.357815943020698
+        ],
+        "n": 405,
+        "total_sd": 16.046890976455458
+      }
+    },
+    "variant": "C1_fbs_3"
+  },
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.728256078482644,
+      "one_se": 1.9975882152230877,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.155809877574493,
+        "covariance": [
+          [
+            115.06563296998854,
+            50.42773841479781
+          ],
+          [
+            50.42773841479781,
+            147.7637137797376
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.726865011269068,
+        "margin_sd": 12.726895533480683,
+        "mean_residual": [
+          -5.895718783687366,
+          0.9438985288126329
+        ],
+        "n": 16,
+        "total_sd": 19.070522373005982
+      },
+      "frozen_state": {
+        "away_sd": 12.146635465844431,
+        "covariance": [
+          [
+            114.97738449616168,
+            50.27213385807042
+          ],
+          [
+            50.27213385807042,
+            147.54075314010976
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.722750789613722,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.943017606911885,
+          0.8965997055881152
+        ],
+        "n": 16,
+        "total_sd": 19.054196528649857
+      },
+      "reference": {
+        "away_sd": 12.162101700539239,
+        "covariance": [
+          [
+            114.70222489168067,
+            50.32253637290475
+          ],
+          [
+            50.32253637290475,
+            147.91671777425944
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.709912459571305,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.841337190287059,
+          0.9982801222129392
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      },
+      "simple": {
+        "away_sd": 15.39898050630964,
+        "covariance": [
+          [
+            180.72987025868215,
+            -27.29722774031839
+          ],
+          [
+            -27.29722774031839,
+            237.12860063370425
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.443581005769339,
+        "margin_sd": 21.735982296022954,
+        "mean_residual": [
+          -3.9171224439185073,
+          -0.9259346241556115
+        ],
+        "n": 16,
+        "total_sd": 19.059486231579005
+      }
+    },
+    "variant": "C1_fbs_all"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.001586858870764,
+      "one_se": 0.9140581839322645,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.418946211122753,
+        "covariance": [
+          [
+            144.1393302323051,
+            4.460841415151807
+          ],
+          [
+            4.460841415151807,
+            108.55444015026917
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.005804022734383,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.0949576579656288,
+          -1.9736187588830594
+        ],
+        "n": 109,
+        "total_sd": 16.17453100441796
+      },
+      "frozen_state": {
+        "away_sd": 10.427330867937565,
+        "covariance": [
+          [
+            144.13156887272078,
+            4.544355174946862
+          ],
+          [
+            4.544355174946862,
+            108.72922902944359
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.00548078473831,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.2474195489937876,
+          -2.1260806499112186
+        ],
+        "n": 109,
+        "total_sd": 16.184854285783917
+      },
+      "reference": {
+        "away_sd": 10.463985659315577,
+        "covariance": [
+          [
+            145.4580178418043,
+            5.590463083947876
+          ],
+          [
+            5.590463083947876,
+            109.49499587836208
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.060597739822198,
+        "margin_sd": 15.613202347765515,
+        "mean_residual": [
+          -1.0580260587504515,
+          -1.936687159667883
+        ],
+        "n": 109,
+        "total_sd": 16.313612104253984
+      },
+      "simple": {
+        "away_sd": 12.909704611378881,
+        "covariance": [
+          [
+            216.86376597744447,
+            -58.69514962121973
+          ],
+          [
+            -58.69514962121973,
+            166.66047315305715
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.726295052641193,
+        "margin_sd": 22.38112013222174,
+        "mean_residual": [
+          0.678578029112004,
+          -3.673291247530339
+        ],
+        "n": 109,
+        "total_sd": 16.313612104253988
+      }
+    },
+    "variant": "C1_fbs_all"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.158830822457702,
+      "one_se": 0.5490329907066779,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.440744273136422,
+        "covariance": [
+          [
+            139.39951607544077,
+            10.896518154051916
+          ],
+          [
+            10.896518154051916,
+            130.89062952330383
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.806757220991747,
+        "margin_sd": 15.763791082434478,
+        "mean_residual": [
+          -0.6244152668779575,
+          -1.490623440145284
+        ],
+        "n": 202,
+        "total_sd": 17.090441243772744
+      },
+      "frozen_state": {
+        "away_sd": 11.4503563254563,
+        "covariance": [
+          [
+            139.43197377732756,
+            11.022762233301902
+          ],
+          [
+            11.022762233301902,
+            131.11065997991707
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.808131680216288,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.694253647466801,
+          -1.5604618207341276
+        ],
+        "n": 202,
+        "total_sd": 17.105208511557187
+      },
+      "reference": {
+        "away_sd": 11.473333329599157,
+        "covariance": [
+          [
+            139.78052773221245,
+            11.46039806683126
+          ],
+          [
+            11.46039806683126,
+            131.6373776920909
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.82288153252888,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.6805825867738282,
+          -1.546790760041155
+        ],
+        "n": 202,
+        "total_sd": 17.156302094506433
+      },
+      "simple": {
+        "away_sd": 14.105962686747452,
+        "covariance": [
+          [
+            229.6839358413612,
+            -67.16170880165336
+          ],
+          [
+            -67.16170880165336,
+            198.97818331991138
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.155326979031537,
+        "margin_sd": 23.727316257102895,
+        "mean_residual": [
+          1.6331176211190248,
+          -3.860490967934007
+        ],
+        "n": 202,
+        "total_sd": 17.156302094506433
+      }
+    },
+    "variant": "C1_fbs_all"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.150571056973082,
+      "one_se": 0.3984991313816846,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.34435668155625,
+        "covariance": [
+          [
+            134.96560327392712,
+            6.158521828926495
+          ],
+          [
+            6.158521828926495,
+            128.69442851836996
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.617469744911201,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.45477148432068853,
+          -1.931287990987355
+        ],
+        "n": 300,
+        "total_sd": 16.61255776363622
+      },
+      "frozen_state": {
+        "away_sd": 11.35059403100002,
+        "covariance": [
+          [
+            135.09008164756074,
+            6.291539184844959
+          ],
+          [
+            6.291539184844959,
+            128.83598485657328
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.62282588906677,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.5214364774626715,
+          -1.9979529841293382
+        ],
+        "n": 300,
+        "total_sd": 16.62856412543861
+      },
+      "reference": {
+        "away_sd": 11.388082214790375,
+        "covariance": [
+          [
+            134.78514691489366,
+            6.565287655637208
+          ],
+          [
+            6.565287655637208,
+            129.68841653082484
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.60970055233526,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.6534006236374271,
+          -2.1299171303040936
+        ],
+        "n": 300,
+        "total_sd": 16.661456681724825
+      },
+      "simple": {
+        "away_sd": 13.658271799648121,
+        "covariance": [
+          [
+            216.22313465840475,
+            -62.5836922272375
+          ],
+          [
+            -62.5836922272375,
+            186.54838855306312
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.70452769246278,
+        "margin_sd": 22.976921196407993,
+        "mean_residual": [
+          1.6383305022559993,
+          -4.421648256197519
+        ],
+        "n": 300,
+        "total_sd": 16.661456681724825
+      }
+    },
+    "variant": "C1_fbs_all"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.078431865185536,
+      "one_se": 0.32521216382234597,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.142780442361865,
+        "covariance": [
+          [
+            137.13679321771372,
+            -3.051417971260998
+          ],
+          [
+            -3.051417971260998,
+            124.16155598668209
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.710541969427107,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.7956187590088009,
+          -1.6314501985149732
+        ],
+        "n": 405,
+        "total_sd": 15.974840007395184
+      },
+      "frozen_state": {
+        "away_sd": 11.139461697513223,
+        "covariance": [
+          [
+            137.3410552952401,
+            -2.986261470656744
+          ],
+          [
+            -2.986261470656744,
+            124.08760691036419
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.719260014831999,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.8778459343814705,
+          -1.7136773738876434
+        ],
+        "n": 405,
+        "total_sd": 15.98299531578142
+      },
+      "reference": {
+        "away_sd": 11.166185788000991,
+        "covariance": [
+          [
+            137.93883873016293,
+            -2.3893206822997564
+          ],
+          [
+            -2.3893206822997564,
+            124.68370505215533
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.744736639455263,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -1.142336265994942,
+          -1.978167705501115
+        ],
+        "n": 405,
+        "total_sd": 16.0575185635178
+      },
+      "simple": {
+        "away_sd": 13.56411501590896,
+        "covariance": [
+          [
+            221.13273416470133,
+            -73.63702395589475
+          ],
+          [
+            -73.63702395589475,
+            183.98521616480693
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.870532410263639,
+        "margin_sd": 23.50302104499117,
+        "mean_residual": [
+          1.345548103180444,
+          -4.4660520746765
+        ],
+        "n": 405,
+        "total_sd": 16.057518563517803
+      }
+    },
+    "variant": "C1_fbs_all"
+  },
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.763000067659398,
+      "one_se": 2.5669989321299633,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.176329861700827,
+        "covariance": [
+          [
+            114.79236379294964,
+            50.54075138688316
+          ],
+          [
+            50.54075138688316,
+            148.26300890094728
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.714119832863064,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.079974984655079,
+          1.7596423278449205
+        ],
+        "n": 16,
+        "total_sd": 19.08237080311729
+      },
+      "frozen_state": {
+        "away_sd": 12.160963655542444,
+        "covariance": [
+          [
+            114.64853965381583,
+            50.28185338255471
+          ],
+          [
+            50.28185338255471,
+            147.88903703142424
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.707405832124596,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.144299681298505,
+          1.6953176312014944
+        ],
+        "n": 16,
+        "total_sd": 19.055216699118105
+      },
+      "reference": {
+        "away_sd": 12.165543682532064,
+        "covariance": [
+          [
+            114.72829271585572,
+            50.37743794366045
+          ],
+          [
+            50.37743794366045,
+            148.00045309159583
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.711129385636966,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.005480477029751,
+          1.834136835470249
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770035
+      },
+      "simple": {
+        "away_sd": 15.403695114922963,
+        "covariance": [
+          [
+            180.62435113480925,
+            -27.207276316769192
+          ],
+          [
+            -27.207276316769192,
+            237.27382319350156
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.43965591578926,
+        "margin_sd": 21.732757003239353,
+        "mean_residual": [
+          -3.4446468667074903,
+          0.2733032251479899
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770032
+      }
+    },
+    "variant": "C1_p4_1"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.156906018100756,
+      "one_se": 0.8243611433285978,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.533547247990807,
+        "covariance": [
+          [
+            143.6158678882417,
+            5.399698980812863
+          ],
+          [
+            5.399698980812863,
+            110.9556176256547
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.983983807075246,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.2959295647711568,
+          -2.174590665688587
+        ],
+        "n": 109,
+        "total_sd": 16.290208208476713
+      },
+      "frozen_state": {
+        "away_sd": 10.528802926244898,
+        "covariance": [
+          [
+            143.4537338883313,
+            5.268668697881905
+          ],
+          [
+            5.268668697881905,
+            110.85569105970313
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.977217284842556,
+        "margin_sd": 15.613202347765515,
+        "mean_residual": [
+          -1.541562254118428,
+          -2.42022335503586
+        ],
+        "n": 109,
+        "total_sd": 16.27411325829454
+      },
+      "reference": {
+        "away_sd": 10.539049199454873,
+        "covariance": [
+          [
+            143.7870899524077,
+            5.543280214333725
+          ],
+          [
+            5.543280214333725,
+            111.07155802853038
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.991125466460923,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.3464075036212164,
+          -2.225068604538648
+        ],
+        "n": 109,
+        "total_sd": 16.30782659981414
+      },
+      "simple": {
+        "away_sd": 13.034521994421848,
+        "covariance": [
+          [
+            216.49911541416742,
+            -60.226335313814396
+          ],
+          [
+            -60.226335313814396,
+            169.89876362306688
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.713908910081217,
+        "margin_sd": 22.51334159259489,
+        "mean_residual": [
+          0.7486129072894078,
+          -4.320089015449271
+        ],
+        "n": 109,
+        "total_sd": 16.30782659981414
+      }
+    },
+    "variant": "C1_p4_1"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.21415964515129,
+      "one_se": 0.5004559440076418,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.51291527173151,
+        "covariance": [
+          [
+            139.5805844001701,
+            11.815346581798947
+          ],
+          [
+            11.815346581798947,
+            132.54721805406862
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.814422728181437,
+        "margin_sd": 15.763791082434478,
+        "mean_residual": [
+          -0.5918126632404399,
+          -1.4580208365077663
+        ],
+        "n": 202,
+        "total_sd": 17.197630523355144
+      },
+      "frozen_state": {
+        "away_sd": 11.517503413047761,
+        "covariance": [
+          [
+            139.6705983310056,
+            11.91318695496583
+          ],
+          [
+            11.91318695496583,
+            132.65288486956683
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.818231607605497,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.7293149304221851,
+          -1.5955231036895114
+        ],
+        "n": 202,
+        "total_sd": 17.209005116813234
+      },
+      "reference": {
+        "away_sd": 11.533645178927316,
+        "covariance": [
+          [
+            139.37298386073073,
+            11.950422841741583
+          ],
+          [
+            11.950422841741583,
+            133.0249711133933
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.805633564562756,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.597666309569203,
+          -1.4638744828365293
+        ],
+        "n": 202,
+        "total_sd": 17.213332061446067
+      },
+      "simple": {
+        "away_sd": 14.19941905317873,
+        "covariance": [
+          [
+            229.33837800023784,
+            -67.33153939520291
+          ],
+          [
+            -67.33153939520291,
+            201.6235014477751
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.143922147192841,
+        "margin_sd": 23.782871110074552,
+        "mean_residual": [
+          1.4730717123466552,
+          -3.534612504752387
+        ],
+        "n": 202,
+        "total_sd": 17.213332061446067
+      }
+    },
+    "variant": "C1_p4_1"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.151518360786788,
+      "one_se": 0.3697152522961898,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.382048993229258,
+        "covariance": [
+          [
+            135.53730982042666,
+            6.872680485126871
+          ],
+          [
+            6.872680485126871,
+            129.55103928427116
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.64204921053105,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.22290834333529694,
+          -1.6994248500019637
+        ],
+        "n": 300,
+        "total_sd": 16.698314587854416
+      },
+      "frozen_state": {
+        "away_sd": 11.38509959008761,
+        "covariance": [
+          [
+            135.78692537323388,
+            7.032214957501453
+          ],
+          [
+            7.032214957501453,
+            129.62049267621305
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.652764709425565,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.34526563459026505,
+          -1.8217821412569317
+        ],
+        "n": 300,
+        "total_sd": 16.717411521059407
+      },
+      "reference": {
+        "away_sd": 11.406155306174421,
+        "covariance": [
+          [
+            134.68473889282927,
+            6.721064813478037
+          ],
+          [
+            6.721064813478037,
+            130.10037886857089
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.60537543092981,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.2721556944151602,
+          -1.7486722010818267
+        ],
+        "n": 300,
+        "total_sd": 16.680145304773465
+      },
+      "simple": {
+        "away_sd": 13.712719309915169,
+        "covariance": [
+          [
+            216.35030346883812,
+            -63.080863476501115
+          ],
+          [
+            -63.080863476501115,
+            188.03867087252036
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.70885119473435,
+        "margin_sd": 23.033686228963887,
+        "mean_residual": [
+          1.392947659366048,
+          -3.4137755548630344
+        ],
+        "n": 300,
+        "total_sd": 16.680145304773465
+      }
+    },
+    "variant": "C1_p4_1"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.104185653052852,
+      "one_se": 0.29738518657127516,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.184423939452248,
+        "covariance": [
+          [
+            137.3421182107046,
+            -2.4838640394103204
+          ],
+          [
+            -2.4838640394103204,
+            125.09133885739253
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.719305363830426,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.42626960956734383,
+          -1.262101049073517
+        ],
+        "n": 405,
+        "total_sd": 16.045738655146934
+      },
+      "frozen_state": {
+        "away_sd": 11.173144084348662,
+        "covariance": [
+          [
+            137.65444439924246,
+            -2.4537960090298885
+          ],
+          [
+            -2.4537960090298885,
+            124.83914872961552
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.732623082637678,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.5655831295264528,
+          -1.4014145690326258
+        ],
+        "n": 405,
+        "total_sd": 16.049486007682557
+      },
+      "reference": {
+        "away_sd": 11.203334206442817,
+        "covariance": [
+          [
+            137.29782866217755,
+            -2.2943295717442704
+          ],
+          [
+            -2.2943295717442704,
+            125.5146973412517
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.717415613614529,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.4820003318468803,
+          -1.317831771353053
+        ],
+        "n": 405,
+        "total_sd": 16.06934556414606
+      },
+      "simple": {
+        "away_sd": 13.642316133460472,
+        "covariance": [
+          [
+            221.28797038234003,
+            -74.58844650383763
+          ],
+          [
+            -74.58844650383763,
+            186.1127894852759
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.875751086326366,
+        "margin_sd": 23.59189803460695,
+        "mean_residual": [
+          1.1423897291390337,
+          -2.942221832338967
+        ],
+        "n": 405,
+        "total_sd": 16.06934556414606
+      }
+    },
+    "variant": "C1_p4_1"
+  },
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.763000067659398,
+      "one_se": 2.5669989321299633,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.176329861700827,
+        "covariance": [
+          [
+            114.79236379294964,
+            50.54075138688316
+          ],
+          [
+            50.54075138688316,
+            148.26300890094728
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.714119832863064,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.079974984655079,
+          1.7596423278449205
+        ],
+        "n": 16,
+        "total_sd": 19.08237080311729
+      },
+      "frozen_state": {
+        "away_sd": 12.160963655542444,
+        "covariance": [
+          [
+            114.64853965381583,
+            50.28185338255471
+          ],
+          [
+            50.28185338255471,
+            147.88903703142424
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.707405832124596,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.144299681298505,
+          1.6953176312014944
+        ],
+        "n": 16,
+        "total_sd": 19.055216699118105
+      },
+      "reference": {
+        "away_sd": 12.165543682532064,
+        "covariance": [
+          [
+            114.72829271585572,
+            50.37743794366045
+          ],
+          [
+            50.37743794366045,
+            148.00045309159583
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.711129385636966,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.005480477029751,
+          1.834136835470249
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770035
+      },
+      "simple": {
+        "away_sd": 15.403695114922963,
+        "covariance": [
+          [
+            180.62435113480925,
+            -27.207276316769192
+          ],
+          [
+            -27.207276316769192,
+            237.27382319350156
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.43965591578926,
+        "margin_sd": 21.732757003239353,
+        "mean_residual": [
+          -3.4446468667074903,
+          0.2733032251479899
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770032
+      }
+    },
+    "variant": "C1_p4_3"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 8.983220345804469,
+      "one_se": 0.8554402606370906,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.447864545102902,
+        "covariance": [
+          [
+            143.17408340796928,
+            4.2799347042584515
+          ],
+          [
+            4.2799347042584515,
+            109.15787355281827
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.965537322158553,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -0.8613638702112748,
+          -1.7400249711287064
+        ],
+        "n": 109,
+        "total_sd": 16.152146184619074
+      },
+      "frozen_state": {
+        "away_sd": 10.4541660677659,
+        "covariance": [
+          [
+            143.23720264270858,
+            4.377351631432942
+          ],
+          [
+            4.377351631432942,
+            109.28958817242795
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.96817457437468,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.0080135010755036,
+          -1.8866746019929352
+        ],
+        "n": 109,
+        "total_sd": 16.16420409664523
+      },
+      "reference": {
+        "away_sd": 10.484857651785308,
+        "covariance": [
+          [
+            144.87489739957542,
+            5.5175249127528625
+          ],
+          [
+            5.5175249127528625,
+            109.93223997820094
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.03639885512172,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -0.5916243199061059,
+          -1.4702854208235367
+        ],
+        "n": 109,
+        "total_sd": 16.304667650807303
+      },
+      "simple": {
+        "away_sd": 12.934126187237409,
+        "covariance": [
+          [
+            216.56287300881186,
+            -59.006153016455144
+          ],
+          [
+            -59.006153016455144,
+            167.2916202273805
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.716075326282203,
+        "margin_sd": 22.402383785416735,
+        "mean_residual": [
+          0.9018239876988379,
+          -2.9637337284284793
+        ],
+        "n": 109,
+        "total_sd": 16.3046676508073
+      }
+    },
+    "variant": "C1_p4_3"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.132228577904,
+      "one_se": 0.5161464319189082,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.454825785931352,
+        "covariance": [
+          [
+            138.8646966592949,
+            10.79031057734595
+          ],
+          [
+            10.79031057734595,
+            131.2130337860378
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.784086585700859,
+        "margin_sd": 15.763791082434478,
+        "mean_residual": [
+          -0.4605630275731651,
+          -1.326771200840492
+        ],
+        "n": 202,
+        "total_sd": 17.078007834639983
+      },
+      "frozen_state": {
+        "away_sd": 11.458056911103037,
+        "covariance": [
+          [
+            138.94431708528992,
+            10.867137986362595
+          ],
+          [
+            10.867137986362595,
+            131.28706817807608
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.787464404412423,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.5544394512032204,
+          -1.420647624470547
+        ],
+        "n": 202,
+        "total_sd": 17.0870026990134
+      },
+      "reference": {
+        "away_sd": 11.481453522389764,
+        "covariance": [
+          [
+            139.38193857029557,
+            11.35430213322551
+          ],
+          [
+            11.35430213322551,
+            131.8237749867963
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.806012814252556,
+        "margin_sd": 15.763791082434482,
+        "mean_residual": [
+          -0.3014794918779754,
+          -1.167687665145302
+        ],
+        "n": 202,
+        "total_sd": 17.14392947440997
+      },
+      "simple": {
+        "away_sd": 14.120191361331411,
+        "covariance": [
+          [
+            229.2240610260494,
+            -67.34477364156238
+          ],
+          [
+            -67.34477364156238,
+            199.3798040806182
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.14014732511046,
+        "margin_sd": 23.733803158992288,
+        "mean_residual": [
+          1.6844395788110835,
+          -3.1536067358343614
+        ],
+        "n": 202,
+        "total_sd": 17.14392947440997
+      }
+    },
+    "variant": "C1_p4_3"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.101830384636315,
+      "one_se": 0.37683911008855814,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.34782056944681,
+        "covariance": [
+          [
+            134.76741246869398,
+            6.098728005304994
+          ],
+          [
+            6.098728005304994,
+            128.77303167636012
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.608936750137541,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.251554484743091,
+          -1.7280709914097576
+        ],
+        "n": 300,
+        "total_sd": 16.60535757385742
+      },
+      "frozen_state": {
+        "away_sd": 11.349979875634133,
+        "covariance": [
+          [
+            134.97193610631965,
+            6.225495574587687
+          ],
+          [
+            6.225495574587687,
+            128.82204317729983
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.617742298154132,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.3503645953262357,
+          -1.8268811019929023
+        ],
+        "n": 300,
+        "total_sd": 16.620618834231017
+      },
+      "reference": {
+        "away_sd": 11.401438539738443,
+        "covariance": [
+          [
+            134.49018051660477,
+            6.569996578796884
+          ],
+          [
+            6.569996578796884,
+            129.99280077543307
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.596990149025943,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.3408591833229446,
+          -1.8173756899896114
+        ],
+        "n": 300,
+        "total_sd": 16.662021919612027
+      },
+      "simple": {
+        "away_sd": 13.672895315603157,
+        "covariance": [
+          [
+            216.03546763777257,
+            -62.68027974979184
+          ],
+          [
+            -62.68027974979184,
+            186.94806631144274
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.698145040710838,
+        "margin_sd": 22.985736739308553,
+        "mean_residual": [
+          1.5600060173407186,
+          -3.7182408906532736
+        ],
+        "n": 300,
+        "total_sd": 16.662021919612027
+      }
+    },
+    "variant": "C1_p4_3"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.05365057048669,
+      "one_se": 0.30498759507502954,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.153605810309731,
+        "covariance": [
+          [
+            136.81590783245207,
+            -3.0911773713453554
+          ],
+          [
+            -3.0911773713453554,
+            124.40292257177498
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.696833239490596,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.5177381238514474,
+          -1.3535695633576204
+        ],
+        "n": 405,
+        "total_sd": 15.969861479096691
+      },
+      "frozen_state": {
+        "away_sd": 11.144332842527607,
+        "covariance": [
+          [
+            137.0738555835848,
+            -3.0655875291467676
+          ],
+          [
+            -3.0655875291467676,
+            124.19615450503947
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.707854439801718,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.6351961376350961,
+          -1.471027577141269
+        ],
+        "n": 405,
+        "total_sd": 15.973065924559716
+      },
+      "reference": {
+        "away_sd": 11.18355316163362,
+        "covariance": [
+          [
+            137.42979116028326,
+            -2.4497663337745825
+          ],
+          [
+            -2.4497663337745825,
+            125.07186131908533
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.723045302321546,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.7131221412950749,
+          -1.5489535808012478
+        ],
+        "n": 405,
+        "total_sd": 16.049988156127075
+      },
+      "simple": {
+        "away_sd": 13.586229303666327,
+        "covariance": [
+          [
+            221.15240722788266,
+            -74.06795705393242
+          ],
+          [
+            -74.06795705393242,
+            184.58562669180162
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.871193873656637,
+        "margin_sd": 23.53452672197912,
+        "mean_residual": [
+          1.203455928800702,
+          -3.465531650897024
+        ],
+        "n": 405,
+        "total_sd": 16.04998815612708
+      }
+    },
+    "variant": "C1_p4_3"
+  },
+  {
+    "inner_n": 16,
+    "max_selection_season": 2020,
+    "outer_season": 2021,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.763000067659398,
+      "one_se": 2.5669989321299633,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 12.176329861700827,
+        "covariance": [
+          [
+            114.79236379294964,
+            50.54075138688316
+          ],
+          [
+            50.54075138688316,
+            148.26300890094728
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.714119832863064,
+        "margin_sd": 12.726895533480684,
+        "mean_residual": [
+          -5.079974984655079,
+          1.7596423278449205
+        ],
+        "n": 16,
+        "total_sd": 19.08237080311729
+      },
+      "frozen_state": {
+        "away_sd": 12.160963655542444,
+        "covariance": [
+          [
+            114.64853965381583,
+            50.28185338255471
+          ],
+          [
+            50.28185338255471,
+            147.88903703142424
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.707405832124596,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.144299681298505,
+          1.6953176312014944
+        ],
+        "n": 16,
+        "total_sd": 19.055216699118105
+      },
+      "reference": {
+        "away_sd": 12.165543682532064,
+        "covariance": [
+          [
+            114.72829271585572,
+            50.37743794366045
+          ],
+          [
+            50.37743794366045,
+            148.00045309159583
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 10.711129385636966,
+        "margin_sd": 12.726895533480686,
+        "mean_residual": [
+          -5.005480477029751,
+          1.834136835470249
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770035
+      },
+      "simple": {
+        "away_sd": 15.403695114922963,
+        "covariance": [
+          [
+            180.62435113480925,
+            -27.207276316769192
+          ],
+          [
+            -27.207276316769192,
+            237.27382319350156
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 13.43965591578926,
+        "margin_sd": 21.732757003239353,
+        "mean_residual": [
+          -3.4446468667074903,
+          0.2733032251479899
+        ],
+        "n": 16,
+        "total_sd": 19.065246436770032
+      }
+    },
+    "variant": "C1_p4_all"
+  },
+  {
+    "inner_n": 109,
+    "max_selection_season": 2021,
+    "outer_season": 2022,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 8.983220345804469,
+      "one_se": 0.8554402606370906,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 10.447864545102902,
+        "covariance": [
+          [
+            143.17408340796928,
+            4.2799347042584515
+          ],
+          [
+            4.2799347042584515,
+            109.15787355281827
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.965537322158553,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -0.8613638702112748,
+          -1.7400249711287064
+        ],
+        "n": 109,
+        "total_sd": 16.152146184619074
+      },
+      "frozen_state": {
+        "away_sd": 10.4541660677659,
+        "covariance": [
+          [
+            143.23720264270858,
+            4.377351631432942
+          ],
+          [
+            4.377351631432942,
+            109.28958817242795
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.96817457437468,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -1.0080135010755036,
+          -1.8866746019929352
+        ],
+        "n": 109,
+        "total_sd": 16.16420409664523
+      },
+      "reference": {
+        "away_sd": 10.484857651785308,
+        "covariance": [
+          [
+            144.87489739957542,
+            5.5175249127528625
+          ],
+          [
+            5.5175249127528625,
+            109.93223997820094
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 12.03639885512172,
+        "margin_sd": 15.613202347765517,
+        "mean_residual": [
+          -0.5916243199061059,
+          -1.4702854208235367
+        ],
+        "n": 109,
+        "total_sd": 16.304667650807303
+      },
+      "simple": {
+        "away_sd": 12.934126187237409,
+        "covariance": [
+          [
+            216.56287300881186,
+            -59.006153016455144
+          ],
+          [
+            -59.006153016455144,
+            167.2916202273805
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.716075326282203,
+        "margin_sd": 22.402383785416735,
+        "mean_residual": [
+          0.9018239876988379,
+          -2.9637337284284793
+        ],
+        "n": 109,
+        "total_sd": 16.3046676508073
+      }
+    },
+    "variant": "C1_p4_all"
+  },
+  {
+    "inner_n": 202,
+    "max_selection_season": 2022,
+    "outer_season": 2023,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.132228577904,
+      "one_se": 0.5161464319189082,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.454825785931352,
+        "covariance": [
+          [
+            138.8646966592949,
+            10.79031057734595
+          ],
+          [
+            10.79031057734595,
+            131.2130337860378
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.784086585700859,
+        "margin_sd": 15.763791082434478,
+        "mean_residual": [
+          -0.4605630275731651,
+          -1.326771200840492
+        ],
+        "n": 202,
+        "total_sd": 17.078007834639983
+      },
+      "frozen_state": {
+        "away_sd": 11.458056911103037,
+        "covariance": [
+          [
+            138.94431708528992,
+            10.867137986362595
+          ],
+          [
+            10.867137986362595,
+            131.28706817807608
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.787464404412423,
+        "margin_sd": 15.76379108243448,
+        "mean_residual": [
+          -0.5544394512032204,
+          -1.420647624470547
+        ],
+        "n": 202,
+        "total_sd": 17.0870026990134
+      },
+      "reference": {
+        "away_sd": 11.481453522389764,
+        "covariance": [
+          [
+            139.38193857029557,
+            11.35430213322551
+          ],
+          [
+            11.35430213322551,
+            131.8237749867963
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.806012814252556,
+        "margin_sd": 15.763791082434482,
+        "mean_residual": [
+          -0.3014794918779754,
+          -1.167687665145302
+        ],
+        "n": 202,
+        "total_sd": 17.14392947440997
+      },
+      "simple": {
+        "away_sd": 14.120191361331411,
+        "covariance": [
+          [
+            229.2240610260494,
+            -67.34477364156238
+          ],
+          [
+            -67.34477364156238,
+            199.3798040806182
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 15.14014732511046,
+        "margin_sd": 23.733803158992288,
+        "mean_residual": [
+          1.6844395788110835,
+          -3.1536067358343614
+        ],
+        "n": 202,
+        "total_sd": 17.14392947440997
+      }
+    },
+    "variant": "C1_p4_all"
+  },
+  {
+    "inner_n": 300,
+    "max_selection_season": 2023,
+    "outer_season": 2024,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.106124817962186,
+      "one_se": 0.37485631647994605,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.35053375782791,
+        "covariance": [
+          [
+            134.77188472610868,
+            6.1317565896277735
+          ],
+          [
+            6.1317565896277735,
+            128.83461658759094
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.60912936985839,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.2507175232169979,
+          -1.7272340298836646
+        ],
+        "n": 300,
+        "total_sd": 16.60933516107599
+      },
+      "frozen_state": {
+        "away_sd": 11.352641459466293,
+        "covariance": [
+          [
+            134.9741110796303,
+            6.256795526189601
+          ],
+          [
+            6.256795526189601,
+            128.88246810719298
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.617835903455957,
+        "margin_sd": 15.853800431897838,
+        "mean_residual": [
+          -0.34855410287815924,
+          -1.8250706095448261
+        ],
+        "n": 300,
+        "total_sd": 16.62438480784184
+      },
+      "reference": {
+        "away_sd": 11.39658545312278,
+        "covariance": [
+          [
+            134.5035341864907,
+            6.521353021188178
+          ],
+          [
+            6.521353021188178,
+            129.88215999032977
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.597565873341297,
+        "margin_sd": 15.85380043189784,
+        "mean_residual": [
+          -0.3004202671655741,
+          -1.7769367738322406
+        ],
+        "n": 300,
+        "total_sd": 16.656182042088663
+      },
+      "simple": {
+        "away_sd": 13.665846524110831,
+        "covariance": [
+          [
+            215.985286865354,
+            -62.656123933354635
+          ],
+          [
+            -62.656123933354635,
+            186.7553612205521
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.6964378971693,
+        "margin_sd": 22.979401557756358,
+        "mean_residual": [
+          1.5819343478530956,
+          -3.659291388850911
+        ],
+        "n": 300,
+        "total_sd": 16.65618204208866
+      }
+    },
+    "variant": "C1_p4_all"
+  },
+  {
+    "inner_n": 405,
+    "max_selection_season": 2024,
+    "outer_season": 2025,
+    "selection": {
+      "decay": 0.05,
+      "inner_best_loss": 9.065077716489338,
+      "one_se": 0.306045224043689,
+      "ridge": 3000,
+      "unfit": false
+    },
+    "uncertainty": {
+      "candidate": {
+        "away_sd": 11.155950942329028,
+        "covariance": [
+          [
+            136.86376721367938,
+            -3.041088252793227
+          ],
+          [
+            -3.041088252793227,
+            124.45524142765194
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.698878887042099,
+        "margin_sd": 16.352406096563215,
+        "mean_residual": [
+          -0.536596315831371,
+          -1.3724277553375444
+        ],
+        "n": 405,
+        "total_sd": 15.976133203492791
+      },
+      "frozen_state": {
+        "away_sd": 11.147426697327242,
+        "covariance": [
+          [
+            137.1070915312882,
+            -3.0144858216726846
+          ],
+          [
+            -3.0144858216726846,
+            124.26512197228416
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.709273740556593,
+        "margin_sd": 16.35240609656321,
+        "mean_residual": [
+          -0.6546234501683282,
+          -1.4904548896745011
+        ],
+        "n": 405,
+        "total_sd": 15.979463128034903
+      },
+      "reference": {
+        "away_sd": 11.173256473020446,
+        "covariance": [
+          [
+            137.71795349425753,
+            -2.420785720383445
+          ],
+          [
+            -2.420785720383445,
+            124.84166021189331
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 11.735329287849469,
+        "margin_sd": 16.35240609656321,
+        "mean_residual": [
+          -0.7851810636413277,
+          -1.621012503147501
+        ],
+        "n": 405,
+        "total_sd": 16.053599043995835
+      },
+      "simple": {
+        "away_sd": 13.572190761412966,
+        "covariance": [
+          [
+            221.1211405688184,
+            -73.80373018380892
+          ],
+          [
+            -73.80373018380892,
+            184.20436206418347
+          ]
+        ],
+        "distribution_support": "continuous_error_approximation_not_discrete_scores",
+        "home_sd": 14.870142587373477,
+        "margin_sd": 23.514526637817305,
+        "mean_residual": [
+          1.2153029062301222,
+          -3.621496473018951
+        ],
+        "n": 405,
+        "total_sd": 16.05359904399584
+      }
+    },
+    "variant": "C1_p4_all"
+  }
+]
