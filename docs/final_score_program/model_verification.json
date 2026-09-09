@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "local_checks_complete_remote_ci_pending",
+  "status": "working_tree_clean_checkout_release_and_independent_review_complete_ci_pending",
   "decision": "retain_incumbent",
   "production_replacement": false,
   "shadow_activation": false,
@@ -43,8 +43,96 @@
     "manifest_path": "/tmp/stallions-model-initial.json",
     "original_forecasts_untouched": true
   },
-  "clean_checkout": null,
-  "release_check": null,
+  "clean_checkout": {
+    "commit": "c7192c8",
+    "method": "local clone --no-hardlinks of committed repository; no private parquet caches; original .venv interpreter supplied without resolving its symlink",
+    "command": "/absolute/repo/.venv/bin/python -m pytest -q",
+    "result": "902 passed,15 skipped,10 strict xfailed in11.29s",
+    "initial_harness_error": "First attempt resolved the venv executable symlink to Homebrew Python, which lacked pytest; corrected interpreter path before tests ran."
+  },
+  "release_check": {
+    "root": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion",
+    "candidate_tree": "5c0fdb2e84ff1c89fd1b97d6e9b8e87afefdfb80",
+    "python": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/.venv/bin/python",
+    "ok": true,
+    "checks": [
+      {
+        "name": "candidate tree materialises",
+        "ok": true,
+        "detail": "git write-tree -> 5c0fdb2e84ff1c89fd1b97d6e9b8e87afefdfb80"
+      },
+      {
+        "name": "required files tracked in candidate tree",
+        "ok": true,
+        "detail": "all present"
+      },
+      {
+        "name": "clean candidate tree imports scripts/weekly_loop.py",
+        "ok": true,
+        "detail": "imported"
+      },
+      {
+        "name": "README names one supported product",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "name": "legacy fails closed: run.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --demo",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job wed",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job t90",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job tuesday",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job deploy",
+        "ok": true,
+        "detail": "refused"
+      }
+    ],
+    "advisory": {
+      "name": "HEAD imports (advisory)",
+      "ok": true,
+      "detail": "HEAD already stands alone"
+    }
+  },
   "remote": {
     "url": "https://github.com/curtisdearing/stallionsstallion.git",
     "authenticated_account": "curtisdearing",
