@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "working_tree_clean_checkout_release_and_independent_review_complete_ci_pending",
+  "status": "complete_retain_incumbent_no_activation",
   "decision": "retain_incumbent",
   "production_replacement": false,
   "shadow_activation": false,
@@ -140,8 +140,21 @@
     "draft_pr": "https://github.com/curtisdearing/stallionsstallion/pull/2",
     "pr_head": "audit/final-score-program-2026-09-08",
     "local_feature_branch": "research/final-score-c1-2026-09-09",
-    "publication_side_effects": "Pages runs only master push on data/site or pages workflow, or explicit dispatch; feature push/PR runs tests. No merge,deploy or workflow dispatch."
+    "publication_side_effects": "Pages runs only master push on data/site or pages workflow, or explicit dispatch; feature push/PR runs tests. No merge,deploy or workflow dispatch.",
+    "pushed": true,
+    "push_method": "fast-forward local research branch HEAD to existing remote audit feature branch; no force push"
   },
   "preexisting_ci_failures": "Four missing-private-cache failures reproduced on unchanged c6c780f by prior audit. Current scoped test fixture repairs keep full production verification and explicit real-cache integration coverage.",
-  "ci": null
+  "ci": {
+    "verified_commit": "98a118655197c6dac82a3350409859726c3a5372",
+    "push": {
+      "conclusion": "success",
+      "url": "https://github.com/curtisdearing/stallionsstallion/actions/runs/34304471553"
+    },
+    "pull_request": {
+      "conclusion": "success",
+      "url": "https://github.com/curtisdearing/stallionsstallion/actions/runs/34304474438"
+    },
+    "followup": "This verification-record-only commit will trigger CI again; PR checks show the latest head. No numerical implementation changed after this tested commit."
+  }
 }
