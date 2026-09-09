@@ -298,7 +298,16 @@ def test_the_legacy_artifact_is_present_and_labelled_archival(manifest):
     assert "pre" in record.not_selected_reason.lower()
 
 
-def test_select_never_returns_an_archival_record(manifest):
+def test_select_never_returns_an_archival_record(sandbox):
+    # Exercise real selection AND full hash verification in a miniature repo;
+    # the status rule must not depend on gitignored historical CFBD caches.
+    payload=json.loads((sandbox / 'data' / EV.MANIFEST_FILE).read_text())
+    archival=dict(payload['artifacts'][0],artifact_id='archival',
+                  status=EV.Status.ARCHIVAL.value,
+                  not_selected_reason='superseded test fixture')
+    payload['artifacts'].append(archival)
+    manifest=EV.Manifest(payload,str(sandbox))
+    selected=[]
     for role in EV.ROLES:
         try:
             chosen = manifest.select(role)
@@ -306,6 +315,8 @@ def test_select_never_returns_an_archival_record(manifest):
             continue
         assert chosen.status == EV.Status.SELECTED.value
         assert chosen.status != EV.Status.ARCHIVAL.value
+        selected.append(chosen.artifact_id)
+    assert selected==['bench']
 
 
 def test_a_candidate_is_not_a_claim(manifest):

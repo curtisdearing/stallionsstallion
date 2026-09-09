@@ -522,6 +522,7 @@ def test_ridge_route_degrades_to_uncertainty_unvalidated_when_no_basis_is_regist
             "no registered out-of-sample basis covers week 1 for "
             "model_family 'ridge_preseason_prior'")
     monkeypatch.setattr(PR, "early_ridge_forecasts", _boom)
+    monkeypatch.setattr(PR, "fbs_teams", lambda season: {"Ohio State", "Michigan", "Alabama"})
 
     class _StubTable:
         def fingerprint(self):

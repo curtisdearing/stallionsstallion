@@ -230,8 +230,18 @@ def test_coach_year2_rejects_a_different_coach_in_year_two():
 # ------------------------------------------------------------------ #
 # nothing the battery touches may carry a price or an outcome
 # ------------------------------------------------------------------ #
-def test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome():
-    for frame in FBC.frames_handed_to_evaluator():
+def test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome(monkeypatch,sched,drives):
+    sources={
+        'games':sched.assign(spread=999,home_moneyline=999),
+        'drives':drives.assign(spread=999),
+        'coaches':pd.DataFrame([dict(season=2023,team='A',coach='Coach',first_season=False),
+                                dict(season=2022,team='A',coach='Coach',first_season=True)]),
+        'returning':pd.DataFrame([dict(season=2023,team=t,percent_ppa=.5,spread=999) for t in 'ABCD'])}
+    sources['games'].loc[sources['games'].id==4,'start_date']='2023-09-15T18:00:00.000Z'
+    monkeypatch.setattr(FBC,'_parquet',lambda kind,*args,**kwargs:sources[kind].copy())
+    frames=FBC.frames_handed_to_evaluator()
+    assert len(frames)==6 and all(len(f)>0 for f in frames)
+    for frame in frames:
         bad = set(frame.columns) & FORBIDDEN
         assert not bad, f"a factor frame carries forbidden columns {sorted(bad)}"
 

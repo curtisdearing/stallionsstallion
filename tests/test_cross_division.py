@@ -276,6 +276,11 @@ def _published_wk1():
     return FC.read_artifact(str(PRE_ROUTE_SNAPSHOT))
 
 
+@pytest.mark.skipif(
+    not all((ROOT / 'data' / 'cfbd' / f'{kind}_{year}.parquet').exists()
+            for kind in ('games','teams','talent','returning')
+            for year in range(2019,2027)),
+    reason='real-route integration requires private 2019-2026 CFBD caches; synthetic route tests remain active')
 def test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced():
     """Rebuild 2026 week 1 through the production early route with the REAL
     registry. Every FBS-vs-FBS number the pre-route snapshot carries must
