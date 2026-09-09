@@ -1,5 +1,7 @@
 # Final-score program contract — v1, 2026-09-08 ET
 
+**2026-09-09 status update:** the user authorized a bounded C1 implementation after this design freeze. [03_model_verdict.md](03_model_verdict.md), [c1_preregistration.json](c1_preregistration.json) and the immutable run now record that work. All six variants failed the inherited practical criterion; incumbent retained and no shadow activation. The original design below remains historical and is not rewritten to match results.
+
 Status: audit and implementation specification only. **Incumbent retained; no challenger shadow log activated.** This contract authorizes no production switch, forecast rewrite, merge, deployment, new provider, or bet. Its machine-readable experiment decisions are in [protocol.json](protocol.json); descriptive measurements and source hashes are in [audit_evidence.json](audit_evidence.json). The [architecture audit](01_architecture_audit.md) records what actually runs. No model improvement has been demonstrated by this work.
 
 ## 1. Objective and scope

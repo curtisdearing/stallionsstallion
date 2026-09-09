@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "local_checks_complete_remote_ci_pending",
+  "decision": "retain_incumbent",
+  "production_replacement": false,
+  "shadow_activation": false,
+  "environment": {
+    "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "scipy": "1.17.1",
+    "pytest": "9.1.1",
+    "pyarrow": "25.0.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "tests": [
+    {
+      "command": ".venv/bin/python -m pytest -q tests/test_final_score_research.py (before module)",
+      "result": "collection failed as intended: missing final_score_research module"
+    },
+    {
+      "command": ".venv/bin/python -m pytest -q tests/test_final_score_artifacts.py (before exact-cohort hardening)",
+      "result": "1 passed,1 failed: equal-sized different reference cohort was not rejected"
+    },
+    {
+      "command": ".venv/bin/python -m pytest -q",
+      "result": "1031 passed,10 strict xfailed in16.81s",
+      "scope": "working tree, includes99preserved preexisting uncommitted/untracked files"
+    },
+    {
+      "command": ".venv/bin/python scripts/verify_final_score_run.py data/final_score_program/20260909T024200Z-c1-v1 --inputs",
+      "result": "12 artifact hashes,43 input hashes,17376forecast rows,4344candidate rows,495primary games,30folds verified"
+    },
+    {
+      "command": "evidence.Manifest.load(\".\").verify_all()",
+      "result": "6/6 records verify"
+    }
+  ],
+  "independent_review": "evidence_review.json; separate reviewer independently reproduced forecasts, covariance, selection and20k bootstrap intervals",
+  "preservation": {
+    "preexisting_files": 99,
+    "changed": 0,
+    "manifest_path": "/tmp/stallions-model-initial.json",
+    "original_forecasts_untouched": true
+  },
+  "clean_checkout": null,
+  "release_check": null,
+  "remote": {
+    "url": "https://github.com/curtisdearing/stallionsstallion.git",
+    "authenticated_account": "curtisdearing",
+    "credential_storage": "macOS keyring; no credential values recorded",
+    "draft_pr": "https://github.com/curtisdearing/stallionsstallion/pull/2",
+    "pr_head": "audit/final-score-program-2026-09-08",
+    "local_feature_branch": "research/final-score-c1-2026-09-09",
+    "publication_side_effects": "Pages runs only master push on data/site or pages workflow, or explicit dispatch; feature push/PR runs tests. No merge,deploy or workflow dispatch."
+  },
+  "preexisting_ci_failures": "Four missing-private-cache failures reproduced on unchanged c6c780f by prior audit. Current scoped test fixture repairs keep full production verification and explicit real-cache integration coverage.",
+  "ci": null
+}

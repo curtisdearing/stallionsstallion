@@ -1,5 +1,7 @@
 # 02 — Data handoff: the team-season evidence layer
 
+**Independent-review correction, 2026-09-09:** read [03_model_verdict.md](03_model_verdict.md) and [evidence_review.json](evidence_review.json) before reusing this handoff. Tests exposed denominator, lineage, missingness and latent news-gate defects. Source approval alone does not implement the four drive measures; residual conditioning does not guarantee against double-counting; a new receipt timestamp cannot recover historical availability. The original handoff below is preserved as history, not endorsed as current verified fact.
+
 **Written** 2026-09-09 · **For** Astra's experiments · **Branch**
 `agent/team-season-evidence-2026-09-09`, based on `99fe693`
 (`audit/final-score-program-2026-09-08`).
