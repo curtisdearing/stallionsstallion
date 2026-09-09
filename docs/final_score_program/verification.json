@@ -209,5 +209,35 @@
     },
     "method": "GIT_INDEX_FILE pointed at an exact temporary copy of the staged index; all 14 checks passed. This report adds only verification metadata after that tree."
   },
-  "git_lock_incident": "Direct git staging/check attempt encountered a stale zero-byte index.lock, with no git writer found. Preserved lock in vault project _to_delete; ran checks using isolated index copy. No worktree/index content reset."
+  "git_lock_incident": "Direct git staging/check attempt encountered a stale zero-byte index.lock, with no git writer found. Preserved lock in vault project _to_delete; ran checks using isolated index copy. No worktree/index content reset.",
+  "github_pr": {
+    "url": "https://github.com/curtisdearing/stallionsstallion/pull/2",
+    "draft": true,
+    "base": "agent/context-layer-2026-08-28",
+    "head": "audit/final-score-program-2026-09-08"
+  },
+  "github_ci": {
+    "tested_commit": "3c54d9d",
+    "status": "failure",
+    "run_url": "https://github.com/curtisdearing/stallionsstallion/actions/runs/34294743353",
+    "passed": 770,
+    "failed": 4,
+    "skipped": 14,
+    "seconds": 15.97,
+    "failures": {
+      "test_cross_division.py::test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced": "missing games caches -> home_team KeyError",
+      "test_evidence_and_leakage.py::test_select_never_returns_an_archival_record": "declared games_2019.parquet absent",
+      "test_factor_context_leakage.py::test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome": "missing games caches -> start_date KeyError",
+      "test_forecast_contract.py::test_ridge_route_degrades_to_uncertainty_unvalidated_when_no_basis_is_registered": "2026 teams/FBS classification cache absent"
+    },
+    "base_reproduction": {
+      "git_archive": "c6c780f",
+      "environment": "same local repository venv; clean archive with no ignored caches",
+      "tests": "the same four exact failing node IDs above",
+      "failed": 4,
+      "seconds": 0.96,
+      "log_sha256": "bd29f8c089e28f9a23c0b2e03749cb4696cb6f802dea90711878b8f3f36786d5"
+    },
+    "interpretation": "pre-existing clean-checkout data dependency; no runtime or test fix in audit scope"
+  }
 }
