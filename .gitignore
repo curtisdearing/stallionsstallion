@@ -32,3 +32,8 @@ data/manifests/
 # Only the rendered explainer is excluded: it is a presentation of
 # predictions.csv, regenerable from it, and it is the bulk of the bytes.
 data/snapshots/**/explainer.html
+
+# team-season evidence build output — rebuild with
+# scripts/build_team_evidence.py; the registry it is built from
+# (data/team_evidence_registry.json) IS tracked.
+data/team_evidence/

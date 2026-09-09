@@ -1,0 +1,572 @@
+{
+  "all_small_sample": true,
+  "conference_pair_counts": [
+    {
+      "away_conf": "ACC",
+      "home_conf": "ACC",
+      "n": 19
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "ACC",
+      "n": 8
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "ACC",
+      "n": 8
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "ACC",
+      "n": 12
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "ACC",
+      "n": 6
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "ACC",
+      "n": 7
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "ACC",
+      "n": 9
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "ACC",
+      "n": 1
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "ACC",
+      "n": 14
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "ACC",
+      "n": 15
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "American Athletic",
+      "n": 5
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "American Athletic",
+      "n": 6
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "American Athletic",
+      "n": 7
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "American Athletic",
+      "n": 2
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "American Athletic",
+      "n": 5
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "American Athletic",
+      "n": 3
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "American Athletic",
+      "n": 5
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "American Athletic",
+      "n": 3
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "American Athletic",
+      "n": 2
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "American Athletic",
+      "n": 6
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "American Athletic",
+      "n": 13
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Big 12",
+      "n": 6
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Big 12",
+      "n": 10
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Big 12",
+      "n": 9
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "Big 12",
+      "n": 7
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Big 12",
+      "n": 6
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Big 12",
+      "n": 7
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Big 12",
+      "n": 9
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "Big 12",
+      "n": 7
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Big 12",
+      "n": 5
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Big 12",
+      "n": 8
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Big Ten",
+      "n": 9
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Big Ten",
+      "n": 9
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Big Ten",
+      "n": 9
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "Big Ten",
+      "n": 17
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Big Ten",
+      "n": 9
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Big Ten",
+      "n": 6
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Big Ten",
+      "n": 39
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Big Ten",
+      "n": 15
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "Big Ten",
+      "n": 7
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Big Ten",
+      "n": 4
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Big Ten",
+      "n": 7
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Conference USA",
+      "n": 2
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Conference USA",
+      "n": 11
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "Conference USA",
+      "n": 1
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Conference USA",
+      "n": 12
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Conference USA",
+      "n": 2
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Conference USA",
+      "n": 2
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Conference USA",
+      "n": 2
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Conference USA",
+      "n": 6
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "FBS Independents",
+      "n": 3
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "FBS Independents",
+      "n": 2
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "FBS Independents",
+      "n": 6
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "FBS Independents",
+      "n": 6
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "FBS Independents",
+      "n": 3
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "FBS Independents",
+      "n": 1
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Mid-American",
+      "n": 2
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Mid-American",
+      "n": 4
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Mid-American",
+      "n": 3
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Mid-American",
+      "n": 5
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Mid-American",
+      "n": 4
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Mid-American",
+      "n": 2
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Mid-American",
+      "n": 4
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Mid-American",
+      "n": 1
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Mid-American",
+      "n": 5
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Mountain West",
+      "n": 2
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Mountain West",
+      "n": 1
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Mountain West",
+      "n": 9
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "Mountain West",
+      "n": 2
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Mountain West",
+      "n": 11
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Mountain West",
+      "n": 4
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Mountain West",
+      "n": 3
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Mountain West",
+      "n": 7
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "Mountain West",
+      "n": 9
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Mountain West",
+      "n": 3
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Mountain West",
+      "n": 3
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Pac-12",
+      "n": 1
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Pac-12",
+      "n": 1
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Pac-12",
+      "n": 3
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "Pac-12",
+      "n": 5
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Pac-12",
+      "n": 2
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Pac-12",
+      "n": 2
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Pac-12",
+      "n": 3
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Pac-12",
+      "n": 23
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "Pac-12",
+      "n": 4
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Pac-12",
+      "n": 5
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Pac-12",
+      "n": 3
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "SEC",
+      "n": 14
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "SEC",
+      "n": 11
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "SEC",
+      "n": 7
+    },
+    {
+      "away_conf": "Big Ten",
+      "home_conf": "SEC",
+      "n": 4
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "SEC",
+      "n": 11
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "SEC",
+      "n": 2
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "SEC",
+      "n": 18
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "SEC",
+      "n": 9
+    },
+    {
+      "away_conf": "Pac-12",
+      "home_conf": "SEC",
+      "n": 4
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "SEC",
+      "n": 19
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "SEC",
+      "n": 15
+    },
+    {
+      "away_conf": "ACC",
+      "home_conf": "Sun Belt",
+      "n": 5
+    },
+    {
+      "away_conf": "American Athletic",
+      "home_conf": "Sun Belt",
+      "n": 17
+    },
+    {
+      "away_conf": "Big 12",
+      "home_conf": "Sun Belt",
+      "n": 4
+    },
+    {
+      "away_conf": "Conference USA",
+      "home_conf": "Sun Belt",
+      "n": 5
+    },
+    {
+      "away_conf": "FBS Independents",
+      "home_conf": "Sun Belt",
+      "n": 6
+    },
+    {
+      "away_conf": "Mid-American",
+      "home_conf": "Sun Belt",
+      "n": 4
+    },
+    {
+      "away_conf": "Mountain West",
+      "home_conf": "Sun Belt",
+      "n": 2
+    },
+    {
+      "away_conf": "SEC",
+      "home_conf": "Sun Belt",
+      "n": 2
+    },
+    {
+      "away_conf": "Sun Belt",
+      "home_conf": "Sun Belt",
+      "n": 4
+    }
+  ],
+  "eligible_early_games": 735,
+  "p4_priced": 495,
+  "priced_early_games": 724,
+  "prominent_less_covered_comparison": null,
+  "reason": "No preregistered independently sourced prominence labels or approved news corpus; conference slices are not media coverage.",
+  "verified_news_strata": null,
+  "verified_roster_strata": null
+}

@@ -1,0 +1,759 @@
+season,week,id,home,away,home_conf,away_conf,neutral,actual_home,actual_away,anchor,p4,cutoff_id,availability
+2020,1,401207101,Southern Miss,South Alabama,Conference USA,Sun Belt,False,21.0,32.0,11.315081,False,2020_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,1,401212484,Texas State,SMU,Sun Belt,American Athletic,False,24.0,31.0,-14.382867,False,2020_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,1,401212553,Memphis,Arkansas State,American Athletic,Sun Belt,False,37.0,24.0,18.988401,False,2020_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,1,401234576,Navy,BYU,American Athletic,FBS Independents,False,3.0,55.0,5.275166,False,2020_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,1,401235700,Army,Middle Tennessee,FBS Independents,Conference USA,False,42.0,0.0,4.100404,False,2020_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401207113,Texas State,UTSA,Sun Belt,Conference USA,False,48.0,51.0,3.38861,False,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234559,Miami,UAB,ACC,Conference USA,False,31.0,14.0,12.607289,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234562,Wake Forest,Clemson,ACC,ACC,False,13.0,37.0,-18.533,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234563,Florida State,Georgia Tech,ACC,ACC,False,13.0,16.0,6.439612,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234564,Louisville,Western Kentucky,ACC,Conference USA,False,35.0,21.0,14.315255,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234565,North Carolina,Syracuse,ACC,ACC,False,31.0,6.0,14.306132,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401234574,Notre Dame,Duke,FBS Independents,ACC,False,27.0,13.0,21.747745,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401236053,Kansas State,Arkansas State,Big 12,Sun Belt,False,31.0,35.0,17.04704,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401236081,App State,Charlotte,Sun Belt,Conference USA,False,35.0,20.0,16.515036,False,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401236221,Iowa State,Louisiana,Big 12,Sun Belt,False,14.0,31.0,10.304892,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401236222,Texas,UTEP,Big 12,Conference USA,False,59.0,3.0,39.753925,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401236658,Kansas,Coastal Carolina,Big 12,Sun Belt,False,23.0,38.0,3.562598,True,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401239973,South Alabama,Tulane,Sun Belt,American Athletic,False,24.0,27.0,-7.728833,False,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,2,401240113,Army,UL Monroe,FBS Independents,Sun Belt,False,37.0,7.0,9.549267,False,2020_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401207106,Southern Miss,Louisiana Tech,Conference USA,Conference USA,False,30.0,31.0,3.778716,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401207120,North Texas,SMU,Conference USA,American Athletic,False,35.0,65.0,-9.054028,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401207124,Western Kentucky,Liberty,Conference USA,FBS Independents,False,24.0,30.0,6.382531,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401212522,Tulane,Navy,American Athletic,American Athletic,False,24.0,27.0,6.408327,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401215301,Georgia State,Louisiana,Sun Belt,Sun Belt,False,31.0,34.0,-8.444311,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401215302,UL Monroe,Texas State,Sun Belt,Sun Belt,False,17.0,38.0,3.316874,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401234567,Duke,Boston College,ACC,ACC,False,6.0,26.0,-0.907088,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401234568,Georgia Tech,UCF,ACC,American Athletic,False,21.0,49.0,-8.38522,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401234569,Louisville,Miami,ACC,ACC,False,34.0,47.0,4.352475,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401234570,NC State,Wake Forest,ACC,ACC,False,45.0,42.0,-0.136223,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401234571,Pittsburgh,Syracuse,ACC,ACC,False,21.0,10.0,8.251405,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401236041,Oklahoma State,Tulsa,Big 12,American Athletic,False,16.0,7.0,9.70704,True,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401236939,Marshall,App State,Conference USA,Sun Belt,False,17.0,7.0,-9.965653,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401240640,Middle Tennessee,Troy,Conference USA,Sun Belt,False,14.0,47.0,2.202891,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2020,3,401241282,Notre Dame,South Florida,FBS Independents,American Athletic,False,52.0,0.0,17.029364,False,2020_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281942,Miami,Alabama,ACC,SEC,True,13.0,44.0,-16.801061,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281943,Arkansas,Rice,SEC,Conference USA,False,38.0,17.0,15.060279,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281944,Auburn,Akron,SEC,Mid-American,False,60.0,10.0,35.864668,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281945,Florida,Florida Atlantic,SEC,Conference USA,False,35.0,14.0,23.693329,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281946,Clemson,Georgia,ACC,SEC,True,3.0,10.0,-2.430125,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281947,Kentucky,UL Monroe,SEC,Sun Belt,False,45.0,10.0,24.12004,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281948,UCLA,LSU,Pac-12,SEC,False,38.0,27.0,-4.744806,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281949,Mississippi State,Louisiana Tech,SEC,Conference USA,False,35.0,34.0,17.110749,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281950,Missouri,Central Michigan,SEC,Mid-American,False,34.0,24.0,15.751631,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401281952,Tennessee,Bowling Green,SEC,Mid-American,False,38.0,6.0,29.157544,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282049,New Mexico State,UTEP,FBS Independents,Conference USA,False,3.0,30.0,15.125461,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282052,Charlotte,Duke,Conference USA,ACC,False,31.0,28.0,-1.145279,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282053,Texas A&M,Kent State,SEC,Mid-American,False,41.0,10.0,24.696952,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282055,Ole Miss,Louisville,SEC,ACC,True,43.0,24.0,9.070407,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282174,Navy,Marshall,American Athletic,Conference USA,False,7.0,49.0,2.007471,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282177,South Alabama,Southern Miss,Sun Belt,Conference USA,False,31.0,7.0,2.002733,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282179,Illinois,UTSA,Big Ten,Conference USA,False,30.0,37.0,16.555002,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282607,NC State,South Florida,ACC,American Athletic,False,45.0,0.0,7.172823,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282608,Wake Forest,Old Dominion,ACC,Conference USA,False,42.0,10.0,16.667251,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282610,Georgia Tech,Northern Illinois,ACC,Mid-American,False,21.0,22.0,12.243616,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282611,Ohio,Syracuse,Mid-American,ACC,False,9.0,29.0,1.414127,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282612,Pittsburgh,Massachusetts,ACC,FBS Independents,False,51.0,7.0,49.414994,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282614,Florida State,Notre Dame,ACC,FBS Independents,False,38.0,41.0,-10.939678,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282714,Illinois,Nebraska,Big Ten,Big Ten,False,30.0,22.0,-0.441559,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282723,Iowa,Indiana,Big Ten,Big Ten,False,34.0,6.0,3.500421,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282764,Maryland,West Virginia,Big Ten,Big 12,False,30.0,24.0,-0.77209,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282772,Michigan,Western Michigan,Big Ten,Mid-American,False,47.0,14.0,19.296148,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282782,Northwestern,Michigan State,Big Ten,Big Ten,False,21.0,38.0,4.570774,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282789,Minnesota,Ohio State,Big Ten,Big Ten,False,31.0,45.0,-10.442193,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282815,Wisconsin,Penn State,Big Ten,Big Ten,False,10.0,16.0,2.985265,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282819,Purdue,Oregon State,Big Ten,Pac-12,False,30.0,21.0,7.587633,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401282822,Rutgers,Temple,Big Ten,American Athletic,False,61.0,14.0,6.50052,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401286187,Fresno State,UConn,Mountain West,FBS Independents,False,45.0,0.0,10.339468,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401287886,Houston,Texas Tech,American Athletic,Big 12,True,21.0,38.0,-0.545269,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401287889,Kansas State,Stanford,Big 12,Pac-12,True,24.0,7.0,3.111469,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401287892,Texas,Louisiana,Big 12,Sun Belt,False,38.0,18.0,10.152974,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401287893,Texas State,Baylor,Sun Belt,Big 12,False,20.0,29.0,-15.83002,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401287894,Oklahoma,Tulane,Big 12,American Athletic,False,40.0,35.0,19.096854,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401300993,App State,East Carolina,Sun Belt,American Athletic,False,33.0,19.0,8.003545,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401300995,UCF,Boise State,American Athletic,Mountain West,False,36.0,31.0,7.224901,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401300996,Cincinnati,Miami (OH),American Athletic,Mid-American,False,49.0,14.0,19.535337,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309601,Georgia State,Army,Sun Belt,FBS Independents,False,10.0,43.0,-0.588021,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309833,UCLA,Hawai'i,Pac-12,Mountain West,False,44.0,10.0,13.741152,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309837,California,Nevada,Pac-12,Mountain West,False,17.0,22.0,6.766452,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309838,Oregon,Fresno State,Pac-12,Mountain West,False,31.0,24.0,17.511468,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309840,Washington State,Utah State,Pac-12,Mountain West,False,23.0,26.0,15.526511,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309841,Arizona,BYU,Pac-12,FBS Independents,True,16.0,24.0,-10.720493,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309842,USC,San José State,Pac-12,Mountain West,False,30.0,7.0,16.110218,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401309937,Virginia Tech,North Carolina,ACC,ACC,False,17.0,10.0,-3.450024,True,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,1,401310699,San Diego State,New Mexico State,Mountain West,FBS Independents,False,28.0,10.0,5.549166,False,2021_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282057,Arkansas,Texas,SEC,Big 12,False,40.0,21.0,-8.148062,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282059,South Florida,Florida,American Athletic,SEC,False,20.0,42.0,-23.069939,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282060,Georgia,UAB,SEC,Conference USA,False,56.0,7.0,28.049992,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282061,Kentucky,Missouri,SEC,SEC,False,35.0,28.0,4.550175,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282064,Mississippi State,NC State,SEC,ACC,False,24.0,10.0,6.859077,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282065,East Carolina,South Carolina,American Athletic,SEC,False,17.0,20.0,-6.105411,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282066,Tennessee,Pittsburgh,SEC,ACC,False,34.0,41.0,2.982849,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282067,Colorado,Texas A&M,Pac-12,SEC,True,7.0,10.0,-15.544192,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282068,Colorado State,Vanderbilt,Mountain West,SEC,False,21.0,24.0,-0.577842,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282182,Florida International,Texas State,Conference USA,Sun Belt,False,17.0,23.0,5.731572,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282183,Florida Atlantic,Georgia Southern,Conference USA,Sun Belt,False,38.0,6.0,3.51031,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282186,Virginia Tech,Middle Tennessee,ACC,Conference USA,False,35.0,14.0,15.502876,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282187,SMU,North Texas,American Athletic,Conference USA,False,35.0,12.0,18.84845,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282189,Rice,Houston,Conference USA,American Athletic,False,7.0,44.0,-8.905565,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282191,Boise State,UTEP,Mountain West,Conference USA,False,54.0,13.0,22.456235,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282193,Army,Western Kentucky,FBS Independents,Conference USA,False,38.0,35.0,10.445152,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282620,Miami,App State,ACC,Sun Belt,False,25.0,23.0,6.240315,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282621,North Carolina,Georgia State,ACC,Sun Belt,False,59.0,17.0,17.98969,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282622,Syracuse,Rutgers,ACC,Big Ten,False,7.0,17.0,-5.549247,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282623,Massachusetts,Boston College,FBS Independents,ACC,False,28.0,45.0,-41.654644,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282624,Virginia,Illinois,ACC,Big Ten,False,42.0,14.0,0.13213,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282705,Notre Dame,Toledo,FBS Independents,Mid-American,False,32.0,29.0,25.396421,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282754,Iowa State,Iowa,Big 12,Big Ten,False,17.0,27.0,-0.254399,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282773,Michigan,Washington,Big Ten,Pac-12,False,31.0,10.0,6.336632,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282790,Minnesota,Miami (OH),Big Ten,Mid-American,False,31.0,26.0,21.657378,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282797,Nebraska,Buffalo,Big Ten,Mid-American,False,28.0,3.0,14.811191,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282809,Ohio State,Oregon,Big Ten,Pac-12,False,28.0,35.0,18.963247,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282816,Penn State,Ball State,Big Ten,Mid-American,False,44.0,13.0,26.564501,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282820,UConn,Purdue,FBS Independents,Big Ten,False,0.0,49.0,-18.972566,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401282825,Wisconsin,Eastern Michigan,Big Ten,Mid-American,False,34.0,7.0,28.892832,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401286295,Troy,Liberty,Sun Belt,FBS Independents,False,13.0,21.0,-1.078304,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401287896,Coastal Carolina,Kansas,Sun Belt,Big 12,False,49.0,22.0,7.728157,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401287899,Oklahoma State,Tulsa,Big 12,American Athletic,False,28.0,23.0,8.874095,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401287900,TCU,California,Big 12,Pac-12,False,34.0,32.0,9.354167,True,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401300999,Akron,Temple,Mid-American,American Athletic,False,24.0,45.0,-13.70981,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401301003,Arkansas State,Memphis,Sun Belt,American Athletic,False,50.0,55.0,-4.424252,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401301004,Navy,Air Force,American Athletic,Mountain West,False,3.0,23.0,-1.949668,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309546,Bowling Green,South Alabama,Mid-American,Sun Belt,False,19.0,22.0,-11.571858,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309547,Northern Illinois,Wyoming,Mid-American,Mountain West,False,43.0,50.0,-12.035534,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309843,USC,Stanford,Pac-12,Pac-12,False,28.0,42.0,12.255652,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309844,Oregon State,Hawai'i,Pac-12,Mountain West,False,45.0,27.0,9.646037,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309846,Arizona,San Diego State,Pac-12,Mountain West,False,14.0,38.0,-4.574033,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309847,Arizona State,UNLV,Pac-12,Mountain West,False,37.0,10.0,19.637543,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401309848,BYU,Utah,FBS Independents,Pac-12,False,26.0,17.0,3.316432,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,2,401310700,New Mexico,New Mexico State,Mountain West,FBS Independents,False,34.0,25.0,-1.085777,False,2021_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282069,Arkansas,Georgia Southern,SEC,Sun Belt,False,45.0,10.0,12.014492,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282070,Penn State,Auburn,Big Ten,SEC,False,28.0,20.0,5.122948,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282071,Florida,Alabama,SEC,SEC,False,29.0,31.0,-4.50063,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282072,Georgia,South Carolina,SEC,SEC,False,40.0,13.0,19.208848,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282074,LSU,Central Michigan,SEC,Mid-American,False,49.0,21.0,25.220055,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282075,Ole Miss,Tulane,SEC,American Athletic,False,61.0,21.0,13.28334,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282076,Memphis,Mississippi State,American Athletic,SEC,False,31.0,29.0,-1.495378,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282079,Texas A&M,New Mexico,SEC,Mountain West,False,34.0,0.0,28.020182,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282080,Vanderbilt,Stanford,SEC,Pac-12,False,23.0,41.0,-6.846003,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282194,UTSA,Middle Tennessee,Conference USA,Conference USA,False,27.0,13.0,8.074745,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282195,North Texas,UAB,Conference USA,Conference USA,False,6.0,40.0,-2.531978,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282196,Georgia State,Charlotte,Sun Belt,Conference USA,False,20.0,9.0,2.801064,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282197,Texas Tech,Florida International,Big 12,Conference USA,False,54.0,21.0,9.800546,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282199,Louisiana Tech,SMU,Conference USA,American Athletic,False,37.0,39.0,-5.331098,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282200,Marshall,East Carolina,Conference USA,American Athletic,False,38.0,42.0,0.259075,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282201,Liberty,Old Dominion,FBS Independents,Conference USA,False,45.0,17.0,13.654719,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282202,Texas,Rice,Big 12,Conference USA,False,58.0,0.0,24.469209,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282203,Southern Miss,Troy,Conference USA,Sun Belt,False,9.0,21.0,-1.381742,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282626,Louisville,UCF,ACC,American Athletic,False,42.0,35.0,-2.279251,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282627,Clemson,Georgia Tech,ACC,ACC,False,14.0,8.0,25.685999,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282628,Duke,Northwestern,ACC,Big Ten,False,30.0,23.0,-9.233968,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282629,Miami,Michigan State,ACC,Big Ten,False,17.0,38.0,4.802324,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282631,North Carolina,Virginia,ACC,ACC,False,59.0,39.0,11.044957,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282632,Pittsburgh,Western Michigan,ACC,Mid-American,False,41.0,44.0,11.750202,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282634,Temple,Boston College,American Athletic,ACC,False,3.0,28.0,-4.670424,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282635,Wake Forest,Florida State,ACC,ACC,False,35.0,14.0,4.797503,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282636,West Virginia,Virginia Tech,Big 12,ACC,False,27.0,21.0,5.837124,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282706,Notre Dame,Purdue,FBS Independents,Big Ten,False,27.0,13.0,6.230592,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282715,Illinois,Maryland,Big Ten,Big Ten,False,17.0,20.0,3.251212,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282725,Indiana,Cincinnati,Big Ten,American Athletic,False,24.0,38.0,6.06809,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282755,Iowa,Kent State,Big Ten,Mid-American,False,30.0,7.0,24.591911,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282774,Michigan,Northern Illinois,Big Ten,Mid-American,False,63.0,10.0,27.398677,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282791,Colorado,Minnesota,Pac-12,Big Ten,False,0.0,30.0,-7.447699,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282798,Oklahoma,Nebraska,Big 12,Big Ten,False,23.0,16.0,10.911105,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401282810,Ohio State,Tulsa,Big Ten,American Athletic,False,41.0,20.0,27.474859,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401286189,Army,UConn,FBS Independents,FBS Independents,False,52.0,21.0,14.342788,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401286300,Massachusetts,Eastern Michigan,FBS Independents,Mid-American,False,28.0,42.0,-29.238915,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401287903,Boise State,Oklahoma State,Mountain West,Big 12,False,20.0,21.0,2.582869,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401287904,Kansas,Baylor,Big 12,Big 12,False,7.0,45.0,-14.358825,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401287905,Kansas State,Nevada,Big 12,Mountain West,False,38.0,17.0,9.078692,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401287906,UNLV,Iowa State,Mountain West,Big 12,False,3.0,48.0,-17.887863,True,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309549,Wyoming,Ball State,Mountain West,Mid-American,False,45.0,12.0,7.279104,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309552,Buffalo,Coastal Carolina,Mid-American,Sun Belt,False,25.0,28.0,3.346739,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309553,Toledo,Colorado State,Mid-American,Mountain West,False,6.0,22.0,1.494023,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309605,Washington,Arkansas State,Pac-12,Sun Belt,False,52.0,3.0,17.188356,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309606,Louisiana,Ohio,Sun Belt,Mid-American,False,49.0,14.0,9.570711,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309852,Washington State,USC,Pac-12,Pac-12,False,14.0,45.0,-3.541327,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309854,BYU,Arizona State,FBS Independents,Pac-12,False,27.0,17.0,-0.181297,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309855,UCLA,Fresno State,Pac-12,Mountain West,False,37.0,40.0,10.160173,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401309856,San Diego State,Utah,Mountain West,Pac-12,False,33.0,31.0,-3.178793,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401310704,Air Force,Utah State,Mountain West,Mountain West,False,45.0,49.0,4.114062,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2021,3,401310705,Hawai'i,San José State,Mountain West,Mountain West,False,13.0,17.0,1.03818,False,2021_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403853,Hawai'i,Vanderbilt,Mountain West,SEC,False,10.0,63.0,0.787581,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403854,Alabama,Utah State,SEC,Mountain West,False,55.0,0.0,34.150157,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403855,Arkansas,Cincinnati,SEC,American Athletic,False,31.0,24.0,0.493952,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403857,Florida,Utah,SEC,Pac-12,False,29.0,26.0,3.701224,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403858,Georgia,Oregon,SEC,Pac-12,True,49.0,3.0,20.044757,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403859,Kentucky,Miami (OH),SEC,Mid-American,False,37.0,13.0,19.014043,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403860,Ole Miss,Troy,SEC,Sun Belt,False,28.0,10.0,18.248267,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403861,Mississippi State,Memphis,SEC,American Athletic,False,49.0,23.0,6.742972,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403863,South Carolina,Georgia State,SEC,Sun Belt,False,35.0,14.0,8.069967,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403864,Tennessee,Ball State,SEC,Mid-American,False,59.0,10.0,21.392366,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403867,Florida State,LSU,ACC,SEC,True,24.0,23.0,-8.291213,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403966,Colorado,TCU,Pac-12,Big 12,False,13.0,38.0,-4.780021,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403967,San Diego State,Arizona,Mountain West,Pac-12,False,20.0,38.0,6.282366,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403969,Oregon State,Boise State,Pac-12,Mountain West,False,34.0,17.0,0.458933,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403971,UCLA,Bowling Green,Pac-12,Mid-American,False,45.0,17.0,22.972775,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401403973,Washington,Kent State,Pac-12,Mid-American,False,45.0,20.0,18.016542,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401404059,Texas,UL Monroe,Big 12,Sun Belt,False,52.0,10.0,25.749602,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401404124,Ohio State,Notre Dame,Big Ten,FBS Independents,False,21.0,10.0,17.288964,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401404134,Coastal Carolina,Army,Sun Belt,FBS Independents,False,38.0,28.0,7.216245,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401404146,Utah State,UConn,Mountain West,FBS Independents,False,31.0,20.0,14.919982,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401404157,Southern Miss,Liberty,Sun Belt,FBS Independents,False,27.0,29.0,-5.905028,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405058,Illinois,Wyoming,Big Ten,Mountain West,False,38.0,6.0,10.415901,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405059,Northwestern,Nebraska,Big Ten,Big Ten,True,31.0,28.0,-4.95016,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405060,Minnesota,New Mexico State,Big Ten,FBS Independents,False,38.0,0.0,28.669589,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405061,Indiana,Illinois,Big Ten,Big Ten,False,23.0,20.0,-0.215167,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405064,Purdue,Penn State,Big Ten,Big Ten,False,31.0,35.0,-6.106888,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405066,Maryland,Buffalo,Big Ten,Mid-American,False,31.0,10.0,14.684291,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405067,Michigan,Colorado State,Big Ten,Mountain West,False,51.0,7.0,28.155289,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401405069,Boston College,Rutgers,ACC,Big Ten,False,21.0,22.0,1.510396,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401409235,New Mexico State,Nevada,FBS Independents,Mountain West,False,12.0,23.0,-9.82703,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411092,Pittsburgh,West Virginia,ACC,Big 12,False,38.0,31.0,6.081736,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411094,Duke,Temple,ACC,American Athletic,False,30.0,0.0,2.568697,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411095,App State,North Carolina,Sun Belt,ACC,False,61.0,63.0,1.97204,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411096,East Carolina,NC State,American Athletic,ACC,False,20.0,21.0,-4.053781,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411099,Syracuse,Louisville,ACC,ACC,False,31.0,7.0,-4.346332,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401411101,Georgia Tech,Clemson,ACC,ACC,True,10.0,41.0,-18.661954,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401414778,Tulane,Massachusetts,American Athletic,FBS Independents,False,42.0,10.0,30.208347,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401415211,Wyoming,Tulsa,Mountain West,American Athletic,False,40.0,37.0,-6.141499,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401415212,Nevada,Texas State,Mountain West,Sun Belt,False,38.0,14.0,13.198667,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401415612,South Florida,BYU,American Athletic,FBS Independents,False,21.0,50.0,-10.955083,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401416569,Oklahoma State,Central Michigan,Big 12,Mid-American,False,58.0,44.0,20.730447,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401416591,Michigan State,Western Michigan,Big Ten,Mid-American,False,35.0,13.0,16.955418,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426330,Old Dominion,Virginia Tech,Sun Belt,ACC,False,20.0,17.0,-5.606821,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426530,Florida Atlantic,Charlotte,Conference USA,Conference USA,False,43.0,13.0,7.942723,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426531,UTEP,North Texas,Conference USA,Conference USA,False,13.0,31.0,-3.322264,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426536,Ohio,Florida Atlantic,Mid-American,Conference USA,False,41.0,38.0,-5.085901,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426537,Missouri,Louisiana Tech,SEC,Conference USA,False,52.0,24.0,18.81001,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426539,North Texas,SMU,Conference USA,American Athletic,False,10.0,48.0,-9.534738,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426540,USC,Rice,Pac-12,Conference USA,False,66.0,14.0,21.157551,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426541,Oklahoma,UTEP,Big 12,Conference USA,False,45.0,13.0,29.846601,True,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426542,UTSA,Houston,Conference USA,American Athletic,False,35.0,37.0,-5.554531,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,1,401426543,Hawai'i,Western Kentucky,Mountain West,Conference USA,False,17.0,49.0,4.377746,False,2022_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403868,Texas,Alabama,Big 12,SEC,False,19.0,20.0,-11.918756,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403869,Arkansas,South Carolina,SEC,SEC,False,44.0,30.0,2.346856,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403870,Auburn,San José State,SEC,Mountain West,False,24.0,16.0,22.684902,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403871,Florida,Kentucky,SEC,SEC,False,16.0,26.0,6.338016,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403875,Arizona,Mississippi State,Pac-12,SEC,False,17.0,39.0,-13.85908,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403876,Kansas State,Missouri,Big 12,SEC,False,40.0,12.0,4.116984,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403877,Pittsburgh,Tennessee,ACC,SEC,False,27.0,34.0,-5.619931,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403878,Texas A&M,App State,SEC,Sun Belt,False,14.0,17.0,15.918077,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403879,Vanderbilt,Wake Forest,SEC,ACC,False,25.0,45.0,-9.169369,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403975,Oklahoma State,Arizona State,Big 12,Pac-12,False,34.0,17.0,14.531332,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403976,California,UNLV,Pac-12,Mountain West,False,20.0,14.0,12.493298,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403977,Air Force,Colorado,Mountain West,Pac-12,False,41.0,10.0,5.029588,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403979,Fresno State,Oregon State,Mountain West,Pac-12,False,32.0,35.0,0.180419,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403980,Stanford,USC,Pac-12,Pac-12,False,28.0,41.0,-0.854383,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401403984,Wisconsin,Washington State,Big Ten,Pac-12,False,14.0,17.0,19.188917,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404062,BYU,Baylor,FBS Independents,Big 12,False,26.0,20.0,2.747756,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404063,Texas Tech,Houston,Big 12,American Athletic,False,33.0,30.0,1.449406,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404064,Iowa,Iowa State,Big Ten,Big 12,False,7.0,10.0,5.121996,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404065,West Virginia,Kansas,Big 12,Big 12,False,42.0,55.0,9.395945,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404066,Oklahoma,Kent State,Big 12,Mid-American,False,33.0,3.0,28.016851,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404125,Notre Dame,Marshall,FBS Independents,Sun Belt,False,21.0,26.0,16.724172,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401404148,UConn,Syracuse,FBS Independents,ACC,False,14.0,48.0,-16.775855,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405070,Illinois,Virginia,Big Ten,ACC,False,24.0,3.0,1.096756,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405072,Nebraska,Georgia Southern,Big Ten,Sun Belt,False,42.0,45.0,13.547275,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405073,Northwestern,Duke,Big Ten,ACC,False,23.0,31.0,10.431475,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405077,Michigan,Hawai'i,Big Ten,Mountain West,False,56.0,10.0,32.339002,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405078,Michigan State,Akron,Big Ten,Mid-American,False,52.0,0.0,32.649466,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405079,Ohio State,Arkansas State,Big Ten,Sun Belt,False,45.0,12.0,42.943508,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401405080,Penn State,Ohio,Big Ten,Mid-American,False,46.0,10.0,28.292214,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401411103,Georgia State,North Carolina,Sun Belt,ACC,False,28.0,35.0,-6.428197,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401411105,Miami,Southern Miss,ACC,Sun Belt,False,30.0,7.0,16.957416,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401411108,Virginia Tech,Boston College,ACC,ACC,False,27.0,10.0,0.226823,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401414779,Toledo,Massachusetts,Mid-American,FBS Independents,False,55.0,10.0,24.710795,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401415024,East Carolina,Old Dominion,American Athletic,Sun Belt,False,39.0,21.0,5.280668,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401415214,New Mexico,Boise State,Mountain West,Mountain West,False,14.0,31.0,-17.547037,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401415613,UCF,Louisville,American Athletic,ACC,False,14.0,20.0,3.859193,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401415617,Navy,Memphis,American Athletic,American Athletic,False,13.0,37.0,-6.362523,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401415620,Tulsa,Northern Illinois,American Athletic,Mid-American,False,38.0,35.0,9.287934,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401416594,Ball State,Western Michigan,Mid-American,Mid-American,False,30.0,37.0,0.215364,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401416597,Central Michigan,South Alabama,Mid-American,Sun Belt,False,24.0,38.0,9.752092,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401416598,Louisiana,Eastern Michigan,Sun Belt,Mid-American,False,49.0,21.0,12.133865,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426544,Texas State,Florida International,Sun Belt,Conference USA,False,41.0,12.0,8.194061,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426545,Charlotte,Maryland,Conference USA,Big Ten,False,21.0,56.0,-11.305775,True,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426548,Colorado State,Middle Tennessee,Mountain West,Conference USA,False,19.0,34.0,2.661062,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426551,Liberty,UAB,FBS Independents,Conference USA,False,21.0,14.0,3.387028,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426552,UTEP,New Mexico State,Conference USA,FBS Independents,False,20.0,13.0,2.830459,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,2,401426553,Army,UTSA,FBS Independents,Conference USA,False,38.0,41.0,4.792661,False,2022_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403880,Alabama,UL Monroe,SEC,Sun Belt,False,63.0,7.0,41.877733,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403882,Auburn,Penn State,SEC,Big Ten,False,12.0,41.0,-0.892994,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403883,Florida,South Florida,SEC,American Athletic,False,31.0,28.0,26.093017,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403885,LSU,Mississippi State,SEC,SEC,False,31.0,16.0,7.810035,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403886,Georgia Tech,Ole Miss,ACC,SEC,False,0.0,42.0,-9.775474,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403888,South Carolina,Georgia,SEC,SEC,False,7.0,48.0,-20.148681,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403889,Tennessee,Akron,SEC,Mid-American,False,63.0,6.0,39.057489,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403890,Texas A&M,Miami,SEC,ACC,False,17.0,9.0,8.27097,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403891,Northern Illinois,Vanderbilt,Mid-American,SEC,False,28.0,38.0,-6.593918,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403986,Arizona State,Eastern Michigan,Pac-12,Mid-American,False,21.0,30.0,14.536432,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403987,Notre Dame,California,FBS Independents,Pac-12,False,24.0,17.0,16.385454,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403988,Minnesota,Colorado,Big Ten,Pac-12,False,49.0,7.0,14.6568,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403989,Oregon,BYU,Pac-12,FBS Independents,False,41.0,20.0,4.948553,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403991,UCLA,South Alabama,Pac-12,Sun Belt,False,32.0,31.0,18.672783,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403992,USC,Fresno State,Pac-12,Mountain West,False,45.0,17.0,5.048496,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403993,Utah,San Diego State,Pac-12,Mountain West,False,35.0,7.0,19.719891,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403994,Washington,Michigan State,Pac-12,Big Ten,False,39.0,28.0,0.73606,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401403995,Washington State,Colorado State,Pac-12,Mountain West,False,38.0,7.0,13.272878,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404068,Houston,Kansas,American Athletic,Big 12,False,30.0,48.0,10.124709,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404069,Iowa State,Ohio,Big 12,Mid-American,False,43.0,10.0,26.300199,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404070,Nebraska,Oklahoma,Big Ten,Big 12,False,14.0,49.0,-6.604337,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404071,Baylor,Texas State,Big 12,Sun Belt,False,42.0,7.0,22.652769,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404072,NC State,Texas Tech,ACC,Big 12,False,27.0,14.0,4.122632,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404074,Kansas State,Tulane,Big 12,American Athletic,False,10.0,17.0,8.620905,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404149,Michigan,UConn,Big Ten,FBS Independents,False,59.0,0.0,40.677297,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401404159,Wake Forest,Liberty,ACC,FBS Independents,False,37.0,36.0,14.554016,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405082,Iowa,Nevada,Big Ten,Mountain West,False,27.0,0.0,21.447979,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405084,Syracuse,Purdue,ACC,Big Ten,False,32.0,29.0,-7.741439,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405085,Wisconsin,New Mexico State,Big Ten,FBS Independents,False,66.0,7.0,32.550094,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405087,Maryland,SMU,Big Ten,American Athletic,False,34.0,27.0,1.950014,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405088,Ohio State,Toledo,Big Ten,Mid-American,False,77.0,21.0,34.233446,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401405089,Temple,Rutgers,American Athletic,Big Ten,False,14.0,16.0,-12.567393,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401411109,Louisville,Florida State,ACC,ACC,False,31.0,35.0,3.078374,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401411113,Virginia,Old Dominion,ACC,Sun Belt,False,16.0,14.0,11.105742,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401411115,Western Michigan,Pittsburgh,Mid-American,ACC,False,13.0,34.0,-8.857838,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401415029,Bowling Green,Marshall,Mid-American,Sun Belt,False,34.0,31.0,-16.547741,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401415217,Wyoming,Air Force,Mountain West,Mountain West,False,17.0,14.0,-9.102771,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401415622,Memphis,Arkansas State,American Athletic,Sun Belt,False,44.0,32.0,15.946698,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401415623,Miami (OH),Cincinnati,Mid-American,American Athletic,True,17.0,38.0,-14.301014,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401416601,Coastal Carolina,Buffalo,Sun Belt,Mid-American,False,38.0,26.0,17.030669,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426333,App State,Troy,Sun Belt,Sun Belt,False,32.0,28.0,14.85828,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426554,Georgia State,Charlotte,Sun Belt,Conference USA,False,41.0,42.0,11.168875,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426555,Florida Atlantic,UCF,Conference USA,American Athletic,False,14.0,40.0,-6.811947,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426556,Clemson,Louisiana Tech,ACC,Conference USA,False,48.0,20.0,32.333982,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426558,UNLV,North Texas,Mountain West,Conference USA,False,58.0,27.0,-2.161114,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426559,Rice,Louisiana,Conference USA,Sun Belt,False,33.0,21.0,-17.554795,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426560,UAB,Georgia Southern,Conference USA,Sun Belt,False,35.0,21.0,4.770286,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426561,New Mexico,UTEP,Mountain West,Conference USA,False,27.0,10.0,0.285697,False,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426562,Texas,UTSA,Big 12,Conference USA,False,41.0,20.0,19.061097,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2022,3,401426563,Indiana,Western Kentucky,Big Ten,Conference USA,False,33.0,30.0,10.471591,True,2022_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520146,Louisiana Tech,Florida International,Conference USA,Conference USA,False,22.0,17.0,9.19364,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520147,Vanderbilt,Hawai'i,SEC,Mountain West,False,35.0,28.0,8.062521,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520148,Minnesota,Nebraska,Big Ten,Big Ten,False,13.0,10.0,10.310742,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520149,Alabama,Middle Tennessee,SEC,Conference USA,False,56.0,7.0,38.876198,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520151,Auburn,Massachusetts,SEC,FBS Independents,False,59.0,14.0,33.387314,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520155,Illinois,Toledo,Big Ten,Mid-American,False,30.0,28.0,9.373784,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520156,Indiana,Ohio State,Big Ten,Big Ten,False,3.0,23.0,-23.058351,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520157,Iowa,Utah State,Big Ten,Mountain West,False,24.0,14.0,20.615846,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520159,Kentucky,Ball State,SEC,Mid-American,False,44.0,14.0,22.794436,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520160,Liberty,Bowling Green,Conference USA,Mid-American,False,34.0,24.0,14.180496,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520162,Michigan,East Carolina,Big Ten,American Athletic,False,30.0,3.0,29.182601,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520163,Michigan State,Central Michigan,Big Ten,Mid-American,False,31.0,7.0,16.561199,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520167,North Carolina,South Carolina,ACC,SEC,True,31.0,17.0,-0.820841,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520169,Penn State,West Virginia,Big Ten,Big 12,False,38.0,15.0,16.553137,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520170,Purdue,Fresno State,Big Ten,Mountain West,False,35.0,39.0,10.99518,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520171,Rutgers,Northwestern,Big Ten,Big Ten,False,24.0,7.0,-0.800015,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520172,SMU,Louisiana Tech,American Athletic,Conference USA,False,38.0,14.0,21.988986,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520173,Texas A&M,New Mexico,SEC,Mountain West,False,52.0,10.0,32.726344,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520174,UConn,NC State,FBS Independents,ACC,False,14.0,24.0,-15.381703,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520175,UL Monroe,Army,Sun Belt,FBS Independents,False,17.0,13.0,-9.019634,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520176,Utah,Florida,Pac-12,SEC,False,24.0,11.0,6.565211,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520179,Tennessee,Virginia,SEC,ACC,True,49.0,13.0,16.472814,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520180,Wisconsin,Buffalo,Big Ten,Mid-American,False,38.0,17.0,23.068414,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520181,Western Kentucky,South Florida,Conference USA,American Athletic,False,41.0,24.0,9.361245,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401520182,Florida State,LSU,ACC,SEC,True,45.0,24.0,-6.74795,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523986,USC,San José State,Pac-12,Mountain West,False,56.0,28.0,15.556303,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523988,Hawai'i,Stanford,Mountain West,Pac-12,False,24.0,37.0,-4.915175,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523990,Colorado State,Washington State,Mountain West,Pac-12,False,24.0,50.0,-10.335992,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523991,North Texas,California,American Athletic,Pac-12,False,21.0,58.0,-3.763066,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523994,TCU,Colorado,Big 12,Pac-12,False,42.0,45.0,23.529078,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523995,UCLA,Coastal Carolina,Pac-12,Sun Belt,False,27.0,13.0,4.452909,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523996,USC,Nevada,Pac-12,Mountain West,False,66.0,14.0,23.29959,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401523997,Washington,Boise State,Pac-12,Mountain West,False,56.0,19.0,6.130929,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525434,Notre Dame,Navy,FBS Independents,American Athletic,True,42.0,3.0,11.093924,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525450,New Mexico State,Massachusetts,Conference USA,FBS Independents,False,30.0,41.0,9.700189,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525462,Georgia Tech,Louisville,ACC,ACC,True,34.0,39.0,-7.264412,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525463,Miami,Miami (OH),ACC,Mid-American,False,38.0,3.0,11.803637,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525464,Boston College,Northern Illinois,ACC,Mid-American,False,24.0,27.0,8.259814,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525467,Virginia Tech,Old Dominion,ACC,Sun Belt,False,36.0,17.0,11.380145,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525468,Duke,Clemson,ACC,ACC,False,28.0,7.0,-13.580414,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525816,UCF,Kent State,Big 12,Mid-American,False,56.0,6.0,21.979236,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525817,Baylor,Texas State,Big 12,Sun Belt,False,31.0,42.0,24.229544,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525819,Houston,UTSA,Big 12,American Athletic,False,17.0,14.0,2.585064,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525822,Oklahoma,Arkansas State,Big 12,Sun Belt,False,73.0,0.0,30.607449,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525824,Texas,Rice,Big 12,American Athletic,False,37.0,10.0,31.413434,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401525825,Wyoming,Texas Tech,Mountain West,Big 12,False,35.0,33.0,-12.327106,True,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401531347,Tulane,South Alabama,American Athletic,Sun Belt,False,37.0,17.0,8.387521,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401531387,Temple,Akron,American Athletic,Mid-American,False,24.0,21.0,10.011765,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401532392,San Diego State,Ohio,Mountain West,Mid-American,False,20.0,13.0,3.546247,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,1,401532573,San José State,Oregon State,Mountain West,Pac-12,False,17.0,42.0,-6.926012,False,2023_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520183,Alabama,Texas,SEC,Big 12,False,24.0,34.0,13.942532,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520184,Arkansas,Kent State,SEC,Mid-American,False,28.0,6.0,24.042892,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520186,California,Auburn,Pac-12,SEC,False,10.0,14.0,-9.853543,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520188,Colorado,Nebraska,Pac-12,Big Ten,False,36.0,14.0,-7.704031,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520189,Florida International,North Texas,Conference USA,American Athletic,False,46.0,39.0,-10.275077,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520191,Georgia,Ball State,SEC,Mid-American,False,45.0,3.0,38.298817,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520192,Georgia State,UConn,Sun Belt,FBS Independents,False,35.0,14.0,11.447259,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520194,Iowa State,Iowa,Big 12,Big Ten,False,13.0,20.0,1.028138,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520195,Kansas,Illinois,Big 12,Big Ten,False,34.0,23.0,-3.903519,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520198,Liberty,New Mexico State,Conference USA,Conference USA,False,33.0,17.0,8.855682,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520200,Maryland,Charlotte,Big Ten,American Athletic,False,38.0,20.0,22.189091,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520201,Miami,Texas A&M,ACC,SEC,False,48.0,33.0,-7.739643,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520202,Michigan,UNLV,Big Ten,Mountain West,False,35.0,7.0,36.337632,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520204,Minnesota,Eastern Michigan,Big Ten,Mid-American,False,25.0,6.0,21.056295,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520205,Mississippi State,Arizona,SEC,Pac-12,False,31.0,24.0,11.599041,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520206,Missouri,Middle Tennessee,SEC,Conference USA,False,23.0,19.0,18.566684,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520207,Northwestern,UTEP,Big Ten,Conference USA,False,38.0,7.0,12.046195,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520210,Rutgers,Temple,Big Ten,American Athletic,False,36.0,7.0,8.509057,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520214,Tulane,Ole Miss,American Athletic,SEC,False,20.0,37.0,-3.765269,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520215,Virginia Tech,Purdue,ACC,Big Ten,False,17.0,24.0,-4.038047,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520216,Wake Forest,Vanderbilt,ACC,SEC,False,36.0,20.0,11.533696,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401520217,Washington State,Wisconsin,Pac-12,Big Ten,False,31.0,22.0,-4.732783,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401523998,Arizona State,Oklahoma State,Pac-12,Big 12,False,15.0,27.0,-3.255633,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401523999,Baylor,Utah,Big 12,Pac-12,False,13.0,20.0,-5.499444,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401524001,San Diego State,UCLA,Mountain West,Pac-12,False,10.0,35.0,-7.640901,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401524002,Texas Tech,Oregon,Big 12,Pac-12,False,30.0,38.0,-3.424529,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401524003,USC,Stanford,Pac-12,Pac-12,False,56.0,10.0,16.117268,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401524004,Washington,Tulsa,Pac-12,American Athletic,False,43.0,10.0,18.620341,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525436,NC State,Notre Dame,ACC,FBS Independents,False,24.0,45.0,-5.598076,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525493,Florida State,Southern Miss,ACC,Sun Belt,False,66.0,13.0,18.506897,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525495,North Carolina,App State,ACC,Sun Belt,False,40.0,34.0,10.051177,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525496,Pittsburgh,Cincinnati,ACC,Big 12,False,21.0,27.0,0.463575,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525497,Syracuse,Western Michigan,ACC,Mid-American,False,48.0,7.0,12.445644,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525498,Virginia,James Madison,ACC,Sun Belt,False,35.0,36.0,9.382514,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525827,Boise State,UCF,Mountain West,Big 12,False,16.0,18.0,-3.104778,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525829,Kansas State,Troy,Big 12,Sun Belt,False,42.0,13.0,14.999497,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525830,Oklahoma,SMU,Big 12,American Athletic,False,28.0,11.0,16.362545,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401525831,Rice,Houston,American Athletic,Big 12,False,43.0,41.0,-13.323687,True,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401526833,Massachusetts,Miami (OH),FBS Independents,Mid-American,False,28.0,41.0,-11.314737,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531378,Georgia Southern,UAB,Sun Belt,American Athletic,False,49.0,35.0,-1.372943,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531395,UTSA,Texas State,American Athletic,Sun Belt,False,20.0,13.0,17.323398,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531411,East Carolina,Marshall,American Athletic,Sun Belt,False,13.0,31.0,-1.605553,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531419,Florida Atlantic,Ohio,American Athletic,Mid-American,False,10.0,17.0,4.716012,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531427,Arkansas State,Memphis,Sun Belt,American Athletic,False,3.0,37.0,-12.735788,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,2,401531842,Old Dominion,Louisiana,Sun Belt,Sun Belt,False,38.0,31.0,-12.21226,False,2023_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520219,Arizona,UTEP,Pac-12,Conference USA,False,31.0,10.0,13.821014,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520220,Arkansas,BYU,SEC,Big 12,False,31.0,38.0,3.844884,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520222,Buffalo,Liberty,Mid-American,Conference USA,False,27.0,55.0,0.459981,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520223,Duke,Northwestern,ACC,Big Ten,False,38.0,14.0,2.676105,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520224,Florida,Tennessee,SEC,SEC,False,29.0,16.0,1.25322,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520225,Georgia,South Carolina,SEC,SEC,False,24.0,14.0,19.149409,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520226,Illinois,Penn State,Big Ten,Big Ten,False,13.0,30.0,-10.264978,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520227,Iowa,Western Michigan,Big Ten,Mid-American,False,41.0,10.0,21.519784,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520228,Kentucky,Akron,SEC,Mid-American,False,35.0,3.0,27.621814,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520229,Louisiana Tech,North Texas,Conference USA,American Athletic,False,37.0,40.0,-0.863475,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520230,Indiana,Louisville,Big Ten,ACC,True,14.0,21.0,-2.632547,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520231,Maryland,Virginia,Big Ten,ACC,False,42.0,14.0,12.612888,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520232,Michigan,Bowling Green,Big Ten,Mid-American,False,31.0,6.0,40.524401,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520233,Michigan State,Washington,Big Ten,Pac-12,False,7.0,41.0,-6.454061,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520235,Mississippi State,LSU,SEC,SEC,False,14.0,41.0,-2.526347,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520236,Missouri,Kansas State,SEC,Big 12,False,30.0,27.0,-3.086603,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520237,Nebraska,Northern Illinois,Big Ten,Mid-American,False,35.0,11.0,14.149895,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520238,New Mexico,New Mexico State,Mountain West,Conference USA,False,17.0,27.0,-1.965826,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520239,North Carolina,Minnesota,ACC,Big Ten,False,31.0,13.0,1.278269,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520240,Ohio State,Western Kentucky,Big Ten,Conference USA,False,63.0,10.0,32.907347,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520241,Ole Miss,Georgia Tech,SEC,ACC,False,48.0,23.0,18.4051,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520242,Purdue,Syracuse,Big Ten,ACC,False,20.0,35.0,4.200536,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520243,Rutgers,Virginia Tech,Big Ten,ACC,False,35.0,16.0,1.142167,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520244,South Florida,Alabama,American Athletic,SEC,False,3.0,17.0,-30.206022,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520245,Texas A&M,UL Monroe,SEC,Sun Belt,False,47.0,3.0,28.923701,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520246,UConn,Florida International,FBS Independents,Conference USA,False,17.0,24.0,4.912667,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520247,UNLV,Vanderbilt,Mountain West,SEC,False,40.0,37.0,-5.136987,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401520249,Wisconsin,Georgia Southern,Big Ten,Sun Belt,False,35.0,14.0,20.953888,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401524005,Arizona State,Fresno State,Pac-12,Mountain West,False,0.0,29.0,7.641161,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401524007,Colorado,Colorado State,Pac-12,Mountain West,False,43.0,35.0,3.999552,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401524008,Oregon,Hawai'i,Pac-12,Mountain West,False,55.0,10.0,30.24931,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401524009,Oregon State,San Diego State,Pac-12,Mountain West,False,26.0,9.0,13.185939,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525437,Notre Dame,Central Michigan,FBS Independents,Mid-American,False,41.0,17.0,25.548782,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525500,Boston College,Florida State,ACC,ACC,False,29.0,31.0,-12.091418,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525501,Clemson,Florida Atlantic,ACC,American Athletic,False,48.0,14.0,21.605443,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525503,West Virginia,Pittsburgh,Big 12,ACC,False,17.0,6.0,2.528341,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525504,Old Dominion,Wake Forest,Sun Belt,ACC,False,24.0,27.0,-12.814438,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525835,Cincinnati,Miami (OH),Big 12,Mid-American,False,24.0,31.0,19.549023,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525836,Houston,TCU,Big 12,Big 12,False,13.0,36.0,-1.026073,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525837,Nevada,Kansas,Mountain West,Big 12,False,24.0,31.0,-13.336753,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525838,Ohio,Iowa State,Mid-American,Big 12,False,10.0,7.0,-12.242268,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525839,Oklahoma State,South Alabama,Big 12,Sun Belt,False,7.0,33.0,15.066059,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525840,Texas,Wyoming,Big 12,Mountain West,False,31.0,10.0,23.984169,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401525842,Tulsa,Oklahoma,American Athletic,Big 12,False,17.0,66.0,-15.830136,True,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401526834,Eastern Michigan,Massachusetts,Mid-American,FBS Independents,False,19.0,17.0,10.701843,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531348,Southern Miss,Tulane,Sun Belt,American Athletic,False,3.0,21.0,-8.434816,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531379,UAB,Louisiana,American Athletic,Sun Belt,False,21.0,41.0,-0.07098,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531396,UTSA,Army,American Athletic,FBS Independents,False,29.0,37.0,7.115557,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531403,Charlotte,Georgia State,American Athletic,Sun Belt,False,25.0,41.0,-9.514066,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531412,App State,East Carolina,Sun Belt,American Athletic,False,43.0,28.0,11.769372,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531428,Memphis,Navy,American Athletic,American Athletic,False,28.0,24.0,7.663195,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401531848,Troy,James Madison,Sun Belt,Sun Belt,False,14.0,16.0,8.637763,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401532403,Toledo,San José State,Mid-American,Mountain West,False,21.0,17.0,4.931653,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2023,3,401532581,Air Force,Utah State,Mountain West,Mountain West,False,39.0,21.0,11.280577,False,2023_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628319,Alabama,Western Kentucky,SEC,Conference USA,False,63.0,0.0,31.629534,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628322,Florida,Miami,SEC,ACC,False,17.0,41.0,7.734351,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628323,Georgia,Clemson,SEC,ACC,True,34.0,3.0,8.859798,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628324,Kentucky,Southern Miss,SEC,Sun Belt,False,31.0,0.0,19.339061,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628328,Oklahoma,Temple,SEC,American Athletic,False,51.0,3.0,36.883165,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628329,South Carolina,Old Dominion,SEC,Sun Belt,False,23.0,19.0,14.855965,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628331,Texas,Colorado State,SEC,Mountain West,False,52.0,0.0,28.322998,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628332,Texas A&M,Notre Dame,SEC,FBS Independents,False,13.0,23.0,3.438919,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628333,Vanderbilt,Virginia Tech,SEC,ACC,False,34.0,27.0,-10.606607,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628334,LSU,USC,SEC,Big Ten,True,20.0,27.0,5.573533,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628448,Minnesota,North Carolina,Big Ten,ACC,False,17.0,19.0,2.247074,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628449,Indiana,Florida International,Big Ten,Conference USA,False,31.0,7.0,16.462975,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628451,Maryland,UConn,Big Ten,FBS Independents,False,50.0,7.0,24.773036,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628452,Michigan,Fresno State,Big Ten,Mountain West,False,30.0,10.0,24.847877,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628453,Michigan State,Florida Atlantic,Big Ten,American Athletic,False,16.0,10.0,10.654144,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628454,Nebraska,UTEP,Big Ten,Conference USA,False,40.0,7.0,20.137291,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628455,Ohio State,Akron,Big Ten,Mid-American,False,52.0,6.0,48.72409,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628457,West Virginia,Penn State,Big 12,Big Ten,False,12.0,34.0,-10.33952,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628459,Hawai'i,UCLA,Mountain West,Big Ten,False,13.0,16.0,-16.678348,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401628461,Wisconsin,Western Michigan,Big Ten,Mid-American,False,28.0,14.0,19.530936,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401629039,Massachusetts,Eastern Michigan,FBS Independents,Mid-American,False,14.0,28.0,-5.962209,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401634300,Stanford,TCU,ACC,Big 12,False,27.0,34.0,-9.437375,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401634302,Georgia Tech,Georgia State,ACC,Sun Belt,False,35.0,12.0,7.441427,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401634304,Syracuse,Ohio,ACC,Mid-American,False,38.0,22.0,12.178024,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401634305,Pittsburgh,Kent State,ACC,Mid-American,False,55.0,24.0,21.159955,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401634306,Florida State,Boston College,ACC,ACC,False,13.0,28.0,15.3709,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401635525,Georgia Tech,Florida State,ACC,ACC,True,24.0,21.0,-8.367105,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401636608,Arizona,New Mexico,Big 12,Mountain West,False,61.0,39.0,23.24476,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401636609,Arizona State,Wyoming,Big 12,Mountain West,False,48.0,7.0,10.969084,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401636611,Houston,UNLV,Big 12,Mountain West,False,7.0,27.0,12.490077,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401640998,Jacksonville State,Coastal Carolina,Conference USA,Sun Belt,False,27.0,55.0,-3.443966,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401641039,Rice,Sam Houston,American Athletic,Conference USA,False,14.0,34.0,4.057567,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401643696,Nevada,SMU,Mountain West,ACC,False,24.0,29.0,-19.499626,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401643700,Georgia Southern,Boise State,Sun Belt,Mountain West,False,45.0,56.0,-4.807041,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401643701,Troy,Nevada,Sun Belt,Mountain West,False,26.0,28.0,13.783539,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401643774,Charlotte,James Madison,American Athletic,Sun Belt,False,7.0,30.0,-6.623311,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401643775,South Alabama,North Texas,Sun Belt,American Athletic,False,38.0,52.0,9.178779,False,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,1,401644683,Northwestern,Miami (OH),Big Ten,Mid-American,True,13.0,6.0,5.540383,True,2024_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628335,Alabama,South Florida,SEC,American Athletic,False,42.0,16.0,35.819569,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628336,Oklahoma State,Arkansas,Big 12,SEC,False,39.0,31.0,2.913766,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628337,Auburn,California,SEC,ACC,False,14.0,21.0,13.27743,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628340,Kentucky,South Carolina,SEC,SEC,False,6.0,31.0,6.36862,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628342,Ole Miss,Middle Tennessee,SEC,Conference USA,False,52.0,3.0,28.101367,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628343,Arizona State,Mississippi State,Big 12,SEC,False,30.0,23.0,-2.678816,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628344,Missouri,Buffalo,SEC,Mid-American,False,38.0,0.0,27.784711,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628345,Oklahoma,Houston,SEC,Big 12,False,16.0,12.0,22.17322,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628346,NC State,Tennessee,ACC,SEC,True,10.0,51.0,-9.76433,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628347,Michigan,Texas,Big Ten,SEC,False,12.0,31.0,3.378752,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628462,Illinois,Kansas,Big Ten,Big 12,False,23.0,17.0,1.540952,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628464,Iowa,Iowa State,Big Ten,Big 12,False,19.0,20.0,-0.848009,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628465,Maryland,Michigan State,Big Ten,Big Ten,False,24.0,27.0,9.095923,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628467,Nebraska,Colorado,Big Ten,Big 12,False,28.0,10.0,11.831519,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628468,Ohio State,Western Michigan,Big Ten,Mid-American,False,56.0,0.0,36.880659,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628469,Oregon,Boise State,Big Ten,Mountain West,False,37.0,34.0,17.929463,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628470,Penn State,Bowling Green,Big Ten,Mid-American,False,34.0,27.0,34.599113,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628471,Rutgers,Akron,Big Ten,Mid-American,False,49.0,17.0,21.697678,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628472,USC,Utah State,Big Ten,Mountain West,False,48.0,0.0,22.694981,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628473,Washington,Eastern Michigan,Big Ten,Mid-American,False,30.0,9.0,25.172471,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401628977,Notre Dame,Northern Illinois,FBS Independents,Mid-American,False,14.0,16.0,26.630835,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401629040,Toledo,Massachusetts,Mid-American,FBS Independents,False,38.0,23.0,22.324246,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401634765,SMU,BYU,ACC,Big 12,False,15.0,18.0,13.347735,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635532,Clemson,App State,ACC,Sun Belt,False,66.0,20.0,14.97003,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635533,Northwestern,Duke,Big Ten,ACC,True,20.0,26.0,-0.962727,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635534,Syracuse,Georgia Tech,ACC,ACC,False,31.0,28.0,-0.322014,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635535,Louisville,Jacksonville State,ACC,Conference USA,False,49.0,14.0,18.440228,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635537,North Carolina,Charlotte,ACC,American Athletic,False,38.0,20.0,22.729316,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635538,Cincinnati,Pittsburgh,Big 12,ACC,False,27.0,28.0,1.355578,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635540,Virginia Tech,Marshall,ACC,Sun Belt,False,31.0,14.0,10.202883,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401635639,Wake Forest,Virginia,ACC,ACC,False,30.0,31.0,5.590658,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401636616,Tulane,Kansas State,American Athletic,Big 12,False,27.0,34.0,-5.12061,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401636617,UCF,Sam Houston,Big 12,Conference USA,False,45.0,14.0,20.77593,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401636618,Utah,Baylor,Big 12,Big 12,False,23.0,12.0,6.582799,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401636859,Washington State,Texas Tech,Pac-12,Big 12,False,37.0,16.0,2.569914,True,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401640979,Florida International,Central Michigan,Conference USA,Mid-American,True,52.0,16.0,-6.583002,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401640989,New Mexico State,Liberty,Conference USA,Conference USA,False,24.0,30.0,-12.146686,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643705,Air Force,San José State,Mountain West,Mountain West,False,7.0,17.0,8.204939,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643708,Nevada,Georgia Southern,Mountain West,Sun Belt,False,17.0,20.0,-2.134378,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643709,San Diego State,Oregon State,Mountain West,Pac-12,False,0.0,21.0,-7.798027,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643778,Old Dominion,East Carolina,Sun Belt,American Athletic,False,14.0,20.0,-0.065356,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643779,Arkansas State,Tulsa,Sun Belt,American Athletic,False,28.0,24.0,2.140599,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643780,UL Monroe,UAB,Sun Belt,American Athletic,False,32.0,6.0,-11.648355,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643781,Ohio,South Alabama,Mid-American,Sun Belt,False,27.0,20.0,-3.306454,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643783,Texas State,UTSA,Sun Belt,American Athletic,False,49.0,10.0,-5.834553,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401643784,Memphis,Troy,American Athletic,Sun Belt,False,38.0,17.0,8.145814,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401645323,Florida Atlantic,Army,American Athletic,American Athletic,False,7.0,24.0,-6.734313,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,2,401645324,Navy,Temple,American Athletic,American Athletic,False,38.0,11.0,11.788919,False,2024_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628350,Wisconsin,Alabama,Big Ten,SEC,False,10.0,42.0,-15.152626,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628351,Arkansas,UAB,SEC,American Athletic,False,37.0,27.0,13.646941,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628352,Auburn,New Mexico,SEC,Mountain West,False,45.0,19.0,32.460959,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628353,Florida,Texas A&M,SEC,SEC,False,20.0,33.0,-1.457591,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628354,Kentucky,Georgia,SEC,SEC,False,12.0,13.0,-17.232043,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628355,Wake Forest,Ole Miss,ACC,SEC,False,6.0,40.0,-12.201578,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628356,Mississippi State,Toledo,SEC,Mid-American,False,17.0,41.0,12.013358,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628357,Missouri,Boston College,SEC,ACC,False,27.0,21.0,13.460941,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628358,Oklahoma,Tulane,SEC,American Athletic,False,34.0,19.0,22.578907,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628359,South Carolina,LSU,SEC,SEC,False,33.0,36.0,-5.978359,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628360,Tennessee,Kent State,SEC,Mid-American,False,71.0,0.0,34.069452,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628361,Texas,UTSA,SEC,American Athletic,False,56.0,7.0,25.644044,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628362,Georgia State,Vanderbilt,Sun Belt,SEC,False,36.0,32.0,0.992389,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628475,Illinois,Central Michigan,Big Ten,Mid-American,False,30.0,9.0,17.496126,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628476,UCLA,Indiana,Big Ten,Big Ten,False,13.0,42.0,10.38166,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628477,Iowa,Troy,Big Ten,Sun Belt,False,38.0,21.0,13.171954,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628478,Virginia,Maryland,ACC,Big Ten,False,13.0,27.0,-4.513008,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628479,Michigan,Arkansas State,Big Ten,Sun Belt,False,28.0,18.0,29.136292,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628481,Minnesota,Nevada,Big Ten,Mountain West,False,27.0,0.0,20.2366,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628483,Oregon State,Oregon,Pac-12,Big Ten,False,14.0,49.0,-8.099139,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628484,Washington,Washington State,Big Ten,Pac-12,True,19.0,24.0,5.156873,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401628978,Purdue,Notre Dame,Big Ten,FBS Independents,False,7.0,66.0,-5.429961,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401629030,Duke,UConn,ACC,FBS Independents,False,26.0,21.0,20.502523,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401629041,Buffalo,Massachusetts,Mid-American,FBS Independents,False,34.0,3.0,10.280759,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635541,California,San Diego State,ACC,Mountain West,False,31.0,10.0,9.221025,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635542,Florida State,Memphis,ACC,American Athletic,False,12.0,20.0,10.631976,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635544,Miami,Ball State,ACC,Mid-American,False,62.0,0.0,21.171605,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635546,NC State,Louisiana Tech,ACC,Conference USA,False,30.0,20.0,20.515235,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635547,Pittsburgh,West Virginia,ACC,Big 12,False,38.0,34.0,-0.070313,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401635548,Old Dominion,Virginia Tech,Sun Belt,ACC,False,17.0,37.0,-12.264516,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636860,Baylor,Air Force,Big 12,Mountain West,False,31.0,3.0,10.073711,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636861,Colorado State,Colorado,Mountain West,Big 12,False,9.0,28.0,-3.34859,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636862,Houston,Rice,Big 12,American Athletic,False,33.0,7.0,12.848512,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636863,Kansas,UNLV,Big 12,Mountain West,True,20.0,23.0,11.393452,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636864,Kansas State,Arizona,Big 12,Big 12,False,31.0,7.0,11.552635,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636865,Miami (OH),Cincinnati,Mid-American,Big 12,False,16.0,27.0,-6.305785,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636866,TCU,UCF,Big 12,Big 12,False,34.0,35.0,5.709208,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636867,Texas State,Arizona State,Sun Belt,Big 12,False,28.0,31.0,-7.012603,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636868,Texas Tech,North Texas,Big 12,American Athletic,False,66.0,21.0,17.663417,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636869,Tulsa,Oklahoma State,American Athletic,Big 12,False,10.0,45.0,-11.968542,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636870,Utah State,Utah,Mountain West,Big 12,False,21.0,38.0,-16.248564,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401636871,Wyoming,BYU,Mountain West,Big 12,False,14.0,34.0,-9.612893,True,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401640980,Florida Atlantic,Florida International,American Athletic,Conference USA,False,38.0,20.0,6.813894,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401640990,Liberty,UTEP,Conference USA,Conference USA,False,28.0,10.0,18.565326,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401640999,Eastern Michigan,Jacksonville State,Mid-American,Conference USA,False,37.0,34.0,-1.637336,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401641017,San José State,Kennesaw State,Mountain West,Conference USA,False,31.0,10.0,12.781507,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401641024,Middle Tennessee,Western Kentucky,Conference USA,Conference USA,False,21.0,49.0,-1.315229,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401641033,Fresno State,New Mexico State,Mountain West,Conference USA,False,48.0,0.0,14.214488,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401641040,Sam Houston,Hawai'i,Conference USA,Mountain West,False,31.0,13.0,0.228402,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401643785,East Carolina,App State,American Athletic,Sun Belt,False,19.0,21.0,-8.71826,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401643786,Temple,Coastal Carolina,American Athletic,Sun Belt,False,20.0,28.0,-11.60371,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2024,3,401643789,Southern Miss,South Florida,Sun Belt,American Athletic,False,24.0,49.0,-3.778395,False,2024_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752665,Florida State,Alabama,ACC,SEC,False,31.0,17.0,-15.700746,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752667,Baylor,Auburn,Big 12,SEC,False,24.0,38.0,1.063223,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752669,Georgia,Marshall,SEC,Sun Belt,False,45.0,7.0,26.04844,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752670,Kentucky,Toledo,SEC,Mid-American,False,24.0,16.0,12.815081,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752671,Clemson,LSU,ACC,SEC,False,10.0,17.0,5.822726,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752672,Ole Miss,Georgia State,SEC,Sun Belt,False,63.0,7.0,25.912347,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752673,Southern Miss,Mississippi State,Sun Belt,SEC,False,17.0,34.0,-17.430563,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752676,Tennessee,Syracuse,SEC,ACC,True,45.0,26.0,15.272433,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752677,Ohio State,Texas,Big Ten,SEC,False,14.0,7.0,7.151172,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752678,Texas A&M,UTSA,SEC,American Athletic,False,42.0,24.0,18.422508,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752680,South Carolina,Virginia Tech,SEC,ACC,True,24.0,11.0,5.573125,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752793,Minnesota,Buffalo,Big Ten,Mid-American,False,23.0,10.0,20.071561,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752794,Rutgers,Ohio,Big Ten,Mid-American,False,34.0,31.0,10.860072,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752796,Cincinnati,Nebraska,Big 12,Big Ten,True,17.0,20.0,0.354544,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752797,Maryland,Florida Atlantic,Big Ten,American Athletic,False,39.0,7.0,13.343348,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752800,UCLA,Utah,Big Ten,Big 12,False,10.0,43.0,-0.71075,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752801,Purdue,Ball State,Big Ten,Mid-American,False,31.0,0.0,17.459367,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752802,Michigan State,Western Michigan,Big Ten,Mid-American,False,23.0,6.0,9.905511,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752803,Tulane,Northwestern,American Athletic,Big Ten,False,23.0,3.0,3.848571,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752805,Washington,Colorado State,Big Ten,Mountain West,False,38.0,21.0,17.659485,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752806,Indiana,Old Dominion,Big Ten,Sun Belt,False,27.0,14.0,14.278209,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752807,Penn State,Nevada,Big Ten,Mountain West,False,46.0,11.0,31.623975,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752808,Michigan,New Mexico,Big Ten,Mountain West,False,34.0,17.0,38.067449,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401752936,Oregon State,California,Pac-12,ACC,False,15.0,34.0,2.196351,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754373,NC State,East Carolina,ACC,American Athletic,False,24.0,17.0,13.94886,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754374,Wake Forest,Kennesaw State,ACC,Conference USA,False,10.0,9.0,23.081096,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754375,Colorado,Georgia Tech,Big 12,ACC,False,20.0,27.0,-0.644766,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754516,Hawai'i,Stanford,Mountain West,ACC,False,23.0,20.0,-4.790542,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754522,Miami,Notre Dame,ACC,FBS Independents,False,27.0,24.0,-4.905602,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754523,North Carolina,TCU,ACC,Big 12,False,14.0,48.0,-0.556909,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401754616,Virginia,Coastal Carolina,ACC,Sun Belt,False,48.0,7.0,0.619418,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401756846,Kansas State,Iowa State,Big 12,Big 12,True,21.0,24.0,1.107926,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401756847,Kansas,Fresno State,Big 12,Mountain West,False,31.0,7.0,10.067027,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401756848,UCF,Jacksonville State,Big 12,Conference USA,False,17.0,10.0,11.848097,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401756849,Arizona,Hawai'i,Big 12,Mountain West,False,40.0,6.0,13.937289,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401757218,Western Kentucky,Sam Houston,Conference USA,Conference USA,False,41.0,24.0,3.502489,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401757224,Sam Houston,UNLV,Conference USA,Mountain West,True,21.0,38.0,-2.504486,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401757225,Utah State,UTEP,Mountain West,Conference USA,False,28.0,16.0,7.718217,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401760358,San José State,Central Michigan,Mountain West,Mid-American,False,14.0,16.0,12.980847,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401760361,Fresno State,Georgia Southern,Mountain West,Sun Belt,False,42.0,14.0,3.05202,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401761589,Charlotte,App State,American Athletic,Sun Belt,True,11.0,34.0,-10.317242,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401761592,Louisiana,Rice,Sun Belt,American Athletic,False,12.0,14.0,11.119592,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401761594,Texas State,Eastern Michigan,Sun Belt,Mid-American,False,52.0,27.0,13.736901,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401762456,Massachusetts,Temple,Mid-American,American Athletic,False,10.0,42.0,-2.664127,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401762522,South Florida,Boise State,American Athletic,Mountain West,False,34.0,7.0,-5.262793,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401762789,Akron,Wyoming,Mid-American,Mountain West,False,0.0,10.0,-10.550309,False,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,1,401762791,Wisconsin,Miami (OH),Big Ten,Mid-American,False,17.0,0.0,14.107223,True,2025_wk01_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752681,Alabama,UL Monroe,SEC,Sun Belt,False,73.0,0.0,41.77699,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752682,Arkansas,Arkansas State,SEC,Sun Belt,True,56.0,14.0,18.059024,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752683,Auburn,Ball State,SEC,Mid-American,False,42.0,3.0,29.883999,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752684,Florida,South Florida,SEC,American Athletic,False,16.0,18.0,18.651735,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752686,Kentucky,Ole Miss,SEC,SEC,False,23.0,30.0,-6.236409,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752687,LSU,Louisiana Tech,SEC,Conference USA,False,23.0,7.0,33.102324,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752688,Mississippi State,Arizona State,SEC,Big 12,False,24.0,20.0,-1.010746,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752689,Missouri,Kansas,SEC,Big 12,False,42.0,31.0,8.284149,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752690,Oklahoma,Michigan,SEC,Big Ten,False,24.0,13.0,3.31106,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752693,Texas,San José State,SEC,Mountain West,False,38.0,7.0,30.530356,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752694,Texas A&M,Utah State,SEC,Mountain West,False,44.0,22.0,27.182867,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752695,Virginia Tech,Vanderbilt,ACC,SEC,False,20.0,44.0,5.631265,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752810,Nebraska,Akron,Big Ten,Mid-American,False,68.0,0.0,26.390291,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752811,Penn State,Florida International,Big Ten,Conference USA,False,34.0,0.0,37.03382,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752812,Indiana,Kennesaw State,Big Ten,Conference USA,False,56.0,9.0,28.714851,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752814,USC,Georgia Southern,Big Ten,Sun Belt,False,59.0,20.0,21.349223,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752816,Michigan State,Boston College,Big Ten,ACC,False,42.0,40.0,0.146202,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752818,Rutgers,Miami (OH),Big Ten,Mid-American,False,45.0,17.0,11.086455,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752820,Wisconsin,Middle Tennessee,Big Ten,Conference USA,False,42.0,10.0,19.252111,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752822,Iowa State,Iowa,Big 12,Big Ten,False,16.0,13.0,4.866471,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752823,UNLV,UCLA,Mountain West,Big Ten,False,30.0,23.0,-4.376531,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752824,Oregon,Oklahoma State,Big Ten,Big 12,False,69.0,3.0,16.08767,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752825,Duke,Illinois,ACC,Big Ten,False,19.0,45.0,-1.039649,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752826,Maryland,Northern Illinois,Big Ten,Mid-American,False,20.0,9.0,12.718321,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752937,Oregon State,Fresno State,Pac-12,Mountain West,False,27.0,36.0,7.397034,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401752948,Washington State,San Diego State,Pac-12,Mountain West,False,36.0,13.0,8.251177,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754524,NC State,Virginia,ACC,ACC,False,35.0,31.0,8.574472,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754525,SMU,Baylor,ACC,Big 12,False,45.0,48.0,8.640643,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754526,BYU,Stanford,Big 12,ACC,False,27.0,3.0,17.506617,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754527,Charlotte,North Carolina,American Athletic,ACC,False,3.0,20.0,-16.064886,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754528,Louisville,James Madison,ACC,Sun Belt,False,28.0,14.0,13.370976,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754529,Pittsburgh,Central Michigan,ACC,Mid-American,False,45.0,17.0,25.088276,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754618,Syracuse,UConn,ACC,FBS Independents,False,27.0,20.0,11.648611,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401754637,Clemson,Troy,ACC,Sun Belt,False,27.0,16.0,26.594396,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401756880,Cincinnati,Bowling Green,Big 12,Mid-American,False,34.0,20.0,21.327884,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401756882,Kansas State,Army,Big 12,American Athletic,False,21.0,24.0,25.790415,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401756883,Ohio,West Virginia,Mid-American,Big 12,False,17.0,10.0,-5.803371,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401756884,Rice,Houston,American Athletic,Big 12,False,9.0,35.0,-11.128511,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401756885,Texas Tech,Kent State,Big 12,Mid-American,False,62.0,14.0,35.182263,True,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401757227,Jacksonville State,Liberty,Conference USA,Conference USA,False,34.0,24.0,1.596354,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401757229,New Mexico State,Tulsa,Conference USA,American Athletic,False,21.0,14.0,-4.802975,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401757230,Hawai'i,Sam Houston,Mountain West,Conference USA,False,37.0,20.0,-1.660875,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401757232,Toledo,Western Kentucky,Mid-American,Conference USA,False,45.0,21.0,5.999601,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401761598,Georgia State,Memphis,Sun Belt,American Athletic,False,16.0,38.0,-6.146995,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401761601,South Alabama,Tulane,Sun Belt,American Athletic,False,31.0,33.0,-2.77798,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401761603,UTSA,Texas State,American Athletic,Sun Belt,False,36.0,43.0,8.46712,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401762458,Navy,UAB,American Athletic,American Athletic,False,38.0,24.0,8.163039,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,2,401762461,Western Michigan,North Texas,Mid-American,American Athletic,False,30.0,33.0,2.182781,False,2025_wk02_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752696,Alabama,Wisconsin,SEC,Big Ten,False,38.0,14.0,19.94007,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752697,Auburn,South Alabama,SEC,Sun Belt,False,31.0,15.0,19.475003,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752698,Kentucky,Eastern Michigan,SEC,Mid-American,False,48.0,23.0,23.301065,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752699,LSU,Florida,SEC,SEC,False,20.0,10.0,5.288744,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752700,Ole Miss,Arkansas,SEC,SEC,False,41.0,35.0,11.205424,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752702,Missouri,Louisiana,SEC,Sun Belt,False,52.0,10.0,15.548219,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752703,Temple,Oklahoma,American Athletic,SEC,False,3.0,42.0,-25.648954,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752704,South Carolina,Vanderbilt,SEC,SEC,False,7.0,31.0,11.073027,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752705,Tennessee,Georgia,SEC,SEC,False,41.0,44.0,-2.402699,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752706,Texas,UTEP,SEC,Conference USA,False,27.0,10.0,36.927175,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752707,Notre Dame,Texas A&M,FBS Independents,SEC,False,40.0,41.0,2.258906,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752827,Ohio State,Ohio,Big Ten,Mid-American,False,37.0,9.0,34.069917,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752829,Illinois,Western Michigan,Big Ten,Mid-American,False,38.0,0.0,16.906866,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752830,Iowa,Massachusetts,Big Ten,Mid-American,False,47.0,7.0,31.719799,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752831,Northwestern,Oregon,Big Ten,Big Ten,False,14.0,34.0,-15.105071,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752832,Purdue,USC,Big Ten,Big Ten,False,17.0,33.0,-8.578839,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752837,UCLA,New Mexico,Big Ten,Mountain West,False,10.0,35.0,24.173657,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752839,Michigan,Central Michigan,Big Ten,Mid-American,False,63.0,3.0,36.096795,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752840,California,Minnesota,ACC,Big Ten,False,27.0,14.0,-3.624903,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752938,Texas Tech,Oregon State,Big 12,Pac-12,False,45.0,14.0,13.711327,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401752949,North Texas,Washington State,American Athletic,Pac-12,False,59.0,10.0,-0.97868,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754531,Wake Forest,NC State,ACC,ACC,False,24.0,34.0,-5.872241,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754533,Stanford,Boston College,ACC,ACC,False,30.0,20.0,-6.383723,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754534,Tulane,Duke,American Athletic,ACC,False,34.0,27.0,4.751602,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754535,Miami,South Florida,ACC,American Athletic,False,49.0,12.0,13.214833,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754536,Virginia Tech,Old Dominion,ACC,Sun Belt,False,26.0,45.0,13.913613,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754615,Missouri State,SMU,Conference USA,ACC,False,10.0,28.0,-20.696236,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754623,Georgia Tech,Clemson,ACC,ACC,False,24.0,21.0,-10.878224,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401754638,West Virginia,Pittsburgh,Big 12,ACC,False,31.0,24.0,1.607826,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401756888,Arizona,Kansas State,Big 12,Big 12,False,23.0,17.0,-7.997228,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401756889,Arizona State,Texas State,Big 12,Sun Belt,False,34.0,15.0,12.284645,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401756890,Arkansas State,Iowa State,Sun Belt,Big 12,False,16.0,24.0,-17.746292,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401756893,Houston,Colorado,Big 12,Big 12,False,36.0,20.0,6.248436,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401756895,Wyoming,Utah,Mountain West,Big 12,False,6.0,31.0,-13.112914,True,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401757233,Florida International,Florida Atlantic,Conference USA,American Athletic,False,38.0,28.0,-4.106332,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401757234,Georgia Southern,Jacksonville State,Sun Belt,Conference USA,False,41.0,34.0,0.436438,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401757256,Bowling Green,Liberty,Mid-American,Conference USA,False,23.0,13.0,-10.953663,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401757257,Louisiana Tech,New Mexico State,Conference USA,Conference USA,False,49.0,14.0,8.452478,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401757258,Nevada,Middle Tennessee,Mountain West,Conference USA,False,13.0,14.0,3.047623,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401760368,Utah State,Air Force,Mountain West,Mountain West,False,49.0,30.0,-0.806049,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401761604,Coastal Carolina,East Carolina,Sun Belt,American Athletic,False,0.0,38.0,3.117224,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401761607,Southern Miss,App State,Sun Belt,Sun Belt,False,38.0,22.0,-8.995891,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401761608,Troy,Memphis,Sun Belt,American Athletic,False,7.0,28.0,-2.729487,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401762463,UAB,Akron,American Athletic,Mid-American,False,31.0,28.0,17.231298,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401762465,Tulsa,Navy,American Athletic,American Athletic,False,23.0,42.0,-6.010608,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified
+2025,3,401762817,Kent State,Buffalo,Mid-American,Mid-American,False,28.0,31.0,-9.084829,False,2025_wk03_strictly_earlier_week,reconstructed_week_granular_not_historical_receipt_verified

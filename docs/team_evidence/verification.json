@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "scope": "Verification record for the team-season evidence layer. Companion to docs/final_score_program/verification.json, which covers the audit that preceded it. Nothing here certifies a model or a benchmark.",
+  "written_utc": "2026-09-09",
+  "base_commit": "99fe693ab8098c2746538923abe13a9ce3b3de46",
+  "base_branch": "audit/final-score-program-2026-09-08",
+  "branch": "agent/team-season-evidence-2026-09-09",
+  "tree": "0c1c53557e4b16d68dd3fda907e5a7eb03082518",
+  "new_tests": {
+    "files": [
+      "tests/test_team_evidence_contracts.py",
+      "tests/test_team_evidence_measures.py",
+      "tests/test_team_evidence_leakage.py",
+      "tests/test_team_evidence_news.py",
+      "tests/test_team_evidence_vault.py"
+    ],
+    "count": 106,
+    "result_device": "106 passed",
+    "result_clean_checkout": "106 passed",
+    "python_device": "3.10.12 (~/venvs/ss, --system-site-packages + pytest + scipy)",
+    "python_clean": "3.11.15",
+    "note": "The repo .venv is a macOS venv (.venv/bin/python3.11 -> /opt/homebrew/...) and cannot execute inside the device VM, where /opt/homebrew does not exist. Both interpreters were used and both agree."
+  },
+  "full_suite": {
+    "device": {
+      "command": "pytest -q --ignore=data --ignore=tests/test_clean_checkout_importability.py --ignore=tests/test_legacy_entry_points_fail_closed.py",
+      "result": "985 passed, 0 failed",
+      "excluded_files_reason": "both need git write-tree; the mounted vault forbids unlink so every git call leaves a .git/index.lock the next one trips over. Same incident recorded in docs/final_score_program/verification.json git_lock_incident."
+    },
+    "clean_checkout": {
+      "command": "git clone at the branch; pip install -r requirements.txt pytest; pytest -q --ignore=data",
+      "result": "876 passed, 4 failed, 14 skipped",
+      "failures": [
+        "tests/test_cross_division.py::test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced",
+        "tests/test_evidence_and_leakage.py::test_select_never_returns_an_archival_record",
+        "tests/test_factor_context_leakage.py::test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome",
+        "tests/test_forecast_contract.py::test_ridge_route_degrades_to_uncertainty_unvalidated_when_no_basis_is_registered"
+      ],
+      "interpretation": "Exactly the four node IDs recorded as CI failures for 3c54d9d in docs/final_score_program/verification.json github_ci. They need the gitignored parquet caches. Pre-existing; this branch neither caused nor fixed them.",
+      "baseline_confirmation": "The same four, and only those four, fail on a pristine clone of c6c780f with this branch's changes stashed."
+    }
+  },
+  "hash_pinned_files_untouched": {
+    "checked": [
+      "config.json",
+      "nflvalue/engine.py",
+      "nflvalue/ratings.py",
+      "nflvalue/kalman_engine.py",
+      "nflvalue/cfb_ot.py",
+      "nflvalue/cfb_sim.py",
+      "scripts/backtest_early.py",
+      "scripts/backtest_c.py"
+    ],
+    "result": "no edit; all 17 hashes declared in data/evidence_manifest.json re-derived and matching"
+  },
+  "real_runs": {
+    "2026_wk02": {
+      "teams": 287,
+      "fbs": 138,
+      "observations_present": 6301,
+      "observations_total": 18081,
+      "blocked_measures": 11,
+      "seconds": 7.3
+    },
+    "2025_wk08": {
+      "teams": 311,
+      "fbs": 136,
+      "observations_present": 12110,
+      "observations_total": 19593,
+      "blocked_measures": 11,
+      "seconds": 16.2,
+      "note": "run for coverage demonstration at full sample; artifact not committed"
+    }
+  },
+  "vault_writes": {
+    "team_notes": 138,
+    "game_notes": 203,
+    "game_notes_with_frozen_pregame_record": 95,
+    "paths": [
+      "teams/2026/<slug>.md",
+      "games/2026/wk01/<game_id>--<away>-at-<home>.md"
+    ],
+    "picks_directory_touched": false,
+    "manual_prose_preservation": "probe written into the hand-written section, note regenerated, probe survived byte-identical; probe then removed",
+    "published": false
+  },
+  "cfbd_calls_made": 0,
+  "call_tally_unchanged": true,
+  "model_decision": "none; this layer cannot alter a margin, total or probability",
+  "shadow_activated": false,
+  "deployed": false,
+  "frozen_artifacts_modified": false,
+  "github_push": {
+    "status": "blocked",
+    "reason": "The cloud workspace's egress proxy refused: 'curtisdearing/stallionsstallion is not in this session's authorized repository set'. The device VM reaches github.com but holds no push credential (git ls-remote succeeds only because the repo is public).",
+    "commit_location": "committed locally on the device at branch agent/team-season-evidence-2026-09-09",
+    "unblock": "git push -u origin agent/team-season-evidence-2026-09-09 from Curtis's Terminal"
+  },
+  "github_pr": {
+    "status": "not created",
+    "reason": "requires the push above",
+    "intended_base": "audit/final-score-program-2026-09-08",
+    "intended_head": "agent/team-season-evidence-2026-09-09",
+    "intended_draft": true
+  },
+  "github_ci": {
+    "status": "not run",
+    "reason": "no push, so no workflow trigger",
+    "predicted": "876 passed, 4 failed, 14 skipped - the four pre-existing cache-dependent failures above. Reproduced locally in CI's exact configuration: clean clone, python 3.11, pip install -r requirements.txt pytest, pytest -q."
+  }
+}

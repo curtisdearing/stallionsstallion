@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "protocol_id": "final-score-program-v1-2026-09-08",
+  "status": "frozen_design_no_candidate_run_no_shadow_activation",
+  "decision": "retain_incumbent",
+  "objective": "official_final_home_and_away_scores_including_overtime",
+  "historical_status": "2019-2025 development; 2021-2025 already inspected",
+  "primary_scope": {
+    "both_sides_fbs": true,
+    "at_least_one_conference": [
+      "ACC",
+      "Big Ten",
+      "Big 12",
+      "SEC"
+    ],
+    "membership": "season-specific",
+    "historical_pac12": "excluded_from_primary; separately named sensitivity only"
+  },
+  "market_policy": {
+    "construction_access": false,
+    "tuning_access": false,
+    "selection_access": false,
+    "promotion_access": false,
+    "downstream_join": "only after immutable forecast freeze; diagnostic only"
+  },
+  "primary_loss": "(abs(pred_home-home_points)+abs(pred_away-away_points))/2",
+  "bias_sign": "forecast_minus_actual",
+  "metrics": [
+    "home_score_mae_rmse_bias",
+    "away_score_mae_rmse_bias",
+    "margin_mae_rmse_bias",
+    "total_mae_rmse_bias",
+    "win_brier",
+    "win_log_loss",
+    "reliability_bins_0.1_Wilson95",
+    "calibration_intercept_slope_with_uncertainty",
+    "marginal_crps",
+    "joint_energy_score",
+    "coverage_and_width_50_80_95",
+    "randomized_discrete_pit"
+  ],
+  "unavailable_rule": "no supported total => no team scores; no selected later record => no certified incumbent score benchmark",
+  "outer_test_seasons": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "inner_splits": "expanding chronological season origins restricted to outer training; first 2019->2020",
+  "current_season_update": "weekly completed games with week<target_week and available_at<cutoff; update hyperparameters fixed earlier",
+  "state_frozen_sensitivity": "descriptive, not additional contender",
+  "preprocessing": "all scaling, imputation, selection and uncertainty inside training folds",
+  "uncertainty_fit": "inner out-of-fold residuals or posterior predictive samples; not in-sample residual SD",
+  "ridge_penalties": [
+    3,
+    30,
+    300,
+    3000
+  ],
+  "adaptation_prior_effective_games": [
+    4,
+    8,
+    16
+  ],
+  "inner_selection": "minimum primary loss; within one standard error prefer fewer blocks then stronger shrinkage",
+  "candidate_sequence": [
+    "C1_scoring_level",
+    "C2_team_possessions_increment",
+    "C3_unit_success_rate_increment"
+  ],
+  "training_population_variants": [
+    "p4_involved_fbs_vs_fbs",
+    "all_fbs_vs_fbs"
+  ],
+  "max_contenders": 6,
+  "distribution_support": "prerequisite T2; any performance alternative needs separate preregistered extension",
+  "pairing_key": [
+    "season",
+    "game_id",
+    "cutoff_id"
+  ],
+  "missingness": "report all exclusions and overlap plus all-eligible policy loss with declared research-reference fallback",
+  "bootstrap": {
+    "unit": [
+      "season",
+      "week"
+    ],
+    "draws": 20000,
+    "seed": 20260908,
+    "dependence_sensitivity": [
+      "season_blocks",
+      "leave_one_season_out"
+    ],
+    "development_family": "simultaneous bootstrap over all six declared contenders; descriptive only"
+  },
+  "practical_effect": {
+    "primary_mae_points_per_team": 0.5,
+    "rationale": "predeclared engineering utility floor: one point less combined absolute score error/game; not estimated from audit"
+  },
+  "development_screen": {
+    "min_nonnegative_outer_folds": 4,
+    "total_outer_folds": 5,
+    "unfit_fold": "not a pass",
+    "max_selected_challengers": 1,
+    "promotion_allowed": false
+  },
+  "activation": {
+    "active": false,
+    "required_manifest": [
+      "first_eligible_kickoff",
+      "candidate_fit_sha256",
+      "selected_variant",
+      "paired_reference",
+      "complete_season_window",
+      "train_block_precision_power_calculation",
+      "expected_n_games_and_blocks"
+    ],
+    "permission": "separate future activation decision; this audit creates no shadow log",
+    "power_design": {
+      "minimum_power": 0.8,
+      "one_sided_alpha": 0.025,
+      "null_improvement_points_per_team": 0.5,
+      "planning_alternative_points_per_team": 1.0,
+      "dispersion": "development paired season-week blocks; season dependence sensitivity",
+      "if_failed": "insufficient design; no activation or post-result window extension"
+    }
+  },
+  "prospective_window": "two complete regular seasons starting after activation; partial season descriptive only",
+  "prospective_decision": {
+    "one_look_after_window": true,
+    "extend_after_failure": false,
+    "primary_paired_95_lower_bound_must_exceed": 0.5,
+    "guardrail_95_upper_bound_on_increase_must_be_at_most": 0.0,
+    "guardrails": [
+      "margin_mae",
+      "total_mae",
+      "win_brier",
+      "win_log_loss",
+      "available_distribution_proper_scores"
+    ],
+    "if_insufficient_or_failed": "retain_incumbent; no improvement",
+    "if_incumbent_scores_unavailable": "new capability versus named research reference, never incumbent-score improvement",
+    "automatic_deployment": false
+  },
+  "deferred": [
+    "cross_division_modeling",
+    "explosive_rate",
+    "raw_turnover_margin",
+    "return_td_rate",
+    "news_sentiment",
+    "rankings",
+    "team_embeddings",
+    "new_providers",
+    "availability_adjustments_without_verified_source"
+  ],
+  "first_opus_scope": [
+    "T0_evidence_boundary",
+    "T1_read_only_baseline_instrument"
+  ],
+  "artifact_directory": "data/final_score_program/<UTC_run_id>/",
+  "artifact_immutability": "append corrections with supersedes; never rewrite forecasts"
+}

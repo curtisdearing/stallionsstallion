@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "scope": "audit only; no improvement claim",
+  "source_head": "c6c780f521bf955caf84e3fb46287f3a19c2e2ab",
+  "working_tree_tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_forecast_contract.py tests/test_cfb_sim.py tests/test_param_uncertainty.py tests/test_kalman_engine.py tests/test_leakage.py tests/test_context_contracts.py tests/test_context_leakage.py tests/test_explain_context_hook.py tests/test_early_challenger.py tests/test_performance_mc.py tests/test_evidence_and_leakage.py tests/test_insight_cards.py tests/test_render_picks.py",
+    "result": "273 passed in 2.86s",
+    "includes_preexisting_untracked_research": true
+  },
+  "environment": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "pytest": "9.1.1",
+    "pyarrow": "25.0.1",
+    "scipy": "1.17.1"
+  },
+  "audit_probe": {
+    "command": ".venv/bin/python docs/final_score_program/reproduce_audit.py",
+    "output": "audit_evidence.json",
+    "exit_code": 0,
+    "candidate_fits": 0,
+    "api_calls": 0,
+    "market_files_read": 0,
+    "evidence_commit": "f9490f2"
+  },
+  "evidence_manifest_verify_all": "6 of 6 ok; integrity does not confer selection",
+  "baseline_release_check": {
+    "root": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion",
+    "candidate_tree": "1a5362051946a8e9da672edc0f4bf5a4f98f86a7",
+    "python": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/.venv/bin/python",
+    "ok": true,
+    "checks": [
+      {
+        "name": "candidate tree materialises",
+        "ok": true,
+        "detail": "git write-tree -> 1a5362051946a8e9da672edc0f4bf5a4f98f86a7"
+      },
+      {
+        "name": "required files tracked in candidate tree",
+        "ok": true,
+        "detail": "all present"
+      },
+      {
+        "name": "clean candidate tree imports scripts/weekly_loop.py",
+        "ok": true,
+        "detail": "imported"
+      },
+      {
+        "name": "README names one supported product",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "name": "legacy fails closed: run.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --demo",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job wed",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job t90",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job tuesday",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job deploy",
+        "ok": true,
+        "detail": "refused"
+      }
+    ],
+    "advisory": {
+      "name": "HEAD imports (advisory)",
+      "ok": true,
+      "detail": "HEAD already stands alone"
+    }
+  },
+  "preservation": {
+    "preexisting_dirty_and_untracked_files_hashed": 99,
+    "changed": []
+  },
+  "remote_review": {
+    "origin": "https://github.com/curtisdearing/stallionsstallion.git",
+    "authenticated_account": "curtisdearing",
+    "credential_storage": "GitHub CLI keyring; no credential value recorded",
+    "remote_context_head": "c6c780f521bf955caf84e3fb46287f3a19c2e2ab",
+    "remote_master": "2d491c2e8b18a17288f302050bbf6c574aee796d",
+    "planned_pr_base": "agent/context-layer-2026-08-28",
+    "pages_trigger": "master push affecting data/site or pages workflow, or workflow_dispatch; neither invoked",
+    "feature_push_side_effect": "CI test workflow only from inspected workflow definitions"
+  },
+  "model_decision": "retain_incumbent",
+  "shadow_activated": false,
+  "deployed": false,
+  "scoped_candidate_release_check": {
+    "root": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion",
+    "candidate_tree": "78b2debad77ae9dcd58bdad2106ab7641f2645f6",
+    "python": "/Users/curtisdearing/Documents/Side-Projects-Vault/20-projects/stallionsstallion/stallionsstallion/.venv/bin/python",
+    "ok": true,
+    "checks": [
+      {
+        "name": "candidate tree materialises",
+        "ok": true,
+        "detail": "git write-tree -> 78b2debad77ae9dcd58bdad2106ab7641f2645f6"
+      },
+      {
+        "name": "required files tracked in candidate tree",
+        "ok": true,
+        "detail": "all present"
+      },
+      {
+        "name": "clean candidate tree imports scripts/weekly_loop.py",
+        "ok": true,
+        "detail": "imported"
+      },
+      {
+        "name": "README names one supported product",
+        "ok": true,
+        "detail": "ok"
+      },
+      {
+        "name": "legacy fails closed: run.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: run.py --demo",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: weekly.py --live",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job wed",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job t90",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job tuesday",
+        "ok": true,
+        "detail": "refused"
+      },
+      {
+        "name": "legacy fails closed: scripts/auto_weekly.py --job deploy",
+        "ok": true,
+        "detail": "refused"
+      }
+    ],
+    "advisory": {
+      "name": "HEAD imports (advisory)",
+      "ok": true,
+      "detail": "HEAD already stands alone"
+    },
+    "method": "GIT_INDEX_FILE pointed at an exact temporary copy of the staged index; all 14 checks passed. This report adds only verification metadata after that tree."
+  },
+  "git_lock_incident": "Direct git staging/check attempt encountered a stale zero-byte index.lock, with no git writer found. Preserved lock in vault project _to_delete; ran checks using isolated index copy. No worktree/index content reset.",
+  "github_pr": {
+    "url": "https://github.com/curtisdearing/stallionsstallion/pull/2",
+    "draft": true,
+    "base": "agent/context-layer-2026-08-28",
+    "head": "audit/final-score-program-2026-09-08"
+  },
+  "github_ci": {
+    "tested_commit": "3c54d9d",
+    "status": "failure",
+    "run_url": "https://github.com/curtisdearing/stallionsstallion/actions/runs/34294743353",
+    "passed": 770,
+    "failed": 4,
+    "skipped": 14,
+    "seconds": 15.97,
+    "failures": {
+      "test_cross_division.py::test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced": "missing games caches -> home_team KeyError",
+      "test_evidence_and_leakage.py::test_select_never_returns_an_archival_record": "declared games_2019.parquet absent",
+      "test_factor_context_leakage.py::test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome": "missing games caches -> start_date KeyError",
+      "test_forecast_contract.py::test_ridge_route_degrades_to_uncertainty_unvalidated_when_no_basis_is_registered": "2026 teams/FBS classification cache absent"
+    },
+    "base_reproduction": {
+      "git_archive": "c6c780f",
+      "environment": "same local repository venv; clean archive with no ignored caches",
+      "tests": "the same four exact failing node IDs above",
+      "failed": 4,
+      "seconds": 0.96,
+      "log_sha256": "bd29f8c089e28f9a23c0b2e03749cb4696cb6f802dea90711878b8f3f36786d5"
+    },
+    "interpretation": "pre-existing clean-checkout data dependency; no runtime or test fix in audit scope"
+  }
+}

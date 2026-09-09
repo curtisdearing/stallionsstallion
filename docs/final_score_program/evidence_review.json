@@ -1,0 +1,517 @@
+{
+  "candidate_adapter_review": {
+    "boundary_finding": "Candidate total imports no data/news/market reader; positive allowed game columns, prior={} and strict earlier-week history restrict numerical fit. Externally supplied historical scores/membership still have week-granular reconstructed availability.",
+    "independent_design_test": "tests/test_team_evidence_review.py::test_score_adapter_matches_every_centered_solver_training_total",
+    "independently_run_tests": {
+      "command": ".venv/bin/python -m pytest -q tests/test_final_score_research.py",
+      "latest_command": ".venv/bin/python -m pytest -q tests/test_final_score_research.py tests/test_team_evidence_review.py",
+      "latest_result": "21 passed, 10 strict xfailed in 0.77s",
+      "result_at_initial_review": "16 passed in 0.26s"
+    },
+    "math_finding": "Intercept uncentering matches the actual centered R._ridge design X@theta on every paired training row, including asymmetric scores, neutral venues and historical conference changes; both declared-grid extremes passed.",
+    "module": "nflvalue/final_score_research.py",
+    "not_certified": [
+      "Prospective historical source availability",
+      "Discrete joint-score law",
+      "Production model improvement",
+      "Unexecuted candidate performance"
+    ],
+    "remaining_limits": [
+      "Expected means only; no supported discrete joint score law, joint energy score or discrete PIT.",
+      "Historical caches are development reconstructions; no source receipt times are certified.",
+      "Fixed incumbent anchor remains a baseline reference; unavailable incumbent early total/team scores are not manufactured.",
+      "Conditioning on shared incumbent margin limits this C1 test to total/scoring-level capability.",
+      "Evidence ER01-ER10 remain independently recorded; no affected evidence feature is admitted to this candidate."
+    ],
+    "reviewed_at_utc": "2026-09-09T02:32:02.287442+00:00",
+    "reviewed_sha256": {
+      "nflvalue/final_score_research.py": "09925cfbbc39178a1d8afed3c404b290b03ffc47e2c67d121af40e47a84095a4",
+      "scripts/final_score_experiment.py": "eeb61affd205f67e4b16529d38ef35dd77d757a952b0f64ac7d5beeaeadea7d5",
+      "tests/test_final_score_research.py": "bfc1864990798c249b017cff458d8b3a0ddbaad75fd63448d9615e767207648b",
+      "tests/test_team_evidence_review.py": "61e0c4f638782d8a82a40fe13a4425cfaa86853868c84d1f73bb922db8d45519"
+    },
+    "runner_chronology": "select_and_calibrate tunes both training populations on identical primary P4 inner games from earlier seasons; SD/covariance uses selected inner chronological residuals only. forecast_grid does not silently skip fits; failure aborts the run. All windows retain the same anchor cohort.",
+    "runner_fix_verification": {
+      "baseline_replay": "Independently called supported_baselines(): metrics_exactly_match_audit=True. Early n724 margin MAE13.566547175414364, P4 n495; cross-division n599 margin MAE15.01614909015025; unselected corrected later n429 margin MAE13.11595104895105, P4 n186, team-score MAE9.664180652680653.",
+      "flags_and_losses": "Synthetic candidate fallback/constrained=True produced reference/simple/frozen=False as intended; every model loss equals its own team_loss and raw_total matches its own source.",
+      "frozen_state": "Explicitly total_state_frozen_margin_updated; not a completely frozen-model sensitivity.",
+      "optional_source_dependency": "Runner now imports only baseline scores() helper and verifies supported-record content/metrics; it does not execute reproduce_audit.main or require untracked optional source-code files.",
+      "window_uncertainty": "All-vs-one/all-vs-three contrasts now reuse the same paired week/season bootstrap draws to derive contrast intervals."
+    },
+    "runner_recommended_fixes": [
+      "Set fallback/constrained/raw_total/loss metadata per model; current reference/simple/frozen-state records copy candidate-specific flags and loss.",
+      "Label frozen-state sensitivity as frozen total fit plus updated incumbent margin, not a completely frozen model.",
+      "Give all-vs-one/all-vs-three year paired window contrasts uncertainty, not only means.",
+      "Avoid baseline artifact reproduction dependency on untracked unrelated early_challenger/performance_mc code hashes; baseline helper currently hashes them unconditionally."
+    ],
+    "runner_recommended_fixes_status": "All four initial recommendations addressed before candidate-grid interpretation.",
+    "status": "Reviewed for bounded C1 development run; no unresolved numerical blocker found in adapter/runner. This is not performance or production approval."
+  },
+  "clean_ci_fixture_review": {
+    "file_sha256": {
+      "tests/test_cross_division.py": "115a6a726cefc6e40012a594dfe1aeb3f0b664bc7716d446b51d13e83e4f2789",
+      "tests/test_evidence_and_leakage.py": "40772c6bb40abe2745c640ab46d958c6d95af301879447c20d81b31b4d3c2921",
+      "tests/test_factor_context_leakage.py": "937f3568b4f85c978d39adc7860cfac8c7a60c09b4c5459024cb9352888f7bd2",
+      "tests/test_forecast_contract.py": "601a6af20dff58dd7496c9d5ac852e22b0204f7b244291590df0945f46fa5035"
+    },
+    "independent_commands": [
+      {
+        "command": ".venv/bin/python -m pytest -q tests/test_cross_division.py::test_real_week1_fbs_numbers_are_identical_and_cross_division_is_priced tests/test_evidence_and_leakage.py::test_select_never_returns_an_archival_record tests/test_factor_context_leakage.py::test_no_frame_handed_to_the_evaluator_carries_a_price_or_outcome tests/test_forecast_contract.py::test_ridge_route_degrades_to_uncertainty_unvalidated_when_no_basis_is_registered",
+        "result": "4 passed in 1.11s"
+      },
+      {
+        "command": ".venv/bin/python -m pytest -q tests/test_evidence_and_leakage.py::test_a_missing_declared_input_fails_closed tests/test_evidence_and_leakage.py::test_the_manifest_rejects_a_content_mismatch tests/test_evidence_and_leakage.py::test_the_manifest_rejects_a_code_mismatch tests/test_evidence_and_leakage.py::test_the_manifest_rejects_an_input_mismatch",
+        "result": "4 passed in 0.18s"
+      }
+    ],
+    "no_production_approval": true,
+    "rationale": {
+      "tests/test_cross_division.py": "Only real-cache integration is skipped when its declared private cache fixture is absent; synthetic route tests stay active and real integration passed independently on this Mac.",
+      "tests/test_evidence_and_leakage.py": "Uses a fully hashed synthetic selected benchmark and archival alternative; real selection and content/code/input verification remain active, with an assertion that bench was actually selected.",
+      "tests/test_factor_context_leakage.py": "Injects explicit synthetic games/drives/coaches/returning sources containing poisoned market columns and asserts six nonempty evaluator frames; prevents vacuous passes.",
+      "tests/test_forecast_contract.py": "Adds deterministic FBS classification to an already stubbed no-uncertainty-basis route; preserves refusal/empty-numeric output assertions."
+    },
+    "reviewed_at_utc": "2026-09-09T02:39:01.733504+00:00",
+    "standalone_run_verifier": {
+      "final_sha256": {
+        "scripts/verify_final_score_run.py": "72fce41cf82ccf01583c867fb548cdb547f76a561ac1466284e429dac6716237",
+        "tests/test_final_score_artifacts.py": "a2bc80007d90cc4813011983359173e4f76d7bfbadcd9978b6fb18fadf878847"
+      },
+      "final_status": "Approved after exact all/P4 cohort key-set checks and explicit rtol=0 were added; no remaining review blocker.",
+      "independent_final_run_command": ".venv/bin/python scripts/verify_final_score_run.py data/final_score_program/20260909T024200Z-c1-v1 --inputs",
+      "independent_final_run_result": {
+        "artifact_hashes_verified": 12,
+        "candidate_primary_games": 495,
+        "candidate_rows": 4344,
+        "folds": 30,
+        "forecasts": 17376,
+        "input_hashes_verified": 43,
+        "status": "pass",
+        "variants": 6
+      },
+      "independent_final_tests": {
+        "command": ".venv/bin/python -m pytest -q tests/test_final_score_artifacts.py",
+        "result": "2 passed in 0.69s; valid immutable run accepted and rehashed equal-count wrong cohort rejected"
+      },
+      "initial_command": ".venv/bin/python scripts/verify_final_score_run.py data/final_score_program/20260909T024200Z-c1-v1 --inputs",
+      "recommended_completeness_change": "Exact cohort key-set equality rather than counts only; rtol=0 to enforce absolute identity tolerances. Actual run already passed the stricter independent verifier embedded above.",
+      "result": "12 artifact hashes,43 input hashes,17376 forecasts,4344candidate rows,495primary games,6variants,30folds pass.",
+      "reviewed_at_utc": "2026-09-09T02:42:54.130901+00:00"
+    },
+    "status": "Approved scoped fixture repairs; no production source changes or weakened production evidence gates."
+  },
+  "commands": [
+    {
+      "command": ".venv/bin/python -m pytest -q tests/test_team_evidence_contracts.py tests/test_team_evidence_measures.py tests/test_team_evidence_leakage.py tests/test_team_evidence_news.py tests/test_team_evidence_vault.py",
+      "result": "106 passed in 2.49s"
+    },
+    {
+      "command": ".venv/bin/python -m pytest -q tests/test_team_evidence_review.py",
+      "result": "2 passed, 10 xfailed in 0.48s; two independent C1 centered-design parity cases pass, ten evidence-layer counterexamples remain strict expected failures"
+    }
+  ],
+  "decision": "Retain incumbent; exclude reviewed-broken evidence fields from current scoring candidate; evidence layer alone proves no model improvement.",
+  "diagnostics": {
+    "cache_diagnostics": {
+      "2025": {
+        "clean_rows": 253326,
+        "missing_yards_phase": 0,
+        "non_scrimmage_types": {
+          "Blocked Field Goal": 4,
+          "Blocked Field Goal Touchdown": 1,
+          "Blocked Punt": 2,
+          "End Period": 101,
+          "End of Game": 3,
+          "Field Goal Good": 222,
+          "Field Goal Missed": 52,
+          "Fumble": 5,
+          "Kickoff": 17,
+          "Kickoff Return (Offense)": 3,
+          "Missed Field Goal Return": 1,
+          "Penalty": 749,
+          "Punt": 1099,
+          "Punt Return": 112,
+          "Punt Return Touchdown": 2,
+          "Safety": 1,
+          "Timeout": 1048,
+          "Uncategorized": 3
+        },
+        "ot_rows_in_clean": 685,
+        "raw_rows": 283507,
+        "short_yardage_non_scrimmage": 3425,
+        "short_yardage_rows": 13289
+      },
+      "2026": {
+        "clean_rows": 29252,
+        "missing_yards_phase": 0,
+        "non_scrimmage_types": {
+          "End Period": 28,
+          "End of Game": 5,
+          "Field Goal Good": 19,
+          "Field Goal Missed": 2,
+          "Fumble": 1,
+          "Kickoff": 1,
+          "Penalty": 96,
+          "Punt": 85,
+          "Punt Return": 46,
+          "Punt Return Touchdown": 1,
+          "Timeout": 77
+        },
+        "ot_rows_in_clean": 46,
+        "raw_rows": 35631,
+        "short_yardage_non_scrimmage": 361,
+        "short_yardage_rows": 1358
+      }
+    },
+    "dataclass_bypass": {
+      "is_present": true,
+      "source_id": null,
+      "value_is_nan": true
+    },
+    "fg_bucket_omission": {
+      "fg_attempts": {
+        "availability": "ok",
+        "n": 2,
+        "reason": null,
+        "value": 120.0
+      },
+      "fg_distance_by_bucket": {
+        "availability": "unavailable_no_data",
+        "n": 0,
+        "reason": "no completed games for A before 2026 wk3",
+        "value": null
+      },
+      "fg_distance_median": {
+        "availability": "ok",
+        "n": 120,
+        "reason": null,
+        "value": 40.0
+      }
+    },
+    "future_fact_survives_no_cutoff": 1,
+    "missing_yards_synthetic": [
+      {
+        "den": 1.0,
+        "num": 0.0,
+        "value": 0.0
+      }
+    ],
+    "short_yardage_synthetic": [
+      {
+        "den": 3.0,
+        "num": 1.0,
+        "value": 0.3333333333333333
+      }
+    ],
+    "undeclared_fact_source_survives": [
+      "undeclared_source"
+    ],
+    "week1_missing_population": {
+      "profiles": 0,
+      "scheduled_teams": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "disposition": "Exclude both short_yardage_conversion_rate measures until eligibility is repaired and independently checked.",
+      "evidence": "Synthetic one converted scrimmage attempt plus punt and field goal emits 1/3. Real 2025 counts: 3425/13289 eligible records are non-scrimmage; 2026: 361/1358.",
+      "files": [
+        "nflvalue/team_evidence/measures.py:117",
+        "nflvalue/team_evidence/measures.py:185"
+      ],
+      "id": "ER01",
+      "priority": "P1",
+      "title": "Short-yardage rates count non-scrimmage records"
+    },
+    {
+      "disposition": "Do not consume emitted adjusted observations as a canonical feature manifest. Hash all fitted inputs, params, transforms and actual support; reconstruct training chronology separately.",
+      "evidence": "Current-season plays are the only derived-state fingerprint, although unit values use historical plays, games/team classification and ratings parameters. Real history diagnostic is recorded below; n=1/n_games=0/game_ids=[] are constants.",
+      "files": [
+        "nflvalue/team_evidence/profile.py:155",
+        "nflvalue/team_evidence/profile.py:341",
+        "nflvalue/team_evidence/profile.py:352",
+        "scripts/build_team_evidence.py:53"
+      ],
+      "id": "ER02",
+      "priority": "P1",
+      "title": "Adjusted feature lineage omits historical inputs and support"
+    },
+    {
+      "disposition": "Replace guarantee with bounded paired chronological ablations, including common-opponent incremental value; score the intended paired-score target.",
+      "evidence": "Walk-forward residuals need not be orthogonal to schedule features. Ridge training residuals satisfy X'We=Lambda*beta; conditioning on one predicted margin does not condition on all raw schedule information. No statistical theorem makes double-counting structurally impossible here.",
+      "files": [
+        "docs/final_score_program/02_data_handoff.md:225",
+        "docs/team_evidence/01_architecture_audit.md:267"
+      ],
+      "id": "ER03",
+      "priority": "P1",
+      "title": "Residual conditioning is not a guarantee against redundant evidence"
+    },
+    {
+      "disposition": "Remain blocked before a feed or numerical feature is activated. Require fact-level approval and explicit forecast freeze cutoff plus full extraction lineage.",
+      "evidence": "An undeclared-source fact survives an approved requested-feed gate; a 2030 fact survives collect(team,season=2026,week=2) with omitted cutoff. No production news effect is active. Facts lack program-required game_id/document_hash/locator/parser_version/effective_time/verification/conflict state.",
+      "files": [
+        "nflvalue/team_evidence/news.py:157",
+        "nflvalue/team_evidence/news.py:294",
+        "nflvalue/team_evidence/news.py:305"
+      ],
+      "id": "ER04",
+      "priority": "P1_latent",
+      "title": "News fact source and cutoff checks are incomplete"
+    },
+    {
+      "disposition": "Enumerate schedule/membership first and emit coverage/refusal states for all eligible teams; never select evaluation games based on profile existence.",
+      "evidence": "Known four-team synthetic week1 schedule gives zero profiles. Script never supplies teams. Invalid game team cardinality silently drops rows.",
+      "files": [
+        "nflvalue/team_evidence/profile.py:170",
+        "scripts/build_team_evidence.py:62",
+        "nflvalue/team_evidence/measures.py:289"
+      ],
+      "id": "ER05",
+      "priority": "P2",
+      "title": "Teams with no earlier play rows disappear"
+    },
+    {
+      "disposition": "Correct handoff; actual adapter, registry state and tests are required in addition to any governance decision.",
+      "evidence": "gated_pending_source always returns unavailable_not_approved; no build path reads drives or computes the four advertised metrics.",
+      "files": [
+        "nflvalue/team_evidence/profile.py:227",
+        "docs/final_score_program/02_data_handoff.md:169"
+      ],
+      "id": "ER06",
+      "priority": "P2",
+      "title": "Drive measures cannot be unblocked by approval alone"
+    },
+    {
+      "disposition": "Do not treat unavailable distribution as true no-data; implement structured component support before use.",
+      "evidence": "Per-game IDs have ::bucket suffix; profile matches unsuffixed registry ID exactly. 120 synthetic made FGs yield present attempts/median but missing fg_distance_by_bucket with false no-games reason.",
+      "files": [
+        "nflvalue/team_evidence/measures.py:243",
+        "nflvalue/team_evidence/profile.py:273"
+      ],
+      "id": "ER07",
+      "priority": "P2",
+      "title": "FG bucket distribution is dropped"
+    },
+    {
+      "disposition": "Add invariant validation at every construction path and downstream model boundary before reuse; current reconstruction-only observations never become proven pregame merely through test passes.",
+      "evidence": "Public dataclass replacement can create OK present observations with no provenance. present accepts NaN. The retrospective assertion is not called at artifact serialization/model-consumption boundary.",
+      "files": [
+        "nflvalue/team_evidence/contracts.py:115",
+        "nflvalue/team_evidence/contracts.py:168",
+        "nflvalue/team_evidence/contracts.py:247"
+      ],
+      "id": "ER08",
+      "priority": "P2",
+      "title": "Observation invariants and predictive-claim guard are opt-in"
+    },
+    {
+      "disposition": "Exclude invalid grades; do not substitute this count for regulation pace without declared transform and validation.",
+      "evidence": "NaN gained yields a graded failed rush in synthetic probe; no missing rush/pass yards found in 2025/2026. plays_per_game counts non-garbage-time scrimmage plays and retains overtime (2025: 685 clean rows period>4), not full-game/regulation possessions.",
+      "files": [
+        "nflvalue/team_evidence/measures.py:82",
+        "nflvalue/team_evidence/measures.py:223",
+        "data/team_evidence_registry.json:528"
+      ],
+      "id": "ER09",
+      "priority": "P2",
+      "title": "Missing yards grade as failure; pace has a restricted estimand"
+    },
+    {
+      "disposition": "Preserve incumbent pinned file. Any candidate reusing units must learn and version chronological recency/shrinkage inside folds; do not call existing multi-year history weighting validated recency.",
+      "evidence": "solve_units carries row week but not row season into weights; exp(-decay*max(target_week-row_week,0)) gives prior-year late weeks weight 1 at current-year week2, irrespective of age.",
+      "files": [
+        "nflvalue/ratings.py:841",
+        "nflvalue/ratings.py:892"
+      ],
+      "id": "ER10",
+      "priority": "P2",
+      "title": "Existing unit recency ignores season age"
+    }
+  ],
+  "generated_at_utc": "2026-09-09T02:23:50.362262+00:00",
+  "historical_news_audit": {
+    "excluded": "qb_starts inferred from realized attempts is not pregame evidence; no feed/source/feature approval made.",
+    "finding": "No historical LLM extraction corpus/API pipeline, source-document archive or parser/model-version ledger located. Only blacklist/tests found in evidence package. Cannot assess outcome-knowledge contamination or compare statistics-only against verified news.",
+    "method": "rg -n 'openai|anthropic|chat.completions|messages.create|llm|LLM|extract.*news|news.*extract' nflvalue scripts tests --glob '*.py'; rg --files data | rg -i 'news|personnel|extract|fact'",
+    "status": "unavailable_not_certified_clean"
+  },
+  "independent_result_check": {
+    "all_selected_hyperparameters": {
+      "decay": 0.05,
+      "ridge": 3000
+    },
+    "artifact_hash_count": 12,
+    "bootstrap_recomputed": {
+      "draws": 20000,
+      "max_serialized_interval_delta": 2.2367653562671563e-10,
+      "paired_week_and_season_intervals": true,
+      "paired_window_contrast_intervals": true,
+      "seed": 20260908,
+      "simultaneous_six_interval": true
+    },
+    "comparisons": {
+      "C1_fbs_1": {
+        "improvement": 0.03214714444000004,
+        "n": 495,
+        "nonnegative_folds": 4
+      },
+      "C1_fbs_3": {
+        "improvement": 0.02665965251474751,
+        "n": 495,
+        "nonnegative_folds": 3
+      },
+      "C1_fbs_all": {
+        "improvement": 0.023517099191515185,
+        "n": 495,
+        "nonnegative_folds": 3
+      },
+      "C1_p4_1": {
+        "improvement": 0.05436922837898996,
+        "n": 495,
+        "nonnegative_folds": 3
+      },
+      "C1_p4_3": {
+        "improvement": 0.06458793516424244,
+        "n": 495,
+        "nonnegative_folds": 3
+      },
+      "C1_p4_all": {
+        "improvement": 0.05854282807030304,
+        "n": 495,
+        "nonnegative_folds": 3
+      }
+    },
+    "forecast_rows": 17376,
+    "independent_production_approval": false,
+    "inner_best_hyperparameter_curves_replayed": 18,
+    "inner_n_by_outer_season": {
+      "2021": [
+        16
+      ],
+      "2022": [
+        109
+      ],
+      "2023": [
+        202
+      ],
+      "2024": [
+        300
+      ],
+      "2025": [
+        405
+      ]
+    },
+    "input_hash_count": 43,
+    "limits": [
+      "Historical development, not prospective validation",
+      "All initial-2021 covariance fits use only 16 primary 2020 inner games",
+      "All score distributions are continuous residual approximations; no supported discrete joint law",
+      "All selected and inner-minimum curves replayed; rejected non-minimum inner-grid losses checked through archived equal-n summaries, not exhaustive refitting."
+    ],
+    "max_covariance_replay_delta": 0.0,
+    "max_inner_best_loss_replay_delta": 1.7763568394002505e-15,
+    "max_one_se_replay_delta": 0.0,
+    "max_serialized_forecast_delta": 4.9998831741504546e-09,
+    "max_serialized_metric_delta": 1.4415199700579251e-08,
+    "model_count": 24,
+    "one_standard_error_selections_verified": 30,
+    "per_model_all_fbs_n": 724,
+    "per_model_primary_n": 495,
+    "reproduce_instructions": "From repository root, make /tmp/stallions-evidence-review, write the two embedded reproducers there using these exact names, run .venv/bin/python /tmp/stallions-evidence-review/verify_run.py then .venv/bin/python /tmp/stallions-evidence-review/verify_selection_bootstrap.py. This reads the immutable run and matching local caches, writes only /tmp results, and does not change run artifacts or forecasts.",
+    "reproducers": {
+      "verify_run.py": "import hashlib, json, sys\nfrom pathlib import Path\nimport numpy as np\nimport pandas as pd\nfrom scipy.special import ndtr\nsys.path.insert(0,str(Path.cwd()))\nfrom nflvalue import ratings as R, final_score_research as F\nRUN=Path('data/final_score_program/20260909T024200Z-c1-v1')\nload=lambda name:json.loads((RUN/name).read_text())\nsha=lambda path:hashlib.sha256(Path(path).read_bytes()).hexdigest()\nmanifest=load('manifest.json'); hashes=load('artifact_hashes.json')\nassert all(sha(path)==h for path,h in manifest['input_hashes'].items())\nassert all(sha(RUN/path)==h for path,h in hashes.items())\nd=pd.read_csv(RUN/'forecasts.csv'); a=pd.read_csv(RUN/'anchors.csv'); search=pd.read_csv(RUN/'all_inner_searches.csv'); fits=load('fits.json'); metrics=load('metrics.json'); paired=load('paired_comparisons.json')\nassert len(fits)==30 and not any(f['selection']['unfit'] for f in fits)\nassert not d.duplicated(['model','season','week','id']).any()\nassert (d.calibration_max_season<d.season).all()\nassert (d.home>=0).all() and (d.away>=0).all()\nassert np.allclose(d.home-d.actual_home,d.error_home,rtol=0,atol=8e-8)\nassert np.allclose(d.away-d.actual_away,d.error_away,rtol=0,atol=8e-8)\nassert np.allclose((abs(d.home-d.actual_home)+abs(d.away-d.actual_away))/2,d.team_loss,rtol=0,atol=8e-8)\nassert np.allclose(d.error_home-d.error_away,d.error_margin,rtol=0,atol=8e-8)\nassert np.allclose(d.error_home+d.error_away,d.error_total,rtol=0,atol=8e-8)\nassert np.allclose(d.home_sd**2+d.away_sd**2-2*d.score_covariance,d.margin_sd**2,rtol=0,atol=6e-7)\nassert np.allclose(d.home_sd**2+d.away_sd**2+2*d.score_covariance,d.total_sd**2,rtol=0,atol=6e-7)\nfixed=d[~d.model.str.endswith('__simple')]\nassert np.allclose(fixed.home-fixed.away,fixed.anchor,rtol=0,atol=1e-7)\nassert np.allclose(fixed.home+fixed.away,np.maximum(fixed.raw_total,abs(fixed.anchor)),rtol=0,atol=1e-7)\nexpected=set(map(tuple,a.loc[(a.season>=2021)&a.p4,['season','week','id']].to_numpy()))\nassert len(expected)==495\nfor model, group in d[d.p4].groupby('model'):\n assert set(map(tuple,group[['season','week','id']].to_numpy()))==expected\nassert set(d.groupby('model').size())=={724}\n# Independent point/tail/probability calculations from serialized forecasts.\nmax_metric_delta=0.\nfor model, allrows in d.groupby('model'):\n for scope,g in [('all_fbs',allrows),('p4',allrows[allrows.p4])]:\n  m=metrics[model][scope]\n  for name,pred,actual,sd in [('home',g.home,g.actual_home,g.home_sd),('away',g.away,g.actual_away,g.away_sd),('margin',g.home-g.away,g.actual_home-g.actual_away,g.margin_sd),('total',g.home+g.away,g.actual_home+g.actual_away,g.total_sd)]:\n   e=(pred-actual).to_numpy(); z=-e/sd.to_numpy(); s=sd.to_numpy()\n   check={'mae':np.abs(e).mean(),'rmse':np.sqrt(np.square(e).mean()),'bias':e.mean(),'absolute_error_p90':np.quantile(abs(e),.9),'absolute_error_p95':np.quantile(abs(e),.95),'crps':np.mean(s*(z*(2*ndtr(z)-1)+2*np.exp(-z*z/2)/np.sqrt(2*np.pi)-1/np.sqrt(np.pi)))}\n   if name!='margin':check['negative_mass']=ndtr(-pred/sd).mean()\n   for level,q in [(50,.6744897501960817),(80,1.2815515655446004),(95,1.959963984540054)]:\n    check[f'coverage{level}']=np.mean(abs(z)<=q);check[f'width{level}']=np.mean(2*q*s)\n   for key,v in check.items():\n    delta=abs(float(v)-m[name][key]);max_metric_delta=max(max_metric_delta,delta);assert delta<1e-6,(model,scope,name,key,delta)\n  prob=ndtr((g.home-g.away)/g.margin_sd); win=(g.actual_home>g.actual_away).astype(float); clipped=np.clip(prob,1e-12,1-1e-12)\n  assert abs(float(np.mean((prob-win)**2))-m['win']['brier'])<1e-7\n  assert abs(float(np.mean(-win*np.log(clipped)-(1-win)*np.log1p(-clipped)))-m['win']['log_loss'])<1e-7\n  assert sum(b['n'] for b in m['win']['reliability'])==len(g)\n# Every search arm has the same inner n; reported selected tuple follows frozen one-SE rule.\nfor f in fits:\n s=search[(search.variant==f['variant'])&(search.outer_season==f['outer_season'])]\n assert len(s)==12 and s.n.nunique()==1 and f['inner_n']==int(s.n.iloc[0])\n assert f['max_selection_season']==f['outer_season']-1\n bound=s.mean_team_mae.min()+f['selection']['one_se']\n chosen=s[s.mean_team_mae<=bound+1e-12].sort_values(['ridge','decay'],ascending=False).iloc[0]\n assert (int(chosen.ridge),float(chosen.decay))==(f['selection']['ridge'],f['selection']['decay'])\n assert abs(s.mean_team_mae.min()-f['selection']['inner_best_loss'])<1e-10\n# Independent selected-arm reconstruction uses the archived anchor, existing solver and chronological source filter.\ng=R.game_frame(range(2019,2026)); replay=[]\nfor pop in ['p4','fbs']:\n for window in [1,3,'all']:\n  variant=f'C1_{pop}_{window}'\n  for season in range(2020,2026):\n   for week in [1,2,3]:\n    fit=F.fit_total(g,season,week,window=window,population=pop,ridge=3000,decay=.05)\n    for r in a[(a.season==season)&(a.week==week)].itertuples():\n     p=F.expected_scores(fit,r.home,r.away,r.anchor,r.neutral,r.home_conf,r.away_conf)\n     replay.append(dict(variant=variant,season=season,week=week,id=r.id,home=p['home'],away=p['away'],actual_home=r.actual_home,actual_away=r.actual_away,p4=r.p4,fingerprint=fit.table.fingerprint()))\n  print('selected replay',variant,flush=True)\nx=pd.DataFrame(replay)\nselected=d[~d.model.str.contains('__')].merge(x[x.season>=2021],on=['variant','season','week','id'],validate='one_to_one',suffixes=('_artifact','_replay'))\nassert len(selected)==6*724\nmax_forecast_delta=float(max(abs(selected.home_artifact-selected.home_replay).max(),abs(selected.away_artifact-selected.away_replay).max()))\nassert max_forecast_delta<6e-8\nassert (selected.fit_fingerprint==selected.fingerprint).all()\nmax_covariance_delta=0.\nfor f in fits:\n z=x[(x.variant==f['variant'])&(x.season<f['outer_season'])&x.p4]\n residual=z[['actual_home','actual_away']].to_numpy()-z[['home','away']].to_numpy()\n cov=np.cov(residual.T,ddof=1); old=np.asarray(f['uncertainty']['candidate']['covariance'])\n delta=float(abs(cov-old).max());max_covariance_delta=max(max_covariance_delta,delta); assert delta<1e-9\n assert len(z)==f['inner_n']\n# Independently pair and reproduce point comparisons (serialized precision tolerance).\nprimary=d[d.p4]; ref=primary[primary.model=='C1_p4_all__reference'].set_index(['season','week','id']); result={}\nfor model, reported in paired['comparisons'].items():\n c=primary[primary.model==model].set_index(['season','week','id']).reindex(ref.index)\n delta=ref.team_loss-c.team_loss; mu=float(delta.mean()); folds=delta.groupby('season').mean()\n assert abs(mu-reported['improvement_points_per_team'])<1e-8\n assert int((folds>=0).sum())==reported['nonnegative_folds']\n result[model]={'n':len(delta),'improvement':mu,'nonnegative_folds':int((folds>=0).sum())}\nreport={'status':'passed_read_only_result_verification','run':str(RUN),'artifact_hash_count':len(hashes),'input_hash_count':len(manifest['input_hashes']),'forecast_rows':len(d),'model_count':d.model.nunique(),'per_model_all_fbs_n':724,'per_model_primary_n':495,'selected_candidate_replayed_rows':len(selected),'selected_outer_fits':len(fits),'all_selected_hyperparameters':{'ridge':3000,'decay':.05},'inner_n_by_outer_season':{str(s):sorted({f['inner_n'] for f in fits if f['outer_season']==s}) for s in range(2021,2026)},'max_serialized_metric_delta':max_metric_delta,'max_serialized_forecast_delta':max_forecast_delta,'max_covariance_replay_delta':max_covariance_delta,'comparisons':result,'verdict':'retain_incumbent','independent_production_approval':False,'limits':['Historical development, not prospective validation','All initial-2021 covariance fits use only 16 primary 2020 inner games','All score distributions are continuous residual approximations; no supported discrete joint law','One-SE selection replay checks complete archived inner score tables/rule; it does not recompute all 12 rejected grid settings']}\nPath('/tmp/stallions-evidence-review/result_check.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\\n')\nprint(json.dumps(report,indent=2,sort_keys=True),flush=True)\n",
+      "verify_selection_bootstrap.py": "import sys,json\nfrom pathlib import Path\nimport numpy as np,pandas as pd\nsys.path.insert(0,str(Path.cwd()))\nfrom nflvalue import ratings as R,final_score_research as F\nRUN=Path('data/final_score_program/20260909T024200Z-c1-v1'); read=lambda n:json.loads((RUN/n).read_text())\na=pd.read_csv(RUN/'anchors.csv'); search=pd.read_csv(RUN/'all_inner_searches.csv'); fits=read('fits.json'); games=R.game_frame(range(2019,2026))\nwinning=search.loc[search.groupby(['variant','outer_season']).mean_team_mae.idxmin()]\nneeded=winning.groupby(['variant','ridge','decay']).outer_season.max()\ncurves={}; max_inner_mean_delta=0.; max_se_delta=0.\nfor (variant,ridge,decay),max_outer in needed.items():\n _,pop,window=variant.split('_'); window=window if window=='all' else int(window); records=[]\n for season in range(2020,int(max_outer)):\n  for week in [1,2,3]:\n   fit=F.fit_total(games,season,week,window=window,population=pop,ridge=int(ridge),decay=float(decay))\n   for r in a[(a.season==season)&(a.week==week)&a.p4].itertuples():\n    p=F.expected_scores(fit,r.home,r.away,r.anchor,r.neutral,r.home_conf,r.away_conf)\n    records.append(dict(season=season,week=week,loss=(abs(p['home']-r.actual_home)+abs(p['away']-r.actual_away))/2))\n curves[(variant,int(ridge),float(decay))]=pd.DataFrame(records)\nfor f in fits:\n b=winning[(winning.variant==f['variant'])&(winning.outer_season==f['outer_season'])].iloc[0]\n c=curves[(b.variant,int(b.ridge),float(b.decay))]; c=c[c.season<f['outer_season']]\n means=c.groupby(['season','week']).loss.mean(); se=float(means.std(ddof=1)/np.sqrt(len(means))) if len(means)>1 else 0.\n md=abs(float(c.loss.mean())-f['selection']['inner_best_loss']); sd=abs(se-f['selection']['one_se'])\n assert md<1e-10 and sd<1e-10,(f['variant'],f['outer_season'],md,sd)\n max_inner_mean_delta=max(max_inner_mean_delta,md);max_se_delta=max(max_se_delta,sd)\nprint('one-SE best curves replayed',len(curves),'outer selections',len(fits),flush=True)\nd=pd.read_csv(RUN/'forecasts.csv'); d=d[d.p4]; index=['season','week','id']; ref=d[d.model=='C1_p4_all__reference'].set_index(index); variants=sorted(x for x in d.model.unique() if '__' not in x)\ndiffs=pd.concat({v:ref.team_loss-d[d.model==v].set_index(index).reindex(ref.index).team_loss for v in variants},axis=1)\nrng=np.random.default_rng(20260908); groups=diffs.groupby(['season','week']); sums=groups.sum().to_numpy(); counts=groups.size().to_numpy(); draws=rng.integers(len(sums),size=(20000,len(sums))); week=sums[draws].sum(axis=1)/counts[draws].sum(axis=1)[:,None]\nsg=diffs.groupby('season'); ss=sg.sum().to_numpy(); sc=sg.size().to_numpy(); draws=rng.integers(len(ss),size=(20000,len(ss))); season=ss[draws].sum(axis=1)/sc[draws].sum(axis=1)[:,None]\ncenter=diffs.mean().to_numpy(); radius=np.quantile(abs(week-center).max(axis=1),.95); report=read('paired_comparisons.json'); max_ci_delta=0.\nfor j,v in enumerate(variants):\n for field,vec in [('week_block95',np.quantile(week[:,j],[.025,.975])),('season_block95',np.quantile(season[:,j],[.025,.975])),('simultaneous_six95',[center[j]-radius,center[j]+radius])]:\n  delta=float(np.max(np.abs(np.asarray(vec)-np.asarray(report['comparisons'][v][field])))); assert delta<1e-8;max_ci_delta=max(max_ci_delta,delta)\nfor pop in ['p4','fbs']:\n for short in [1,3]:\n  j=variants.index(f'C1_{pop}_all');k=variants.index(f'C1_{pop}_{short}'); old=report['window_contrasts'][f'{pop}_all_minus_{short}_improvement']\n  for field,array in [('week_block95',week),('season_block95',season)]:\n   delta=float(max(abs(np.quantile(array[:,j]-array[:,k],[.025,.975])-np.array(old[field]))));assert delta<1e-8;max_ci_delta=max(max_ci_delta,delta)\nout=json.loads(Path('/tmp/stallions-evidence-review/result_check.json').read_text())\nout['inner_best_hyperparameter_curves_replayed']=len(curves)\nout['one_standard_error_selections_verified']=len(fits)\nout['max_inner_best_loss_replay_delta']=max_inner_mean_delta\nout['max_one_se_replay_delta']=max_se_delta\nout['bootstrap_recomputed']={'draws':20000,'seed':20260908,'paired_week_and_season_intervals':True,'simultaneous_six_interval':True,'paired_window_contrast_intervals':True,'max_serialized_interval_delta':max_ci_delta}\nout['limits']=[x for x in out['limits'] if not x.startswith('One-SE')]\nout['limits'].append('All selected and inner-minimum curves replayed; rejected non-minimum inner-grid losses checked through archived equal-n summaries, not exhaustive refitting.')\nPath('/tmp/stallions-evidence-review/result_check.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\\n')\nprint(json.dumps({k:v for k,v in out.items() if k.startswith('max_') or k in ['bootstrap_recomputed','one_standard_error_selections_verified','inner_best_hyperparameter_curves_replayed']},indent=2),flush=True)\n"
+    },
+    "run": "data/final_score_program/20260909T024200Z-c1-v1",
+    "run_artifact_manifest_sha256": "79099280f185aa77f5d51c5de3c7f9227589fee84eeefa4aece7387b233fc86f",
+    "selected_candidate_replayed_rows": 4344,
+    "selected_outer_fits": 30,
+    "source_commit": "070dfc9e60c2611bbdcd0cb040d6fb06f07e31de",
+    "status": "passed_read_only_result_verification",
+    "verdict": "retain_incumbent",
+    "verified_at_utc": "2026-09-09T02:37:13.554959+00:00"
+  },
+  "interpreter": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "real_adjusted_history_probe": {
+    "as_of_week": 2,
+    "both_claim": {
+      "effective_through": "2026-09-05T16:00:00+00:00",
+      "game_ids": [],
+      "n": 1,
+      "n_games": 0,
+      "source_version": "derived:sha256:370b1004349fa624"
+    },
+    "command": ".venv/bin/python - <<'PY'\nfrom nflvalue.team_evidence.profile import build_profiles\nfor history in ([2026],[2025,2026]):\n p=build_profiles(2026,2,data_dir='data',seasons_of_history=history)['Alabama']\n print(history,p.by_measure()['rush_off_eff_adj'].to_dict())\nPY",
+    "measure_id": "rush_off_eff_adj",
+    "results": [
+      {
+        "history": [
+          2026
+        ],
+        "value": 0.005281
+      },
+      {
+        "history": [
+          2025,
+          2026
+        ],
+        "value": -0.009817
+      }
+    ],
+    "season": 2026,
+    "team": "Alabama"
+  },
+  "reusable_interfaces": [
+    "team_game_measures ratio-of-sums rows for audited measures only",
+    "ratings.play_units and solve_units architecture, subject to training chronology and complete lineage",
+    "_strictly_before for explicitly week-granular development reconstruction only",
+    "Explicit missingness enum and bounded citation structures after contract hardening",
+    "Existing immutable forecast/snapshot and derived-vault interfaces"
+  ],
+  "reviewed_head": "3e3e725614c5456f4d43ee527cc48414640115ca",
+  "schema": "stallionsstallion.final_score.evidence_review.v1",
+  "scope": "Read-only independent evidence-layer audit; all historical data remain descriptive development; no improvement or activation claim.",
+  "source_sha256": {
+    "config.json": "ac1f92c8dbef9ccd90aa4c731717d194f8db0dc9183798b69c654210b7533698",
+    "data/cfbd/games_2025.parquet": "bbc52883bb632d7ec5ed6a5de6d66bfd746eddba0b2a9574b1e8cd02bf461623",
+    "data/cfbd/games_2026.parquet": "a70212d8310ce7ae9cbfc0fd6716672648e6ff8bc49477243b53bcb3efee203e",
+    "data/cfbd/plays_clean_2025.parquet": "5acef5409588490baa144f12e912f09372eacb4f1fcfa110833743dcb3c2cd10",
+    "data/cfbd/plays_clean_2026.parquet": "679c06d47af87bd282fac96e9a275a5ea14a26d02e42c7cda9fa8ea2209beb29",
+    "data/team_evidence_registry.json": "9723dec3ca91b1e2f0f2f4bee03f0d367c3e42302af9168d58fed441cfff41c8",
+    "docs/final_score_program/02_data_handoff.md": "328073dfb3821d68ad90f39f47c4d02f8b2863276cbc1e8ed299e9a26abbb1d4",
+    "nflvalue/ratings.py": "a511faea9993689232e911d52b95d13034561988ef667d48c6482742e305d299",
+    "nflvalue/team_evidence/contracts.py": "a3c60bab037250aa34b4b233d1e89c2f6c8fc9f0f792553da72e73cee0b4033d",
+    "nflvalue/team_evidence/measures.py": "a3d0e35d0e54c99b82e17dab9c025ea41daca328707430ec8ca1b74eb1855144",
+    "nflvalue/team_evidence/news.py": "5d880008e680a903ecf9c3eb202e3cd8f816ffc0823d4b199de8ab8661ad41e9",
+    "nflvalue/team_evidence/profile.py": "79abfb635d24838c8552681ec28207311f59883d361ffbd6aef3bff30ae09c1c",
+    "nflvalue/team_evidence/sources.py": "f52ffa4af09efbe621d8e864806a5b61dbe6fdb7d4e90f65ebc6e2778f9d628a",
+    "scripts/build_team_evidence.py": "f9fcfa23742ed35f5f33347d112d88177a9d27108a8f310168e48c8a4ed43195"
+  },
+  "strict_xfail_policy": "These are unresolved product/evidence gaps, not successful acceptance tests. A fix must remove the corresponding marker after review; strict XPASS fails CI.",
+  "test_limitations": [
+    "Leakage fixture disables actual opponent adjustment; snapshot compares value/count/state but not metadata.",
+    "Opponent-adjustment wiring test mocks the full adjustment function.",
+    "Registry-method and AST assertions establish naming/dependencies, not orthogonality, calibration or chronology."
+  ],
+  "verdict_document_review": {
+    "checked": [
+      "Eleven enumerated incumbent refusals are all in 2021-2025",
+      "495 primary paired games and 724 broader games",
+      "Best gain0.06458793526044664,three nonnegativefolds,fails0.50floor",
+      "Paired week/season/simultaneous intervals",
+      "Unavailable early incumbent scores,total and discrete joint law",
+      "Historical data remains development; no production/shadow promotion"
+    ],
+    "minor_wording_note": "Ten strict xfailed counterexamples do not map one-to-one to all ten review findings; statistical overclaim and season-age issue are review findings without their own xfailed test. Suggested clarifying wording sent to lead.",
+    "path": "docs/final_score_program/03_model_verdict.md",
+    "reviewed_at_utc": "2026-09-09T02:42:54.131094+00:00",
+    "sha256_at_review": "ef437bc9ec2480b6f722a3094981e687c5bb6d7bc31b25330b12fa59e407ec9c",
+    "status": "No material numerical or model-improvement overclaim found. Retain-incumbent conclusion and stated limitations agree with independently verified results."
+  }
+}

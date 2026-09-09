@@ -1,0 +1,73 @@
+{
+  "max_absolute_delta": 0.0,
+  "n": 724,
+  "refusals": [
+    {
+      "id": 401426538,
+      "reason": "incumbent_unratable",
+      "season": 2022,
+      "week": 1
+    },
+    {
+      "id": 401520145,
+      "reason": "incumbent_unratable",
+      "season": 2023,
+      "week": 1
+    },
+    {
+      "id": 401520152,
+      "reason": "incumbent_unratable",
+      "season": 2023,
+      "week": 1
+    },
+    {
+      "id": 401520187,
+      "reason": "incumbent_unratable",
+      "season": 2023,
+      "week": 2
+    },
+    {
+      "id": 401520211,
+      "reason": "incumbent_unratable",
+      "season": 2023,
+      "week": 2
+    },
+    {
+      "id": 401641015,
+      "reason": "incumbent_unratable",
+      "season": 2024,
+      "week": 1
+    },
+    {
+      "id": 401641016,
+      "reason": "incumbent_unratable",
+      "season": 2024,
+      "week": 2
+    },
+    {
+      "id": 401752798,
+      "reason": "incumbent_unratable",
+      "season": 2025,
+      "week": 1
+    },
+    {
+      "id": 401756881,
+      "reason": "incumbent_unratable",
+      "season": 2025,
+      "week": 2
+    },
+    {
+      "id": 401757228,
+      "reason": "incumbent_unratable",
+      "season": 2025,
+      "week": 2
+    },
+    {
+      "id": 401757168,
+      "reason": "incumbent_unratable",
+      "season": 2025,
+      "week": 3
+    }
+  ],
+  "selected_sha256": "7b065cb280c93d58e71d3962b701850235e6452ba097e911319a4055b9b6f142"
+}

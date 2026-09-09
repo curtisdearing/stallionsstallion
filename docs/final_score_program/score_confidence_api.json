@@ -1,0 +1,322 @@
+{
+  "schema": "stallionsstallion.score_confidence.api_spec.v1",
+  "status": "Opus interface specification; mapping from research artifacts, not a production writer",
+  "fields": {
+    "schema_version": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "string",
+      "target": "API schema identity",
+      "research_mapping": "stallionsstallion.score_confidence.research.v1"
+    },
+    "game_id": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "CFBD integer ID",
+      "target": "game identity",
+      "research_mapping": "id"
+    },
+    "season": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "year",
+      "target": "season identity",
+      "research_mapping": "season"
+    },
+    "week": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "CFBD week integer",
+      "target": "week identity",
+      "research_mapping": "week"
+    },
+    "home_team": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "CFBD school string",
+      "target": "season-specific home team identity",
+      "research_mapping": "anchors.csv: home"
+    },
+    "away_team": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "CFBD school string",
+      "target": "season-specific away team identity",
+      "research_mapping": "anchors.csv: away"
+    },
+    "cutoff_id": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "string",
+      "target": "information boundary",
+      "research_mapping": "cutoff_id"
+    },
+    "generated_at_utc": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "UTC timestamp",
+      "target": "artifact creation time; never historical publication time",
+      "research_mapping": "manifest.created_at_utc"
+    },
+    "model_version": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "string",
+      "target": "numerical model implementation",
+      "research_mapping": "model_version"
+    },
+    "fit_fingerprint": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "SHA256",
+      "target": "weekly ridge fit identity",
+      "research_mapping": "fit_fingerprint"
+    },
+    "input_manifest": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Not a forecast quantity; exact metadata under manifest integrity",
+      "units": "path plus SHA256",
+      "target": "complete input and code lineage",
+      "research_mapping": "manifest.json / artifact_hashes.json"
+    },
+    "availability": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "reconstructed_week_granular, unavailable, or future verified_asof; this run only reconstructed_week_granular",
+      "units": "enumerated string",
+      "target": "whether the estimate is supported at its stated level",
+      "research_mapping": "availability"
+    },
+    "expected_home_points": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Continuous fitted expected score; nonnegative mean; not a possible-score sample",
+      "units": "points",
+      "target": "home official final score including OT",
+      "research_mapping": "home"
+    },
+    "expected_away_points": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Continuous fitted expected score; nonnegative mean; not a possible-score sample",
+      "units": "points",
+      "target": "away official final score including OT",
+      "research_mapping": "away"
+    },
+    "expected_margin": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Algebraic difference of paired means; frozen incumbent margin preserved",
+      "units": "home minus away points",
+      "target": "official final margin including OT",
+      "research_mapping": "home-away; equals anchor for C1"
+    },
+    "expected_total": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Algebraic sum of paired means; NEW research capability, not incumbent total",
+      "units": "points, both teams",
+      "target": "official combined final score including OT",
+      "research_mapping": "home+away"
+    },
+    "home_score_sd": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Square root of inner chronological residual covariance diagonal; predictive error SD, not mean-estimate SE",
+      "units": "points",
+      "target": "dispersion of home final-score prediction error",
+      "research_mapping": "home_sd"
+    },
+    "away_score_sd": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Square root of inner chronological residual covariance diagonal; predictive error SD, not mean-estimate SE",
+      "units": "points",
+      "target": "dispersion of away final-score prediction error",
+      "research_mapping": "away_sd"
+    },
+    "score_error_covariance": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Paired inner chronological residual covariance; must retain sign; do not assume independence",
+      "units": "points squared",
+      "target": "home/away final-score prediction-error covariance",
+      "research_mapping": "score_covariance"
+    },
+    "margin_sd": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "sqrt(home_variance+away_variance-2*covariance), learned on inner residuals",
+      "units": "points",
+      "target": "dispersion of final-margin prediction error",
+      "research_mapping": "margin_sd"
+    },
+    "total_sd": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "sqrt(home_variance+away_variance+2*covariance), learned on inner residuals",
+      "units": "points",
+      "target": "dispersion of final-total prediction error",
+      "research_mapping": "total_sd"
+    },
+    "p_home_win": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Gaussian margin approximation with train-fitted SD and identity calibration; not exact mass from a joint football-score law",
+      "units": "probability in [0,1]",
+      "target": "home final points greater than away final points after OT",
+      "research_mapping": "Phi((home-away)/margin_sd)"
+    },
+    "intervals_50_80_95": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Continuous Gaussian error approximation; unbounded intervals, no clipping, negative-score mass reported; not discrete credible score sets",
+      "units": "points",
+      "target": "home/away/margin/total central predictive intervals",
+      "research_mapping": "mean +/- z * corresponding sd"
+    },
+    "calibration_n": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "One game is one paired observation, not two independent scores or many draws",
+      "units": "paired games",
+      "target": "sample size used for uncertainty fitting",
+      "research_mapping": "calibration_n"
+    },
+    "calibration_max_season": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Strictly less than outer evaluation season; same inner predictions also selected hyperparameters, so selection optimism remains inside training",
+      "units": "year",
+      "target": "latest season in uncertainty fit",
+      "research_mapping": "calibration_max_season"
+    },
+    "fallback": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Availability reason; never a low-confidence numeric probability",
+      "units": "boolean",
+      "target": "whether research score reference replaced missing team features",
+      "research_mapping": "fallback"
+    },
+    "mean_constraint_applied": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "Constraint on expected means only; not clipping a simulated negative score",
+      "units": "boolean",
+      "target": "whether total>=abs(margin) changed raw total",
+      "research_mapping": "constrained"
+    },
+    "distribution_support": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "No joint football-score simulation law supplied",
+      "units": "enum",
+      "target": "available predictive representation",
+      "research_mapping": "continuous_error_approximation_not_discrete_scores"
+    },
+    "paired_score_samples": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "unavailable; required null with reason",
+      "uncertainty_semantics": "Unavailable; MUST NOT derive from continuous margin-shift samples or clip negatives",
+      "units": "paired integer points array",
+      "target": "joint official final-score outcomes",
+      "research_mapping": "null"
+    },
+    "exact_score_probability": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "unavailable; required null with reason",
+      "uncertainty_semantics": "Unavailable without validated discrete joint law",
+      "units": "joint probability mass",
+      "target": "specific integer home/away official score",
+      "research_mapping": "null"
+    },
+    "joint_energy_score": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "unavailable; required null with reason",
+      "uncertainty_semantics": "Unavailable for supported discrete law in this run",
+      "units": "points",
+      "target": "proper score for joint predictive score law",
+      "research_mapping": "null"
+    },
+    "rating_parameter_sd": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "unavailable; required null with reason",
+      "uncertainty_semantics": "Not exposed by C1 API; never substitute a rating band for forecast-error SD",
+      "units": "points",
+      "target": "uncertainty in estimated rating parameters",
+      "research_mapping": "null"
+    },
+    "news_adjustment": {
+      "timing": "Frozen from pre-week training state; current artifacts are historical reconstructions, not contemporaneous receipts",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "unavailable; required null with reason",
+      "uncertainty_semantics": "Unavailable; no approved verified corpus or fitted adjustment, not zero effect",
+      "units": "points",
+      "target": "numeric effect of verified pregame personnel facts",
+      "research_mapping": "null"
+    },
+    "production_status": {
+      "timing": "Artifact metadata at creation/freeze; never backdate as historical availability",
+      "model_version": "c1-ridge-total-v1 plus fit_fingerprint and input manifest hashes",
+      "availability": "available only when the research artifact field is finite; never silently default",
+      "uncertainty_semantics": "No publication, production replacement, or shadow activation",
+      "units": "enum",
+      "target": "activation decision",
+      "research_mapping": "research_only_incumbent_retained"
+    }
+  },
+  "invariants": [
+    "expected_home_points-expected_away_points=expected_margin",
+    "expected_home_points+expected_away_points=expected_total",
+    "expected means finite and nonnegative; need not be integer",
+    "covariance positive semidefinite; margin/total variance identities hold",
+    "all numerical feature and uncertainty fit timestamps precede cutoff; unavailable claims remain null",
+    "generated prose cannot mutate any numerical field",
+    "market joins occur only in separate derived view after immutable freeze",
+    "current confidence is an approximation with measured coverage; no HIGH/MEDIUM/LOW label fabricated"
+  ]
+}
